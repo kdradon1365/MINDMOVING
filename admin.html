@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리자 | 마인드무빙 컨설팅</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root {
+    --teal: #3B8A8C;
+    --teal-dark: #2B7173;
+    --teal-pale: #EBF4F4;
+    --taupe: #8B7D6B;
+    --taupe-pale: #F2EDE8;
+    --black: #1A1A1A;
+    --gray: #5A5A5A;
+    --gray-light: #9A9A9A;
+    --border: #E4E4E4;
+    --white: #FFFFFF;
+    --danger: #E53E3E;
+    --success: #38A169;
+    --bg: #F7F7F5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--black);
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1A3A3A 0%, #2B5F61 100%);
+  }
+  .login-box {
+    background: white;
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+  }
+  .login-logo { margin-bottom: 1rem; }
+  .login-logo img { height: 48px; }
+  .login-brand-top {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--teal);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 0.5rem;
+  }
+  .login-brand-sub {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--taupe);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 3px;
+  }
+  .login-box h1 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--black);
+    margin: 1.25rem 0 0.3rem;
+  }
+  .login-box p { color: var(--gray-light); font-size: 0.85rem; margin-bottom: 2rem; }
+  .login-box input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+    letter-spacing: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 0.85rem;
+    color: var(--black);
+    font-family: inherit;
+  }
+  .login-box input:focus { border-color: var(--teal); }
+  .login-box input::placeholder { letter-spacing: 0; color: #ccc; }
+  .login-btn {
+    width: 100%;
+    padding: 0.88rem;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+  .login-btn:hover { background: var(--teal-dark); }
+  .login-error { color: var(--danger); font-size: 0.82rem; margin-top: 0.75rem; display: none; }
+
+  /* ADMIN SHELL */
+  #adminPanel { display: none; min-height: 100vh; }
+
+  .admin-header {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .admin-header-left { display: flex; align-items: center; gap: 0.75rem; }
+  .admin-header-left img { height: 32px; }
+  .admin-header-brand { line-height: 1.2; }
+  .admin-header-brand strong {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+  }
+  .admin-header-brand span { font-size: 0.65rem; color: var(--gray-light); letter-spacing: 1px; }
+  .admin-header-right { display: flex; align-items: center; gap: 1.25rem; }
+  .header-link {
+    color: var(--gray-light);
+    text-decoration: none;
+    font-size: 0.83rem;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .header-link:hover { color: var(--teal); }
+  .logout-btn {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--gray);
+    padding: 0.38rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: inherit;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .logout-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .stat-icon.teal { background: var(--teal-pale); }
+  .stat-icon.taupe { background: var(--taupe-pale); }
+  .stat-icon.dark { background: #1A1A1A10; }
+  .stat-info-num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--black);
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .stat-info-label { font-size: 0.72rem; color: var(--gray-light); margin-top: 0.2rem; font-weight: 500; }
+
+  /* BODY */
+  .admin-body {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* CARD */
+  .card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 1.1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header h2 { font-size: 0.92rem; font-weight: 700; color: var(--black); }
+  .card-body { padding: 1.5rem; }
+
+  /* FORM */
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.38rem;
+  }
+  .form-group label .req { color: var(--teal); margin-left: 2px; }
+  .form-group label .opt { color: var(--gray-light); font-weight: 400; font-size: 0.72rem; margin-left: 4px; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    color: var(--black);
+    background: white;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--teal); }
+  .form-group textarea { resize: vertical; min-height: 64px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+  .submit-btn {
+    width: 100%;
+    padding: 0.82rem;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+  .submit-btn:hover { background: var(--teal-dark); transform: translateY(-1px); }
+  .submit-btn.edit-mode { background: #D69E2E; }
+  .submit-btn.edit-mode:hover { background: #B7791F; }
+  .cancel-edit-btn {
+    width: 100%;
+    padding: 0.65rem;
+    background: transparent;
+    color: var(--gray-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    display: none;
+  }
+  .cancel-edit-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* LIST CONTROLS */
+  .list-controls {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 160px;
+    padding: 0.55rem 0.85rem;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.85rem;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--teal); }
+  .filter-select {
+    padding: 0.55rem 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.82rem;
+    outline: none;
+    font-family: inherit;
+    color: var(--black);
+    background: white;
+    cursor: pointer;
+  }
+  .count-badge {
+    background: var(--teal);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.65rem;
+    border-radius: 50px;
+    white-space: nowrap;
+  }
+
+  /* LIST */
+  .lecture-list { display: flex; flex-direction: column; max-height: 620px; overflow-y: auto; }
+  .lecture-list::-webkit-scrollbar { width: 4px; }
+  .lecture-list::-webkit-scrollbar-track { background: transparent; }
+  .lecture-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+    transition: background 0.15s;
+  }
+  .list-item:last-child { border-bottom: none; }
+  .list-item:hover { background: var(--bg); }
+  .list-item.editing { background: #FFFBEB; border-left: 3px solid #D69E2E; }
+
+  .list-item-info { flex: 1; min-width: 0; }
+  .list-item-date {
+    font-size: 0.7rem;
+    color: var(--taupe);
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 0.18rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .category-tag {
+    background: var(--teal-pale);
+    color: var(--teal);
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+  }
+  .list-item-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.12rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .list-item-org { font-size: 0.78rem; color: var(--gray-light); }
+  .list-item-note { font-size: 0.73rem; color: var(--taupe); margin-top: 0.25rem; font-style: italic; }
+  .list-item-actions { display: flex; gap: 0.4rem; flex-shrink: 0; margin-top: 2px; }
+
+  .edit-btn, .delete-btn {
+    border: 1px solid var(--border);
+    padding: 0.28rem 0.6rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.73rem;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.15s;
+    background: white;
+  }
+  .edit-btn { color: var(--teal); }
+  .edit-btn:hover { background: var(--teal); color: white; border-color: var(--teal); }
+  .delete-btn { color: var(--danger); border-color: #FCA5A5; }
+  .delete-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--gray-light); font-size: 0.88rem; }
+  .empty-state .e-icon { font-size: 2.5rem; margin-bottom: 0.6rem; }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--black);
+    color: white;
+    padding: 0.78rem 1.4rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 9999;
+    pointer-events: none;
+  }
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.success { background: var(--success); }
+  #toast.error { background: var(--danger); }
+
+  @media (max-width: 900px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .admin-body { grid-template-columns: 1fr; }
+    .lecture-list { max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="logo_mmc_2.png" alt="로고" onerror="this.style.display='none'">
+      <span class="login-brand-top">Mind Moving</span>
+      <span class="login-brand-sub">— Consulting —</span>
+    </div>
+    <h1>관리자 로그인</h1>
+    <p>강의 이력을 관리합니다</p>
+    <input type="password" id="pwInput" placeholder="비밀번호 입력"
+      onkeydown="if(event.key==='Enter') login()">
+    <button class="login-btn" onclick="login()">로그인</button>
+    <div class="login-error" id="loginError">비밀번호가 올바르지 않습니다.</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <div class="admin-header">
+    <div class="admin-header-left">
+      <img src="logo_mmc_2.png" alt="로고" onerror="this.style.display='none'">
+      <div class="admin-header-brand">
+        <strong>Mind Moving</strong>
+        <span>관리자 페이지</span>
+      </div>
+    </div>
+    <div class="admin-header-right">
+      <a href="index.html" target="_blank" class="header-link">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 2H3a1 1 0 00-1 1v10a1 1 0 001 1h10a1 1 0 001-1V9M10 2h4m0 0v4m0-4L7 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        홈페이지 보기
+      </a>
+      <button class="logout-btn" onclick="logout()">로그아웃</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon teal">📋</div>
+      <div>
+        <div class="stat-info-num" id="sTotal">0</div>
+        <div class="stat-info-label">총 강의 수</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon teal">📅</div>
+      <div>
+        <div class="stat-info-num" id="sYear">0</div>
+        <div class="stat-info-label">올해 강의</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon taupe">🏢</div>
+      <div>
+        <div class="stat-info-num" id="sOrg">0</div>
+        <div class="stat-info-label">기관 / 기업 수</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon dark">📆</div>
+      <div>
+        <div class="stat-info-num" id="sRecent" style="font-size:1rem;">—</div>
+        <div class="stat-info-label">최근 강의</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <div class="card" style="position: sticky; top: 76px;">
+      <div class="card-header">
+        <h2 id="formTitle">강의 이력 추가</h2>
+      </div>
+      <div class="card-body">
+        <input type="hidden" id="editId">
+        <div class="form-group">
+          <label>강의명 <span class="req">*</span></label>
+          <input type="text" id="fTitle" placeholder="예: 리더십 역량 강화 교육">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>기관 / 기업명 <span class="req">*</span></label>
+            <input type="text" id="fOrg" placeholder="예: 삼성전자">
+          </div>
+          <div class="form-group">
+            <label>날짜 <span class="req">*</span></label>
+            <input type="month" id="fDate">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>강의 분야 <span class="opt">(선택)</span></label>
+          <select id="fCategory">
+            <option value="">선택 안 함</option>
+            <option value="리더십/조직문화">리더십 / 조직문화</option>
+            <option value="세일즈/영업코칭">세일즈 / 영업 코칭</option>
+            <option value="심리/멘탈코칭">심리 / 멘탈 코칭</option>
+            <option value="커뮤니케이션/협상">커뮤니케이션 / 협상</option>
+            <option value="기업교육/HRD">기업교육 / HRD</option>
+            <option value="드라마테라피">드라마테라피 활용 강의</option>
+            <option value="민원응대">민원 응대</option>
+            <option value="서비스교육">서비스 교육</option>
+            <option value="연극활용기업교육">연극 활용 기업교육</option>
+            <option value="스트레스관리">스트레스 관리</option>
+            <option value="회복탄력성">회복탄력성</option>
+            <option value="감정관리">감정관리 교육</option>
+            <option value="핵심가치내재화">핵심가치 내재화 교육</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>메모 <span class="opt">(선택)</span></label>
+          <textarea id="fNote" placeholder="예: 임원 대상 2회차, 참석 인원 50명"></textarea>
+        </div>
+        <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          추가하기
+        </button>
+        <button class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEdit()">취소</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="list-controls">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍  강의명 또는 기관명 검색" oninput="renderList()">
+        <select class="filter-select" id="yearFilter" onchange="renderList()">
+          <option value="">전체 연도</option>
+        </select>
+        <select class="filter-select" id="categoryFilter" onchange="renderList()">
+          <option value="">전체 분야</option>
+          <option value="리더십/조직문화">리더십/조직문화</option>
+          <option value="세일즈/영업코칭">세일즈/영업코칭</option>
+          <option value="심리/멘탈코칭">심리/멘탈코칭</option>
+          <option value="커뮤니케이션/협상">커뮤니케이션/협상</option>
+          <option value="기업교육/HRD">기업교육/HRD</option>
+          <option value="드라마테라피">드라마테라피</option>
+          <option value="민원응대">민원응대</option>
+          <option value="서비스교육">서비스교육</option>
+          <option value="연극활용기업교육">연극활용기업교육</option>
+          <option value="스트레스관리">스트레스관리</option>
+          <option value="회복탄력성">회복탄력성</option>
+          <option value="감정관리">감정관리</option>
+          <option value="핵심가치내재화">핵심가치내재화</option>
+        </select>
+        <span class="count-badge" id="countBadge">0</span>
+      </div>
+      <div class="lecture-list" id="lectureList"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const PASSWORD = 'mindmoving2024';
+  const STORAGE_KEY = 'mindmoving_lectures';
+  let editingId = null;
+
+  function login() {
+    if (document.getElementById('pwInput').value === PASSWORD) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      initYearFilter();
+      renderStats();
+      renderList();
+    } else {
+      document.getElementById('loginError').style.display = 'block';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+    }
+  }
+  function logout() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('loginError').style.display = 'none';
+    cancelEdit();
+  }
+
+  function getLectures() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  }
+  function saveLectures(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+  function renderStats() {
+    const ls = getLectures();
+    const year = new Date().getFullYear().toString();
+    const orgs = new Set(ls.map(l => l.organization));
+    const sorted = [...ls].sort((a, b) => b.date.localeCompare(a.date));
+    document.getElementById('sTotal').textContent = ls.length;
+    document.getElementById('sYear').textContent = ls.filter(l => l.date.startsWith(year)).length;
+    document.getElementById('sOrg').textContent = orgs.size;
+    document.getElementById('sRecent').textContent = sorted.length ? sorted[0].date : '—';
+  }
+
+  function initYearFilter() {
+    const years = [...new Set(getLectures().map(l => l.date.slice(0, 4)))].sort((a, b) => b - a);
+    const sel = document.getElementById('yearFilter');
+    sel.innerHTML = '<option value="">전체 연도</option>' +
+      years.map(y => `<option value="${y}">${y}년</option>`).join('');
+  }
+
+  function submitForm() {
+    const title = document.getElementById('fTitle').value.trim();
+    const org   = document.getElementById('fOrg').value.trim();
+    const date  = document.getElementById('fDate').value;
+    const cat   = document.getElementById('fCategory').value;
+    const note  = document.getElementById('fNote').value.trim();
+    if (!title || !org || !date) { showToast('⚠️ 강의명, 기관명, 날짜는 필수입니다.', 'error'); return; }
+    const ls = getLectures();
+    if (editingId) {
+      const idx = ls.findIndex(l => l.id === editingId);
+      if (idx > -1) ls[idx] = { ...ls[idx], title, organization: org, date, category: cat, note };
+      saveLectures(ls);
+      showToast('✓ 수정되었습니다.', 'success');
+      cancelEdit();
+    } else {
+      ls.push({ id: Date.now().toString(), title, organization: org, date, category: cat, note });
+      saveLectures(ls);
+      showToast('✓ 추가되었습니다.', 'success');
+      clearForm();
+    }
+    initYearFilter();
+    renderStats();
+    renderList();
+  }
+
+  function clearForm() {
+    ['fTitle','fOrg','fDate','fNote'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('fCategory').value = '';
+  }
+
+  function startEdit(id) {
+    const l = getLectures().find(l => l.id === id);
+    if (!l) return;
+    editingId = id;
+    document.getElementById('fTitle').value    = l.title;
+    document.getElementById('fOrg').value      = l.organization;
+    document.getElementById('fDate').value     = l.date;
+    document.getElementById('fCategory').value = l.category || '';
+    document.getElementById('fNote').value     = l.note || '';
+    document.getElementById('formTitle').textContent = '강의 이력 수정';
+    document.getElementById('submitBtn').innerHTML = '수정 저장';
+    document.getElementById('submitBtn').classList.add('edit-mode');
+    document.getElementById('cancelEditBtn').style.display = 'block';
+    renderList();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelEdit() {
+    editingId = null;
+    clearForm();
+    document.getElementById('formTitle').textContent = '강의 이력 추가';
+    document.getElementById('submitBtn').innerHTML =
+      '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> 추가하기';
+    document.getElementById('submitBtn').classList.remove('edit-mode');
+    document.getElementById('cancelEditBtn').style.display = 'none';
+    renderList();
+  }
+
+  function deleteLecture(id) {
+    if (!confirm('이 강의 이력을 삭제하시겠습니까?')) return;
+    if (editingId === id) cancelEdit();
+    saveLectures(getLectures().filter(l => l.id !== id));
+    initYearFilter();
+    renderStats();
+    renderList();
+    showToast('삭제되었습니다.');
+  }
+
+  function renderList() {
+    const search = document.getElementById('searchInput').value.trim().toLowerCase();
+    const yearF  = document.getElementById('yearFilter').value;
+    const catF   = document.getElementById('categoryFilter').value;
+    let ls = getLectures().sort((a, b) => b.date.localeCompare(a.date));
+    if (search) ls = ls.filter(l =>
+      l.title.toLowerCase().includes(search) || l.organization.toLowerCase().includes(search));
+    if (yearF) ls = ls.filter(l => l.date.startsWith(yearF));
+    if (catF)  ls = ls.filter(l => (l.category || '') === catF);
+    document.getElementById('countBadge').textContent = ls.length;
+    const list = document.getElementById('lectureList');
+    if (ls.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="e-icon">📋</div>등록된 강의 이력이 없습니다.</div>`;
+      return;
+    }
+    list.innerHTML = ls.map(l => `
+      <div class="list-item${editingId === l.id ? ' editing' : ''}">
+        <div class="list-item-info">
+          <div class="list-item-date">
+            ${esc(l.date)}
+            ${l.category ? `<span class="category-tag">${esc(l.category)}</span>` : ''}
+          </div>
+          <div class="list-item-title" title="${esc(l.title)}">${esc(l.title)}</div>
+          <div class="list-item-org">${esc(l.organization)}</div>
+          ${l.note ? `<div class="list-item-note">${esc(l.note)}</div>` : ''}
+        </div>
+        <div class="list-item-actions">
+          <button class="edit-btn" onclick="startEdit('${l.id}')">수정</button>
+          <button class="delete-btn" onclick="deleteLecture('${l.id}')">삭제</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function esc(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = type ? `show ${type}` : 'show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.className = '', 2800);
+  }
+</script>
+</body>
+</html>

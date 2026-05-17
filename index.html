@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마인드무빙 컨설팅 | 김해용</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root {
+    --teal: #3B8A8C;
+    --teal-dark: #2B7173;
+    --teal-pale: #EBF4F4;
+    --taupe: #8B7D6B;
+    --taupe-light: #BEB0A0;
+    --taupe-pale: #F2EDE8;
+    --black: #1A1A1A;
+    --gray: #5A5A5A;
+    --gray-light: #9A9A9A;
+    --border: #E4E4E4;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+    color: var(--black);
+    background: var(--white);
+    line-height: 1.6;
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    background: var(--teal);
+    color: white;
+    text-align: center;
+    padding: 0.55rem 1rem;
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    font-weight: 500;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+    padding: 0 3rem;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    text-decoration: none;
+  }
+  .nav-logo img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+  }
+  .nav-brand {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .nav-brand-top {
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: var(--teal);
+    text-transform: uppercase;
+  }
+  .nav-brand-bottom {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--taupe);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav-brand-bottom::before,
+  .nav-brand-bottom::after {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 1px;
+    background: var(--taupe-light);
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .nav-links a:hover { color: var(--teal); }
+
+  /* HERO */
+  #hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 102px);
+  }
+  .hero-left {
+    padding: 5rem 4rem 5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--taupe);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1.5px;
+    background: var(--taupe);
+    display: inline-block;
+  }
+  .hero-title {
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    color: var(--black);
+    margin-bottom: 2rem;
+  }
+  .hero-title .teal { color: var(--teal); }
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--gray);
+    line-height: 1.9;
+    max-width: 400px;
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--teal);
+    color: white;
+    padding: 0.9rem 2.2rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: all 0.25s;
+    border: 2px solid var(--teal);
+  }
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--teal);
+  }
+  .btn-primary svg { transition: transform 0.25s; }
+  .btn-primary:hover svg { transform: translateX(4px); }
+
+  .hero-right {
+    background: #EDE8E3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+  }
+  .hero-logo-big img {
+    max-width: 380px;
+    width: 100%;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--black);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .stat-item {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    border-right: 1px solid #2A2A2A;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-num span { color: var(--teal); }
+  .stat-label {
+    font-size: 0.78rem;
+    color: #666;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* SECTION COMMONS */
+  .section-wrap { padding: 7rem 5rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--taupe);
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 24px; height: 1.5px;
+    background: var(--taupe);
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    color: var(--gray);
+    font-size: 0.97rem;
+    line-height: 1.85;
+    max-width: 500px;
+    font-weight: 400;
+  }
+
+  /* PHILOSOPHY */
+  #philosophy { background: var(--teal-pale); border-top: 1px solid #D5E8E8; border-bottom: 1px solid #D5E8E8; }
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 4rem;
+    border: 1px solid #C8DEDE;
+  }
+  .philosophy-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    border-right: 1px solid #C8DEDE;
+    position: relative;
+  }
+  .philosophy-card:last-child { border-right: none; }
+  .philo-num {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--teal-pale);
+    line-height: 1;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .philo-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+  .philo-desc {
+    font-size: 0.87rem;
+    color: var(--gray);
+    line-height: 1.8;
+  }
+  .philo-accent {
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--teal);
+  }
+
+  /* ABOUT */
+  #about { background: var(--white); }
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+  .about-left {
+    background: var(--taupe-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 520px;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-photo-placeholder {
+    text-align: center;
+    color: var(--taupe-light);
+  }
+  .about-photo-placeholder .icon { font-size: 5rem; opacity: 0.4; }
+  .about-photo-placeholder p {
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    margin-top: 0.75rem;
+    color: var(--taupe-light);
+  }
+  .about-left img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+  }
+  .about-right {
+    padding: 4rem;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .about-name {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -2px;
+    color: var(--black);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+  }
+  .about-role {
+    font-size: 0.82rem;
+    color: var(--teal);
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .about-text {
+    color: var(--gray);
+    line-height: 1.9;
+    font-size: 0.95rem;
+    margin-bottom: 0.85rem;
+    font-weight: 400;
+  }
+  .about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  .tag {
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    padding: 0.3rem 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  /* LECTURES */
+  #lectures { background: var(--white); }
+  .lectures-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4rem;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  .lectures-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+  .lecture-card {
+    background: white;
+    padding: 2rem 1.5rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .lecture-card:hover {
+    background: var(--teal);
+    border-color: var(--teal);
+  }
+  .lecture-card:hover h4 { color: white; }
+  .lecture-card:hover .lecture-icon { filter: grayscale(1) brightness(2); }
+  .lecture-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.85rem;
+    display: block;
+    transition: filter 0.25s;
+  }
+  .lecture-card h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--black);
+    line-height: 1.45;
+    transition: color 0.25s;
+  }
+
+  /* HISTORY */
+  #history { background: var(--taupe-pale); border-top: 1px solid #DDD6CE; border-bottom: 1px solid #DDD6CE; }
+  .history-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0;
+    border: 1px solid #D5CEC7;
+  }
+  .history-card {
+    background: white;
+    padding: 1.75rem;
+    border-right: 1px solid #D5CEC7;
+    border-bottom: 1px solid #D5CEC7;
+    transition: all 0.2s;
+  }
+  .history-card:hover { background: #FAF8F6; }
+  .history-date {
+    font-size: 0.72rem;
+    color: var(--taupe);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.45rem;
+  }
+  .history-title {
+    font-size: 0.93rem;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+  }
+  .history-org {
+    font-size: 0.82rem;
+    color: var(--gray-light);
+    font-weight: 400;
+  }
+  .history-note {
+    font-size: 0.77rem;
+    color: var(--taupe);
+    margin-top: 0.6rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid #EAE5E0;
+  }
+  .history-empty {
+    grid-column: 1 / -1;
+    background: white;
+    text-align: center;
+    padding: 6rem 2rem;
+    color: var(--gray-light);
+    font-size: 0.9rem;
+  }
+
+  /* CONTACT */
+  #contact { background: var(--black); }
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid #2A2A2A;
+  }
+  .contact-left {
+    padding: 5rem;
+    border-right: 1px solid #2A2A2A;
+  }
+  .contact-left .eyebrow { color: var(--taupe-light); }
+  .contact-left .eyebrow::before { background: var(--taupe-light); }
+  .contact-left .section-title { color: white; }
+  .contact-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--teal);
+    color: white;
+    padding: 0.85rem 2rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-top: 2rem;
+    transition: background 0.2s;
+  }
+  .contact-cta:hover { background: var(--teal-dark); }
+  .contact-right {
+    padding: 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+  .ci-label {
+    font-size: 0.67rem;
+    color: #555;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .ci-value {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: white;
+  }
+  .ci-value.empty { color: #444; font-weight: 400; font-size: 0.9rem; }
+
+  /* FOOTER */
+  footer {
+    background: #0F0F0F;
+    color: #3A3A3A;
+    padding: 1.5rem 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    border-top: 1px solid #1E1E1E;
+  }
+  footer a { color: #444; text-decoration: none; }
+  footer a:hover { color: #777; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; }
+    .hero-right { min-height: 50vw; }
+    .hero-left { padding: 4rem 2rem; }
+    .section-wrap { padding: 5rem 2rem; }
+    .stats-bar { grid-template-columns: 1fr; }
+    .stat-item { border-right: none; border-bottom: 1px solid #2A2A2A; }
+    .philosophy-grid { grid-template-columns: 1fr; }
+    .philosophy-card { border-right: none; border-bottom: 1px solid #C8DEDE; }
+    .about-inner { grid-template-columns: 1fr; }
+    .about-left { min-height: 260px; }
+    .about-right { padding: 2.5rem; }
+    .contact-inner { grid-template-columns: 1fr; }
+    .contact-left { padding: 3rem 2.5rem; border-right: none; border-bottom: 1px solid #2A2A2A; }
+    .contact-right { padding: 3rem 2.5rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">Move your mind, move your life.</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="logo_mmc_2.png" alt="마인드무빙 컨설팅 아이콘">
+    <div class="nav-brand">
+      <span class="nav-brand-top">Mind Moving</span>
+      <span class="nav-brand-bottom">Consulting</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">강사 소개</a></li>
+    <li><a href="#lectures">강의 분야</a></li>
+    <li><a href="#history">강의 이력</a></li>
+    <li><a href="#contact">문의</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Mind Moving Consulting</div>
+    <h1 class="hero-title">
+      마음이<br>움직이면<br><span class="teal">삶이 바뀐다</span>
+    </h1>
+    <p class="hero-desc">
+      드라마테라피와 현장 경험을 기반으로<br>
+      조직과 개인의 진정한 변화를 이끌어냅니다.<br>
+      대표 강사 김해용
+    </p>
+    <a href="#contact" class="btn-primary">
+      강의 문의하기
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+  <div class="hero-right">
+    <div class="hero-logo-big">
+      <img src="logo_mmc_1.png" alt="마인드무빙 컨설팅">
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num" id="statTotal">0<span>+</span></div>
+    <div class="stat-label">Total Lectures</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="statYear">0<span>+</span></div>
+    <div class="stat-label">This Year</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="statOrg">0<span>+</span></div>
+    <div class="stat-label">Organizations</div>
+  </div>
+</div>
+
+<!-- PHILOSOPHY -->
+<section id="philosophy" class="section-wrap">
+  <div class="container">
+    <div class="eyebrow">Our Approach</div>
+    <h2 class="section-title">강의 철학</h2>
+    <div class="philosophy-grid">
+      <div class="philosophy-card">
+        <div class="philo-accent"></div>
+        <span class="philo-num">01</span>
+        <div class="philo-title">드라마테라피를 활용한<br>체험 중심 교육</div>
+        <p class="philo-desc">연극적 기법과 심리치료를 결합한 드라마테라피로 참여자 스스로 변화를 체험하고 내면화할 수 있도록 설계합니다.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philo-accent"></div>
+        <span class="philo-num">02</span>
+        <div class="philo-title">현장 맞춤형<br>기업 교육 설계</div>
+        <p class="philo-desc">각 기관과 조직의 현황을 면밀히 분석하여 현장에서 바로 적용 가능한 맞춤형 교육 프로그램을 제공합니다.</p>
+      </div>
+      <div class="philosophy-card">
+        <div class="philo-accent"></div>
+        <span class="philo-num">03</span>
+        <div class="philo-title">감정과 이성의<br>균형 있는 성장</div>
+        <p class="philo-desc">감정관리·회복탄력성·스트레스 관리를 통해 개인과 조직이 지속 가능한 방식으로 성장할 수 있는 기반을 만듭니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section-wrap">
+  <div class="container">
+    <div class="eyebrow">About</div>
+    <h2 class="section-title" style="margin-bottom: 3rem;">강사 소개</h2>
+    <div class="about-inner">
+      <div class="about-left">
+        <div class="about-photo-placeholder">
+          <div class="icon">👤</div>
+          <p>사진 등록 예정</p>
+        </div>
+      </div>
+      <div class="about-right">
+        <h3 class="about-name">김해용</h3>
+        <div class="about-role">마인드무빙 컨설팅 대표</div>
+        <p class="about-text">기업 교육 전문가로서 드라마테라피를 활용한 독창적인 강의 방식으로 수많은 기업과 기관에서 강의를 진행하고 있습니다.</p>
+        <p class="about-text">이론과 현장 경험을 바탕으로 참여자 스스로 변화를 체험하고, 실질적인 성장을 이루도록 돕는 것이 목표입니다.</p>
+        <p class="about-text" style="color: #bbb; font-size: 0.87rem;">학력 및 이력 사항은 추후 업데이트 예정입니다.</p>
+        <div class="about-tags">
+          <span class="tag">드라마테라피</span>
+          <span class="tag">기업교육</span>
+          <span class="tag">리더십</span>
+          <span class="tag">HRD</span>
+          <span class="tag">감정관리</span>
+          <span class="tag">회복탄력성</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LECTURES -->
+<section id="lectures" class="section-wrap" style="background: var(--white);">
+  <div class="container">
+    <div class="lectures-top">
+      <div>
+        <div class="eyebrow">Lecture Areas</div>
+        <h2 class="section-title">강의 분야</h2>
+      </div>
+      <p class="section-desc">다양한 현장 경험과 전문 지식을 바탕으로<br>맞춤형 기업 교육 프로그램을 제공합니다.</p>
+    </div>
+    <div class="lectures-grid">
+      <div class="lecture-card"><span class="lecture-icon">🏆</span><h4>리더십 / 조직문화</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">📈</span><h4>세일즈 / 영업 코칭</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">🧠</span><h4>심리 / 멘탈 코칭</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">💬</span><h4>커뮤니케이션 / 협상</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">📚</span><h4>기업교육 / HRD</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">🎭</span><h4>드라마테라피 활용 강의</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">🤝</span><h4>민원 응대</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">⭐</span><h4>서비스 교육</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">🎬</span><h4>연극 활용 기업교육</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">🌿</span><h4>스트레스 관리</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">💪</span><h4>회복탄력성</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">❤️</span><h4>감정관리 교육</h4></div>
+      <div class="lecture-card"><span class="lecture-icon">🎯</span><h4>핵심가치 내재화 교육</h4></div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history" class="section-wrap">
+  <div class="container">
+    <div class="history-top">
+      <div>
+        <div class="eyebrow">Lecture History</div>
+        <h2 class="section-title">강의 이력</h2>
+      </div>
+    </div>
+    <div class="history-grid" id="historyGrid"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="padding: 0;">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <div class="eyebrow">Contact</div>
+      <h2 class="section-title" style="color: white; margin-bottom: 1rem;">강의 문의</h2>
+      <p class="section-desc" style="color: #666; max-width: 340px;">강의 및 컨설팅 관련 문의는 언제든지 편하게 연락 주세요.</p>
+      <a href="mailto:" class="contact-cta">
+        문의하기
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+    <div class="contact-right">
+      <div class="contact-item">
+        <div class="ci-label">Company</div>
+        <div class="ci-value">마인드무빙 컨설팅</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Representative</div>
+        <div class="ci-value">김해용</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Email</div>
+        <div class="ci-value empty" id="contactEmail">이메일을 입력해주세요</div>
+      </div>
+      <div class="contact-item">
+        <div class="ci-label">Phone</div>
+        <div class="ci-value empty" id="contactPhone">연락처를 입력해주세요</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 마인드무빙 컨설팅. All rights reserved.</span>
+  <a href="admin.html">관리자</a>
+</footer>
+
+<script>
+  const STORAGE_KEY = 'mindmoving_lectures';
+
+  function getLectures() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function renderHistory() {
+    const grid = document.getElementById('historyGrid');
+    const lectures = getLectures();
+    if (lectures.length === 0) {
+      grid.innerHTML = `<div class="history-empty">📋 아직 등록된 강의 이력이 없습니다.</div>`;
+      return;
+    }
+    const sorted = [...lectures].sort((a, b) => b.date.localeCompare(a.date));
+    grid.innerHTML = sorted.map(l => `
+      <div class="history-card">
+        <div class="history-date">${escapeHtml(l.date)}</div>
+        <div class="history-title">${escapeHtml(l.title)}</div>
+        <div class="history-org">${escapeHtml(l.organization)}</div>
+        ${l.note ? `<div class="history-note">${escapeHtml(l.note)}</div>` : ''}
+      </div>
+    `).join('');
+  }
+
+  function renderStats() {
+    const lectures = getLectures();
+    const thisYear = new Date().getFullYear().toString();
+    const orgs = new Set(lectures.map(l => l.organization));
+    const yearCount = lectures.filter(l => l.date.startsWith(thisYear)).length;
+
+    animateNum('statTotal', lectures.length);
+    animateNum('statYear', yearCount);
+    animateNum('statOrg', orgs.size);
+  }
+
+  function animateNum(id, target) {
+    const el = document.getElementById(id);
+    if (!el || target === 0) return;
+    const suffix = el.querySelector('span') ? '<span>+</span>' : '';
+    let cur = 0;
+    const step = Math.ceil(target / 30);
+    const timer = setInterval(() => {
+      cur = Math.min(cur + step, target);
+      el.innerHTML = cur + '<span>+</span>';
+      if (cur >= target) clearInterval(timer);
+    }, 40);
+  }
+
+  renderHistory();
+  renderStats();
+</script>
+</body>
+</html>
