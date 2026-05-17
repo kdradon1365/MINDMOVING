@@ -195,6 +195,56 @@
   }
   .stat-info-label { font-size: 0.72rem; color: var(--gray-light); margin-top: 0.2rem; font-weight: 500; }
 
+  /* CONTACT SETTINGS */
+  .contact-settings-wrap {
+    padding: 0 2rem 1.25rem;
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .contact-settings-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .cs-title { flex: 0 0 auto; }
+  .cs-title strong { font-size: 0.82rem; font-weight: 700; color: var(--black); display: block; }
+  .cs-title span { font-size: 0.7rem; color: var(--gray-light); margin-top: 2px; font-weight: 400; display: block; }
+  .cs-fields { display: flex; align-items: flex-end; gap: 0.75rem; flex: 1; flex-wrap: wrap; }
+  .cs-group { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; min-width: 180px; }
+  .cs-group label { font-size: 0.7rem; font-weight: 700; color: var(--black); }
+  .cs-group input {
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: white;
+    color: var(--black);
+  }
+  .cs-group input:focus { border-color: var(--teal); }
+  .cs-save-btn {
+    padding: 0.55rem 1.25rem;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .cs-save-btn:hover { background: var(--teal-dark); }
+
   /* BODY */
   .admin-body {
     display: grid;
@@ -429,6 +479,8 @@
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .admin-body { grid-template-columns: 1fr; }
     .lecture-list { max-height: none; }
+    .contact-settings-card { flex-direction: column; align-items: stretch; }
+    .cs-title { margin-bottom: 0.5rem; }
   }
 </style>
 </head>
@@ -497,6 +549,27 @@
       <div>
         <div class="stat-info-num" id="sRecent" style="font-size:1rem;">—</div>
         <div class="stat-info-label">최근 강의</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT SETTINGS -->
+  <div class="contact-settings-wrap">
+    <div class="contact-settings-card">
+      <div class="cs-title">
+        <strong>연락처 설정</strong>
+        <span>홈페이지에 표시될 연락처 정보</span>
+      </div>
+      <div class="cs-fields">
+        <div class="cs-group">
+          <label>이메일</label>
+          <input type="email" id="csEmail" placeholder="example@email.com">
+        </div>
+        <div class="cs-group">
+          <label>전화번호</label>
+          <input type="tel" id="csPhone" placeholder="010-0000-0000">
+        </div>
+        <button class="cs-save-btn" onclick="saveContact()">저장</button>
       </div>
     </div>
   </div>
@@ -585,14 +658,23 @@
 <div id="toast"></div>
 
 <script>
-  const PASSWORD = 'mindmoving2024';
+  /* SHA-256 hash of the admin password (mindmoving2024) */
+  const PASSWORD_HASH = 'faf25c164c4387a3140a837b2b16bae2e888d5d9a648ffc19a8728e0b85ebca4';
   const STORAGE_KEY = 'mindmoving_lectures';
+  const CONTACT_KEY = 'mindmoving_contact';
   let editingId = null;
 
-  function login() {
-    if (document.getElementById('pwInput').value === PASSWORD) {
+  async function hashPw(pw) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function login() {
+    const hash = await hashPw(document.getElementById('pwInput').value);
+    if (hash === PASSWORD_HASH) {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
+      loadContactFields();
       initYearFilter();
       renderStats();
       renderList();
@@ -602,6 +684,7 @@
       document.getElementById('pwInput').focus();
     }
   }
+
   function logout() {
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('adminPanel').style.display = 'none';
@@ -615,6 +698,22 @@
     catch { return []; }
   }
   function saveLectures(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+  function getContact() {
+    try { return JSON.parse(localStorage.getItem(CONTACT_KEY)) || {}; }
+    catch { return {}; }
+  }
+  function loadContactFields() {
+    const c = getContact();
+    document.getElementById('csEmail').value = c.email || '';
+    document.getElementById('csPhone').value = c.phone || '';
+  }
+  function saveContact() {
+    const email = document.getElementById('csEmail').value.trim();
+    const phone = document.getElementById('csPhone').value.trim();
+    localStorage.setItem(CONTACT_KEY, JSON.stringify({ email, phone }));
+    showToast('✓ 연락처가 저장되었습니다.', 'success');
+  }
 
   function renderStats() {
     const ls = getLectures();
