@@ -795,7 +795,7 @@
       <div class="eyebrow">Contact</div>
       <h2 class="section-title" style="color: white; margin-bottom: 1rem;">강의 문의</h2>
       <p class="section-desc" style="color: #666; max-width: 340px;">강의 및 컨설팅 관련 문의는 언제든지 편하게 연락 주세요.</p>
-      <a href="mailto:" class="contact-cta" id="contactMailBtn">
+      <a href="mailto:2haeyong@naver.com" class="contact-cta">
         문의하기
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
           <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -813,11 +813,11 @@
       </div>
       <div class="contact-item">
         <div class="ci-label">Email</div>
-        <div class="ci-value empty" id="contactEmail">이메일을 입력해주세요</div>
+        <div class="ci-value" id="contactEmail">2haeyong@naver.com</div>
       </div>
       <div class="contact-item">
         <div class="ci-label">Phone</div>
-        <div class="ci-value empty" id="contactPhone">연락처를 입력해주세요</div>
+        <div class="ci-value" id="contactPhone">010-5468-9215</div>
       </div>
     </div>
   </div>
@@ -830,35 +830,14 @@
 
 <script>
   const STORAGE_KEY = 'mindmoving_lectures';
-  const CONTACT_KEY = 'mindmoving_contact';
 
   function getLectures() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
     catch { return []; }
   }
-  function getContact() {
-    try { return JSON.parse(localStorage.getItem(CONTACT_KEY)) || {}; }
-    catch { return {}; }
-  }
 
   function escapeHtml(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  function renderContact() {
-    const c = getContact();
-    const emailEl = document.getElementById('contactEmail');
-    const phoneEl = document.getElementById('contactPhone');
-    const mailBtn = document.getElementById('contactMailBtn');
-    if (c.email) {
-      emailEl.textContent = c.email;
-      emailEl.classList.remove('empty');
-      mailBtn.href = 'mailto:' + c.email;
-    }
-    if (c.phone) {
-      phoneEl.textContent = c.phone;
-      phoneEl.classList.remove('empty');
-    }
   }
 
   function renderHistory() {
@@ -916,7 +895,6 @@
   }
 
   document.getElementById('cpYear').textContent = new Date().getFullYear();
-  renderContact();
   renderHistory();
   renderStats();
 </script>
