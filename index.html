@@ -897,6 +897,21 @@
   document.getElementById('cpYear').textContent = new Date().getFullYear();
   renderHistory();
   renderStats();
+
+  (function loadContact() {
+    try {
+      const c = JSON.parse(localStorage.getItem('mindmoving_contact'));
+      if (!c) return;
+      if (c.email) {
+        document.getElementById('contactEmail').textContent = c.email;
+        const cta = document.querySelector('.contact-cta');
+        if (cta) cta.href = 'mailto:' + c.email;
+      }
+      if (c.phone) {
+        document.getElementById('contactPhone').textContent = c.phone;
+      }
+    } catch {}
+  })();
 </script>
 </body>
 </html>
