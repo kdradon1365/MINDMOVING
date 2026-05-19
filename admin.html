@@ -195,55 +195,90 @@
   }
   .stat-info-label { font-size: 0.72rem; color: var(--gray-light); margin-top: 0.2rem; font-weight: 500; }
 
-  /* CONTACT SETTINGS */
-  .contact-settings-wrap {
-    padding: 0 2rem 1.25rem;
+  /* CONTENT EDITOR */
+  .content-editor-wrap {
     background: white;
     border-bottom: 1px solid var(--border);
   }
-  .contact-settings-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.9rem 1.25rem;
+  .ce-header {
+    padding: 0.85rem 2rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
   }
-  .cs-title { flex: 0 0 auto; }
-  .cs-title strong { font-size: 0.82rem; font-weight: 700; color: var(--black); display: block; }
-  .cs-title span { font-size: 0.7rem; color: var(--gray-light); margin-top: 2px; font-weight: 400; display: block; }
-  .cs-fields { display: flex; align-items: flex-end; gap: 0.75rem; flex: 1; flex-wrap: wrap; }
-  .cs-group { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; min-width: 180px; }
-  .cs-group label { font-size: 0.7rem; font-weight: 700; color: var(--black); }
-  .cs-group input {
-    padding: 0.5rem 0.75rem;
+  .ce-header:hover { background: var(--bg); }
+  .ce-header-left strong { font-size: 0.84rem; font-weight: 700; color: var(--black); display: block; }
+  .ce-header-left span { font-size: 0.71rem; color: var(--gray-light); }
+  .ce-arrow { transition: transform 0.2s; color: var(--gray-light); flex-shrink: 0; }
+  .ce-arrow.open { transform: rotate(180deg); }
+  .ce-body { padding: 1.25rem 2rem 1.5rem; border-top: 1px solid var(--border); display: none; }
+  .ce-body.open { display: block; }
+  .ce-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .ce-section-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--taupe);
+    padding-bottom: 0.45rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.75rem;
+  }
+  .ce-section-label + .ce-section-label,
+  .ce-field + .ce-section-label { margin-top: 1.5rem; }
+  .ce-field { margin-bottom: 0.65rem; }
+  .ce-field label { display: block; font-size: 0.71rem; font-weight: 700; color: var(--black); margin-bottom: 0.22rem; }
+  .ce-field input, .ce-field textarea {
+    width: 100%;
+    padding: 0.48rem 0.75rem;
     border: 1.5px solid var(--border);
     border-radius: 6px;
-    font-size: 0.85rem;
+    font-size: 0.83rem;
     outline: none;
     font-family: inherit;
     transition: border-color 0.2s;
     background: white;
     color: var(--black);
+    resize: vertical;
   }
-  .cs-group input:focus { border-color: var(--teal); }
-  .cs-save-btn {
-    padding: 0.55rem 1.25rem;
+  .ce-field input:focus, .ce-field textarea:focus { border-color: var(--teal); }
+  .ce-footer {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    align-items: center;
+  }
+  .ce-save-btn {
+    padding: 0.6rem 1.75rem;
     background: var(--teal);
     color: white;
     border: none;
-    border-radius: 6px;
-    font-size: 0.82rem;
+    border-radius: 7px;
+    font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
     font-family: inherit;
     transition: background 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
   }
-  .cs-save-btn:hover { background: var(--teal-dark); }
+  .ce-save-btn:hover { background: var(--teal-dark); }
+  .ce-reset-btn {
+    padding: 0.6rem 1.1rem;
+    background: transparent;
+    color: var(--gray-light);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .ce-reset-btn:hover { border-color: var(--danger); color: var(--danger); }
 
   /* BODY */
   .admin-body {
@@ -479,8 +514,9 @@
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .admin-body { grid-template-columns: 1fr; }
     .lecture-list { max-height: none; }
-    .contact-settings-card { flex-direction: column; align-items: stretch; }
-    .cs-title { margin-bottom: 0.5rem; }
+    .ce-grid { grid-template-columns: 1fr; }
+    .ce-header { padding: 0.85rem 1.25rem; }
+    .ce-body { padding: 1rem 1.25rem 1.25rem; }
   }
 </style>
 </head>
@@ -553,23 +589,106 @@
     </div>
   </div>
 
-  <!-- CONTACT SETTINGS -->
-  <div class="contact-settings-wrap">
-    <div class="contact-settings-card">
-      <div class="cs-title">
-        <strong>연락처 설정</strong>
-        <span>홈페이지에 표시될 연락처 정보</span>
+  <!-- CONTENT EDITOR -->
+  <div class="content-editor-wrap">
+    <div class="ce-header" onclick="toggleCE()">
+      <div class="ce-header-left">
+        <strong>홈페이지 문구 편집</strong>
+        <span>메인 문구, 강의 철학, 강사 소개, 연락처 등 모든 텍스트 수정</span>
       </div>
-      <div class="cs-fields">
-        <div class="cs-group">
-          <label>이메일</label>
-          <input type="email" id="csEmail" placeholder="example@email.com">
+      <svg class="ce-arrow" id="ceArrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ce-body" id="ceBody">
+      <div class="ce-grid">
+        <div class="ce-col">
+          <div class="ce-section-label">상단 배너 &amp; 메인 화면</div>
+          <div class="ce-field">
+            <label>상단 배너 문구</label>
+            <input type="text" id="ce_topBar" placeholder="Move your mind, move your life.">
+          </div>
+          <div class="ce-field">
+            <label>메인 타이틀 1줄</label>
+            <input type="text" id="ce_heroLine1" placeholder="마음이">
+          </div>
+          <div class="ce-field">
+            <label>메인 타이틀 2줄</label>
+            <input type="text" id="ce_heroLine2" placeholder="움직이면">
+          </div>
+          <div class="ce-field">
+            <label>메인 타이틀 3줄 (강조색)</label>
+            <input type="text" id="ce_heroLine3" placeholder="삶이 바뀐다">
+          </div>
+          <div class="ce-field">
+            <label>메인 설명 문구 (줄바꿈: Enter)</label>
+            <textarea id="ce_heroDesc" rows="3" placeholder="드라마테라피와 현장 경험을 기반으로&#10;조직과 개인의 진정한 변화를 이끌어냅니다.&#10;대표 강사 김해용"></textarea>
+          </div>
+
+          <div class="ce-section-label">강의 철학</div>
+          <div class="ce-field">
+            <label>철학 1 제목 (줄바꿈: Enter)</label>
+            <input type="text" id="ce_phil1Title">
+          </div>
+          <div class="ce-field">
+            <label>철학 1 설명</label>
+            <textarea id="ce_phil1Desc" rows="2"></textarea>
+          </div>
+          <div class="ce-field">
+            <label>철학 2 제목</label>
+            <input type="text" id="ce_phil2Title">
+          </div>
+          <div class="ce-field">
+            <label>철학 2 설명</label>
+            <textarea id="ce_phil2Desc" rows="2"></textarea>
+          </div>
+          <div class="ce-field">
+            <label>철학 3 제목</label>
+            <input type="text" id="ce_phil3Title">
+          </div>
+          <div class="ce-field">
+            <label>철학 3 설명</label>
+            <textarea id="ce_phil3Desc" rows="2"></textarea>
+          </div>
         </div>
-        <div class="cs-group">
-          <label>전화번호</label>
-          <input type="tel" id="csPhone" placeholder="010-0000-0000">
+
+        <div class="ce-col">
+          <div class="ce-section-label">강사 소개</div>
+          <div class="ce-field">
+            <label>이름</label>
+            <input type="text" id="ce_aboutName" placeholder="김해용">
+          </div>
+          <div class="ce-field">
+            <label>직함</label>
+            <input type="text" id="ce_aboutRole" placeholder="마인드무빙 컨설팅 대표">
+          </div>
+          <div class="ce-field">
+            <label>소개 글 1</label>
+            <textarea id="ce_aboutText1" rows="3"></textarea>
+          </div>
+          <div class="ce-field">
+            <label>소개 글 2</label>
+            <textarea id="ce_aboutText2" rows="3"></textarea>
+          </div>
+
+          <div class="ce-section-label">연락처</div>
+          <div class="ce-field">
+            <label>이메일</label>
+            <input type="email" id="ce_email" placeholder="2haeyong@naver.com">
+          </div>
+          <div class="ce-field">
+            <label>전화번호</label>
+            <input type="tel" id="ce_phone" placeholder="010-5468-9215">
+          </div>
+          <div class="ce-field">
+            <label>문의 안내 문구</label>
+            <textarea id="ce_contactDesc" rows="2" placeholder="강의 및 컨설팅 관련 문의는 언제든지 편하게 연락 주세요."></textarea>
+          </div>
         </div>
-        <button class="cs-save-btn" onclick="saveContact()">저장</button>
+      </div>
+      <div class="ce-footer">
+        <button class="ce-save-btn" onclick="saveContent()">저장하기</button>
+        <button class="ce-reset-btn" onclick="resetContent()">기본값으로 초기화</button>
       </div>
     </div>
   </div>
@@ -658,11 +777,31 @@
 <div id="toast"></div>
 
 <script>
-  /* SHA-256 hash of the admin password (mindmoving2024) */
   const PASSWORD_HASH = 'faf25c164c4387a3140a837b2b16bae2e888d5d9a648ffc19a8728e0b85ebca4';
   const STORAGE_KEY = 'mindmoving_lectures';
-  const CONTACT_KEY = 'mindmoving_contact';
+  const CONTENT_KEY = 'mindmoving_content';
   let editingId = null;
+
+  const CONTENT_DEFAULTS = {
+    topBar:      'Move your mind, move your life.',
+    heroLine1:   '마음이',
+    heroLine2:   '움직이면',
+    heroLine3:   '삶이 바뀐다',
+    heroDesc:    '드라마테라피와 현장 경험을 기반으로\n조직과 개인의 진정한 변화를 이끌어냅니다.\n대표 강사 김해용',
+    phil1Title:  '드라마테라피를 활용한\n체험 중심 교육',
+    phil1Desc:   '연극적 기법과 심리치료를 결합한 드라마테라피로 참여자 스스로 변화를 체험하고 내면화할 수 있도록 설계합니다.',
+    phil2Title:  '현장 맞춤형\n기업 교육 설계',
+    phil2Desc:   '각 기관과 조직의 현황을 면밀히 분석하여 현장에서 바로 적용 가능한 맞춤형 교육 프로그램을 제공합니다.',
+    phil3Title:  '감정과 이성의\n균형 있는 성장',
+    phil3Desc:   '감정관리·회복탄력성·스트레스 관리를 통해 개인과 조직이 지속 가능한 방식으로 성장할 수 있는 기반을 만듭니다.',
+    aboutName:   '김해용',
+    aboutRole:   '마인드무빙 컨설팅 대표',
+    aboutText1:  '기업 교육 전문가로서 드라마테라피를 활용한 독창적인 강의 방식으로 수많은 기업과 기관에서 강의를 진행하고 있습니다.',
+    aboutText2:  '이론과 현장 경험을 바탕으로 참여자 스스로 변화를 체험하고, 실질적인 성장을 이루도록 돕는 것이 목표입니다.',
+    contactDesc: '강의 및 컨설팅 관련 문의는 언제든지 편하게 연락 주세요.',
+    email:       '2haeyong@naver.com',
+    phone:       '010-5468-9215',
+  };
 
   async function hashPw(pw) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
@@ -674,7 +813,7 @@
     if (hash === PASSWORD_HASH) {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
-      loadContactFields();
+      loadContentFields();
       initYearFilter();
       renderStats();
       renderList();
@@ -699,20 +838,43 @@
   }
   function saveLectures(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 
-  function getContact() {
-    try { return JSON.parse(localStorage.getItem(CONTACT_KEY)) || {}; }
-    catch { return {}; }
+  function getContent() {
+    try {
+      const legacy = JSON.parse(localStorage.getItem('mindmoving_contact')) || {};
+      const main   = JSON.parse(localStorage.getItem(CONTENT_KEY)) || {};
+      return Object.assign({}, legacy, main);
+    } catch { return {}; }
   }
-  function loadContactFields() {
-    const c = getContact();
-    document.getElementById('csEmail').value = c.email || '';
-    document.getElementById('csPhone').value = c.phone || '';
+
+  function loadContentFields() {
+    const c = getContent();
+    Object.keys(CONTENT_DEFAULTS).forEach(key => {
+      const el = document.getElementById('ce_' + key);
+      if (el) el.value = c[key] !== undefined ? c[key] : CONTENT_DEFAULTS[key];
+    });
   }
-  function saveContact() {
-    const email = document.getElementById('csEmail').value.trim();
-    const phone = document.getElementById('csPhone').value.trim();
-    localStorage.setItem(CONTACT_KEY, JSON.stringify({ email, phone }));
-    showToast('✓ 연락처가 저장되었습니다.', 'success');
+
+  function saveContent() {
+    const data = {};
+    Object.keys(CONTENT_DEFAULTS).forEach(key => {
+      const el = document.getElementById('ce_' + key);
+      if (el) data[key] = el.value;
+    });
+    localStorage.setItem(CONTENT_KEY, JSON.stringify(data));
+    showToast('✓ 문구가 저장되었습니다.', 'success');
+  }
+
+  function resetContent() {
+    if (!confirm('모든 문구를 기본값으로 초기화하시겠습니까?')) return;
+    localStorage.removeItem(CONTENT_KEY);
+    localStorage.removeItem('mindmoving_contact');
+    loadContentFields();
+    showToast('기본값으로 초기화되었습니다.');
+  }
+
+  function toggleCE() {
+    document.getElementById('ceBody').classList.toggle('open');
+    document.getElementById('ceArrow').classList.toggle('open');
   }
 
   function renderStats() {

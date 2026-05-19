@@ -617,7 +617,7 @@
 <body>
 
 <!-- TOP BAR -->
-<div class="top-bar">Move your mind, move your life.</div>
+<div class="top-bar" id="topBar">Move your mind, move your life.</div>
 
 <!-- NAV -->
 <nav>
@@ -651,9 +651,9 @@
   <div class="hero-left">
     <div class="hero-eyebrow">Mind Moving Consulting</div>
     <h1 class="hero-title">
-      마음이<br>움직이면<br><span class="teal">삶이 바뀐다</span>
+      <span id="heroLine1">마음이</span><br><span id="heroLine2">움직이면</span><br><span class="teal" id="heroLine3">삶이 바뀐다</span>
     </h1>
-    <p class="hero-desc">
+    <p class="hero-desc" id="heroDesc">
       드라마테라피와 현장 경험을 기반으로<br>
       조직과 개인의 진정한 변화를 이끌어냅니다.<br>
       대표 강사 김해용
@@ -697,20 +697,20 @@
       <div class="philosophy-card">
         <div class="philo-accent"></div>
         <span class="philo-num">01</span>
-        <div class="philo-title">드라마테라피를 활용한<br>체험 중심 교육</div>
-        <p class="philo-desc">연극적 기법과 심리치료를 결합한 드라마테라피로 참여자 스스로 변화를 체험하고 내면화할 수 있도록 설계합니다.</p>
+        <div class="philo-title" id="phil1Title">드라마테라피를 활용한<br>체험 중심 교육</div>
+        <p class="philo-desc" id="phil1Desc">연극적 기법과 심리치료를 결합한 드라마테라피로 참여자 스스로 변화를 체험하고 내면화할 수 있도록 설계합니다.</p>
       </div>
       <div class="philosophy-card">
         <div class="philo-accent"></div>
         <span class="philo-num">02</span>
-        <div class="philo-title">현장 맞춤형<br>기업 교육 설계</div>
-        <p class="philo-desc">각 기관과 조직의 현황을 면밀히 분석하여 현장에서 바로 적용 가능한 맞춤형 교육 프로그램을 제공합니다.</p>
+        <div class="philo-title" id="phil2Title">현장 맞춤형<br>기업 교육 설계</div>
+        <p class="philo-desc" id="phil2Desc">각 기관과 조직의 현황을 면밀히 분석하여 현장에서 바로 적용 가능한 맞춤형 교육 프로그램을 제공합니다.</p>
       </div>
       <div class="philosophy-card">
         <div class="philo-accent"></div>
         <span class="philo-num">03</span>
-        <div class="philo-title">감정과 이성의<br>균형 있는 성장</div>
-        <p class="philo-desc">감정관리·회복탄력성·스트레스 관리를 통해 개인과 조직이 지속 가능한 방식으로 성장할 수 있는 기반을 만듭니다.</p>
+        <div class="philo-title" id="phil3Title">감정과 이성의<br>균형 있는 성장</div>
+        <p class="philo-desc" id="phil3Desc">감정관리·회복탄력성·스트레스 관리를 통해 개인과 조직이 지속 가능한 방식으로 성장할 수 있는 기반을 만듭니다.</p>
       </div>
     </div>
   </div>
@@ -729,10 +729,10 @@
         </div>
       </div>
       <div class="about-right">
-        <h3 class="about-name">김해용</h3>
-        <div class="about-role">마인드무빙 컨설팅 대표</div>
-        <p class="about-text">기업 교육 전문가로서 드라마테라피를 활용한 독창적인 강의 방식으로 수많은 기업과 기관에서 강의를 진행하고 있습니다.</p>
-        <p class="about-text">이론과 현장 경험을 바탕으로 참여자 스스로 변화를 체험하고, 실질적인 성장을 이루도록 돕는 것이 목표입니다.</p>
+        <h3 class="about-name" id="aboutName">김해용</h3>
+        <div class="about-role" id="aboutRole">마인드무빙 컨설팅 대표</div>
+        <p class="about-text" id="aboutText1">기업 교육 전문가로서 드라마테라피를 활용한 독창적인 강의 방식으로 수많은 기업과 기관에서 강의를 진행하고 있습니다.</p>
+        <p class="about-text" id="aboutText2">이론과 현장 경험을 바탕으로 참여자 스스로 변화를 체험하고, 실질적인 성장을 이루도록 돕는 것이 목표입니다.</p>
         <p class="about-text" style="color: #bbb; font-size: 0.87rem;">학력 및 이력 사항은 추후 업데이트 예정입니다.</p>
         <div class="about-tags">
           <span class="tag">드라마테라피</span>
@@ -794,7 +794,7 @@
     <div class="contact-left">
       <div class="eyebrow">Contact</div>
       <h2 class="section-title" style="color: white; margin-bottom: 1rem;">강의 문의</h2>
-      <p class="section-desc" style="color: #666; max-width: 340px;">강의 및 컨설팅 관련 문의는 언제든지 편하게 연락 주세요.</p>
+      <p class="section-desc" id="contactDesc" style="color: #666; max-width: 340px;">강의 및 컨설팅 관련 문의는 언제든지 편하게 연락 주세요.</p>
       <a href="mailto:2haeyong@naver.com" class="contact-cta">
         문의하기
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -830,6 +830,7 @@
 
 <script>
   const STORAGE_KEY = 'mindmoving_lectures';
+  const CONTENT_KEY = 'mindmoving_content';
 
   function getLectures() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
@@ -894,24 +895,53 @@
     btn.setAttribute('aria-expanded', 'false');
   }
 
+  function loadContent() {
+    let saved = {};
+    try {
+      const legacy = JSON.parse(localStorage.getItem('mindmoving_contact')) || {};
+      const main   = JSON.parse(localStorage.getItem(CONTENT_KEY)) || {};
+      saved = Object.assign({}, legacy, main);
+    } catch {}
+
+    const setText = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val) el.textContent = val;
+    };
+    const setHTML = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val) el.innerHTML = val.replace(/\n/g, '<br>');
+    };
+
+    setText('topBar',     saved.topBar);
+    setText('heroLine1',  saved.heroLine1);
+    setText('heroLine2',  saved.heroLine2);
+    setText('heroLine3',  saved.heroLine3);
+    setHTML('heroDesc',   saved.heroDesc);
+    setHTML('phil1Title', saved.phil1Title);
+    setHTML('phil1Desc',  saved.phil1Desc);
+    setHTML('phil2Title', saved.phil2Title);
+    setHTML('phil2Desc',  saved.phil2Desc);
+    setHTML('phil3Title', saved.phil3Title);
+    setHTML('phil3Desc',  saved.phil3Desc);
+    setText('aboutName',  saved.aboutName);
+    setText('aboutRole',  saved.aboutRole);
+    setHTML('aboutText1', saved.aboutText1);
+    setHTML('aboutText2', saved.aboutText2);
+    setHTML('contactDesc',saved.contactDesc);
+    if (saved.email) {
+      document.getElementById('contactEmail').textContent = saved.email;
+      const cta = document.querySelector('.contact-cta');
+      if (cta) cta.href = 'mailto:' + saved.email;
+    }
+    if (saved.phone) {
+      document.getElementById('contactPhone').textContent = saved.phone;
+    }
+  }
+
   document.getElementById('cpYear').textContent = new Date().getFullYear();
+  loadContent();
   renderHistory();
   renderStats();
-
-  (function loadContact() {
-    try {
-      const c = JSON.parse(localStorage.getItem('mindmoving_contact'));
-      if (!c) return;
-      if (c.email) {
-        document.getElementById('contactEmail').textContent = c.email;
-        const cta = document.querySelector('.contact-cta');
-        if (cta) cta.href = 'mailto:' + c.email;
-      }
-      if (c.phone) {
-        document.getElementById('contactPhone').textContent = c.phone;
-      }
-    } catch {}
-  })();
 </script>
 </body>
 </html>
