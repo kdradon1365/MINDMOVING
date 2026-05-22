@@ -192,17 +192,19 @@
     margin-bottom: 2rem;
   }
   .hero-title .teal { color: var(--teal); }
-  .hero-desc {
-    font-size: 1rem;
-    color: var(--gray);
-    line-height: 1.7;
+  .hero-desc-wrap {
     max-width: 400px;
     margin-bottom: 2.5rem;
-    font-weight: 400;
     padding-left: 1.25rem;
     border-left: 3px solid var(--teal);
     padding-top: 0.15rem;
     padding-bottom: 0.15rem;
+  }
+  .hero-desc {
+    font-size: 1rem;
+    color: var(--gray);
+    line-height: 1.7;
+    font-weight: 400;
   }
   .hero-desc-cta {
     display: block;
@@ -665,11 +667,14 @@
     <h1 class="hero-title">
       <span id="heroLine1">마음이</span><br><span id="heroLine2">움직이면</span><br><span class="teal" id="heroLine3">삶이 바뀐다</span>
     </h1>
-    <p class="hero-desc" id="heroDesc">
-      현장을 이해하는 교육,<br>
-      사람을 움직이는 경험,<br>
-      조직을 바꾸는 변화.<span class="hero-desc-cta">지금 마인드무빙과 함께 시작하세요.</span>
-    </p>
+    <div class="hero-desc-wrap">
+      <p class="hero-desc" id="heroDesc">
+        현장을 이해하는 교육,<br>
+        사람을 움직이는 경험,<br>
+        조직을 바꾸는 변화.
+      </p>
+      <span class="hero-desc-cta">지금 마인드무빙과 함께 시작하세요.</span>
+    </div>
     <a href="#contact" class="btn-primary">
       강의 문의하기
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
