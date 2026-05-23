@@ -358,35 +358,40 @@
   #about { background: var(--white); }
   .about-inner {
     display: grid;
-    grid-template-columns: 1fr 1.4fr;
+    grid-template-columns: 1fr;
     gap: 0;
     border: 1px solid var(--border);
   }
-  .about-left {
-    background: #F5F0EB;
+  .about-profile-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 2.5rem;
+    padding: 3.5rem 4rem;
+  }
+  .about-photo-wrap {
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 3rem 2rem;
-    gap: 1.25rem;
+    gap: 0.75rem;
   }
-  .about-left img {
-    width: 200px;
-    height: 260px;
+  .about-photo-wrap img {
+    width: 120px;
+    height: 150px;
     object-fit: cover;
     object-position: top center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
   }
   .about-left-badge {
     background: var(--teal);
     color: white;
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 2.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 0.35rem 1rem;
+    padding: 0.28rem 0.8rem;
   }
+  .about-content { flex: 1; }
   .about-right {
     padding: 3.5rem 4rem;
     border-left: 1px solid var(--border);
@@ -664,9 +669,9 @@
     .stat-item { border-right: none; border-bottom: 1px solid #2A2A2A; }
     .philosophy-grid { grid-template-columns: 1fr; }
     .philosophy-card { border-right: none; border-bottom: 1px solid #C8DEDE; }
-    .about-inner { grid-template-columns: 1fr; }
-    .about-left { min-height: 320px; }
-    .about-right { padding: 2.5rem; }
+    .about-profile-row { flex-direction: column; padding: 2.5rem; gap: 1.5rem; }
+    .about-photo-wrap { flex-direction: row; align-items: center; }
+    .about-right { padding: 0; border-left: none; }
     .contact-inner { grid-template-columns: 1fr; }
     .contact-left { padding: 3rem 2.5rem; border-right: none; border-bottom: 1px solid #2A2A2A; }
     .contact-right { padding: 3rem 2.5rem; }
@@ -785,36 +790,38 @@
     <div class="eyebrow">About</div>
     <h2 class="section-title" style="margin-bottom: 3rem;">강사 소개</h2>
     <div class="about-inner">
-      <div class="about-left">
-        <img src="photo_haeyong.jpg" alt="김해용 강사">
-        <span class="about-left-badge">Lecturer</span>
-      </div>
-      <div class="about-right">
-        <h3 class="about-name" id="aboutName">김해용</h3>
-        <div class="about-role" id="aboutRole">마인드무빙 컨설팅 대표</div>
-        <p class="about-text" id="aboutText1">Roll-Play(롤플레이) 기반의 체험 중심 교육으로 수많은 공공기관과 기업 교육기관에서 강의를 진행하고 있습니다.</p>
-        <p class="about-text" id="aboutText2">이론이 아닌 현장에서 검증된 방식으로 참여자 스스로 변화를 체험하고, 조직과 개인의 실질적인 성장을 이루도록 돕습니다.</p>
-        <div class="about-orgs">
-          <div class="about-orgs-label">대표 출강 기관</div>
-          <div class="about-orgs-list">
-            <div class="org-item"><span class="org-badge">현)</span>병무청 사회복무연수센터</div>
-            <div class="org-item"><span class="org-badge">현)</span>지방공기업평가원</div>
-            <div class="org-item"><span class="org-badge">현)</span>인천 소방학교</div>
-            <div class="org-item"><span class="org-badge">현)</span>경북 소방학교</div>
-            <div class="org-item"><span class="org-badge">현)</span>서울 소방학교</div>
-          </div>
-          <p class="about-orgs-note">수많은 공공기관 및 기업 교육기관 출강</p>
+      <div class="about-profile-row">
+        <div class="about-photo-wrap">
+          <img src="photo_haeyong.jpg" alt="김해용 강사">
+          <span class="about-left-badge">Lecturer</span>
         </div>
-        <div class="about-tags">
-          <span class="tag">Roll-Play(롤플레이)</span>
-          <span class="tag">기업교육</span>
-          <span class="tag">리더십</span>
-          <span class="tag">HRD</span>
-          <span class="tag">감정관리</span>
-          <span class="tag">회복탄력성</span>
-          <span class="tag">커뮤니케이션</span>
-          <span class="tag">팀빌딩</span>
-          <span class="tag">조직 활성화</span>
+        <div class="about-right about-content">
+          <h3 class="about-name" id="aboutName">김해용</h3>
+          <div class="about-role" id="aboutRole">마인드무빙 컨설팅 대표</div>
+          <p class="about-text" id="aboutText1">Roll-Play(롤플레이) 기반의 체험 중심 교육으로 수많은 공공기관과 기업 교육기관에서 강의를 진행하고 있습니다.</p>
+          <p class="about-text" id="aboutText2">이론이 아닌 현장에서 검증된 방식으로 참여자 스스로 변화를 체험하고, 조직과 개인의 실질적인 성장을 이루도록 돕습니다.</p>
+          <div class="about-orgs">
+            <div class="about-orgs-label">대표 출강 기관</div>
+            <div class="about-orgs-list">
+              <div class="org-item"><span class="org-badge">현)</span>병무청 사회복무연수센터</div>
+              <div class="org-item"><span class="org-badge">현)</span>지방공기업평가원</div>
+              <div class="org-item"><span class="org-badge">현)</span>인천 소방학교</div>
+              <div class="org-item"><span class="org-badge">현)</span>경북 소방학교</div>
+              <div class="org-item"><span class="org-badge">현)</span>서울 소방학교</div>
+            </div>
+            <p class="about-orgs-note">수많은 공공기관 및 기업 교육기관 출강</p>
+          </div>
+          <div class="about-tags">
+            <span class="tag">Roll-Play(롤플레이)</span>
+            <span class="tag">기업교육</span>
+            <span class="tag">리더십</span>
+            <span class="tag">HRD</span>
+            <span class="tag">감정관리</span>
+            <span class="tag">회복탄력성</span>
+            <span class="tag">커뮤니케이션</span>
+            <span class="tag">팀빌딩</span>
+            <span class="tag">조직 활성화</span>
+          </div>
         </div>
       </div>
     </div>
