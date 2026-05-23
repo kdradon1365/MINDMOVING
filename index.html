@@ -435,6 +435,38 @@
     font-weight: 600;
     letter-spacing: 0.3px;
   }
+  .about-orgs { margin-top: 1.75rem; padding-top: 1.75rem; border-top: 1px solid var(--border); }
+  .about-orgs-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    color: var(--taupe);
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .about-orgs-label::before { content: ''; width: 18px; height: 1.5px; background: var(--taupe); }
+  .about-orgs-grid { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.65rem; }
+  .org-tag {
+    font-size: 0.78rem;
+    padding: 0.28rem 0.8rem;
+    border: 1px solid var(--border);
+    color: var(--gray-light);
+    font-weight: 500;
+  }
+  .org-tag.active {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--teal-pale);
+    font-weight: 600;
+  }
+  .about-orgs-note {
+    font-size: 0.78rem;
+    color: var(--gray-light);
+    margin-top: 0.4rem;
+  }
 
   /* LECTURES */
   #lectures { background: var(--white); }
@@ -748,9 +780,20 @@
       <div class="about-right">
         <h3 class="about-name" id="aboutName">김해용</h3>
         <div class="about-role" id="aboutRole">마인드무빙 컨설팅 대표</div>
-        <p class="about-text" id="aboutText1">기업 교육 전문가로서 Roll-Play(롤플레이)를 활용한 독창적인 강의 방식으로 수많은 기업과 기관에서 강의를 진행하고 있습니다.</p>
-        <p class="about-text" id="aboutText2">이론과 현장 경험을 바탕으로 참여자 스스로 변화를 체험하고, 실질적인 성장을 이루도록 돕는 것이 목표입니다.</p>
-        <p class="about-text" style="color: #bbb; font-size: 0.87rem;">학력 및 이력 사항은 추후 업데이트 예정입니다.</p>
+        <p class="about-text" id="aboutText1">Roll-Play(롤플레이) 기반의 체험 중심 교육으로 수많은 공공기관과 기업 교육기관에서 강의를 진행하고 있습니다.</p>
+        <p class="about-text" id="aboutText2">이론이 아닌 현장에서 검증된 방식으로 참여자 스스로 변화를 체험하고, 조직과 개인의 실질적인 성장을 이루도록 돕습니다.</p>
+        <div class="about-orgs">
+          <div class="about-orgs-label">대표 출강 기관</div>
+          <div class="about-orgs-grid">
+            <span class="org-tag active">병무청 사회복무연수센터</span>
+            <span class="org-tag active">지방공기업평가원</span>
+            <span class="org-tag active">인천 소방학교</span>
+            <span class="org-tag active">경북 소방학교</span>
+            <span class="org-tag active">서울 소방학교</span>
+            <span class="org-tag">경기 소방학교</span>
+          </div>
+          <p class="about-orgs-note">+ 다수의 공공기관 및 기업 교육기관 출강</p>
+        </div>
         <div class="about-tags">
           <span class="tag">Roll-Play(롤플레이)</span>
           <span class="tag">기업교육</span>
@@ -758,6 +801,9 @@
           <span class="tag">HRD</span>
           <span class="tag">감정관리</span>
           <span class="tag">회복탄력성</span>
+          <span class="tag">커뮤니케이션</span>
+          <span class="tag">팀빌딩</span>
+          <span class="tag">조직 활성화</span>
         </div>
       </div>
     </div>
