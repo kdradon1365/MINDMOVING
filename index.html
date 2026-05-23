@@ -358,67 +358,66 @@
   #about { background: var(--white); }
   .about-inner {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 300px 1fr;
     gap: 0;
     border: 1px solid var(--border);
   }
   .about-left {
-    background: var(--taupe-pale);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 520px;
+    background: #F5F0EB;
     position: relative;
     overflow: hidden;
-  }
-  .about-photo-placeholder {
-    text-align: center;
-    color: var(--taupe-light);
-  }
-  .about-photo-placeholder .icon { font-size: 5rem; opacity: 0.4; }
-  .about-photo-placeholder p {
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-    margin-top: 0.75rem;
-    color: var(--taupe-light);
+    min-height: 480px;
   }
   .about-left img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: top center;
     position: absolute;
     top: 0; left: 0;
   }
+  .about-left-badge {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    background: var(--teal);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.4rem 0.9rem;
+  }
   .about-right {
-    padding: 4rem;
+    padding: 3.5rem 4rem;
     border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
   .about-name {
-    font-size: 3rem;
+    font-size: 2.6rem;
     font-weight: 800;
-    letter-spacing: -2px;
+    letter-spacing: -1.5px;
     color: var(--black);
     line-height: 1;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.3rem;
   }
   .about-role {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     color: var(--teal);
-    font-weight: 600;
-    letter-spacing: 2px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
-    margin-bottom: 2rem;
-    padding-bottom: 2rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.75rem;
     border-bottom: 1px solid var(--border);
   }
   .about-text {
     color: var(--gray);
-    line-height: 1.9;
-    font-size: 0.95rem;
-    margin-bottom: 0.85rem;
+    line-height: 1.85;
+    font-size: 0.93rem;
+    margin-bottom: 0.7rem;
     font-weight: 400;
   }
   .about-tags {
@@ -667,7 +666,7 @@
     .philosophy-grid { grid-template-columns: 1fr; }
     .philosophy-card { border-right: none; border-bottom: 1px solid #C8DEDE; }
     .about-inner { grid-template-columns: 1fr; }
-    .about-left { min-height: 260px; }
+    .about-left { min-height: 320px; }
     .about-right { padding: 2.5rem; }
     .contact-inner { grid-template-columns: 1fr; }
     .contact-left { padding: 3rem 2.5rem; border-right: none; border-bottom: 1px solid #2A2A2A; }
@@ -789,6 +788,7 @@
     <div class="about-inner">
       <div class="about-left">
         <img src="photo_haeyong.jpg" alt="김해용 강사">
+        <span class="about-left-badge">Lecturer</span>
       </div>
       <div class="about-right">
         <h3 class="about-name" id="aboutName">김해용</h3>
