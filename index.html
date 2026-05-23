@@ -358,35 +358,34 @@
   #about { background: var(--white); }
   .about-inner {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 1fr 1.4fr;
     gap: 0;
     border: 1px solid var(--border);
   }
   .about-left {
     background: #F5F0EB;
-    position: relative;
-    overflow: hidden;
-    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    gap: 1.25rem;
   }
   .about-left img {
-    width: 100%;
-    height: 100%;
+    width: 200px;
+    height: 260px;
     object-fit: cover;
     object-position: top center;
-    position: absolute;
-    top: 0; left: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   }
   .about-left-badge {
-    position: absolute;
-    bottom: 1.5rem;
-    left: 1.5rem;
     background: var(--teal);
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
-    padding: 0.4rem 0.9rem;
+    padding: 0.35rem 1rem;
   }
   .about-right {
     padding: 3.5rem 4rem;
