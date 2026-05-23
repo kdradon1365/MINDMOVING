@@ -448,25 +448,32 @@
     gap: 0.5rem;
   }
   .about-orgs-label::before { content: ''; width: 18px; height: 1.5px; background: var(--taupe); }
-  .about-orgs-grid { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.65rem; }
-  .org-tag {
-    font-size: 0.78rem;
-    padding: 0.28rem 0.8rem;
-    border: 1px solid var(--border);
-    color: var(--gray-light);
+  .about-orgs-list { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.85rem; }
+  .org-item {
+    font-size: 0.88rem;
+    color: var(--black);
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  .org-tag.active {
-    border-color: var(--teal);
+  .org-item .org-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
     color: var(--teal);
-    background: var(--teal-pale);
-    font-weight: 600;
+    letter-spacing: 0.5px;
+    min-width: 24px;
   }
   .about-orgs-note {
-    font-size: 0.78rem;
-    color: var(--gray-light);
-    margin-top: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--teal);
+    font-weight: 700;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
+  .about-orgs-note::before { content: ''; width: 18px; height: 1.5px; background: var(--teal); }
 
   /* LECTURES */
   #lectures { background: var(--white); }
@@ -784,15 +791,14 @@
         <p class="about-text" id="aboutText2">이론이 아닌 현장에서 검증된 방식으로 참여자 스스로 변화를 체험하고, 조직과 개인의 실질적인 성장을 이루도록 돕습니다.</p>
         <div class="about-orgs">
           <div class="about-orgs-label">대표 출강 기관</div>
-          <div class="about-orgs-grid">
-            <span class="org-tag active">병무청 사회복무연수센터</span>
-            <span class="org-tag active">지방공기업평가원</span>
-            <span class="org-tag active">인천 소방학교</span>
-            <span class="org-tag active">경북 소방학교</span>
-            <span class="org-tag active">서울 소방학교</span>
-            <span class="org-tag">경기 소방학교</span>
+          <div class="about-orgs-list">
+            <div class="org-item"><span class="org-badge">현)</span>병무청 사회복무연수센터</div>
+            <div class="org-item"><span class="org-badge">현)</span>지방공기업평가원</div>
+            <div class="org-item"><span class="org-badge">현)</span>인천 소방학교</div>
+            <div class="org-item"><span class="org-badge">현)</span>경북 소방학교</div>
+            <div class="org-item"><span class="org-badge">현)</span>서울 소방학교</div>
           </div>
-          <p class="about-orgs-note">+ 다수의 공공기관 및 기업 교육기관 출강</p>
+          <p class="about-orgs-note">수많은 공공기관 및 기업 교육기관 출강</p>
         </div>
         <div class="about-tags">
           <span class="tag">Roll-Play(롤플레이)</span>
