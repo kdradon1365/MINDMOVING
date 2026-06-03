@@ -953,7 +953,7 @@
           <div class="carousel-viewport">
             <div class="carousel-track-inner" id="carouselTrack">
               <div class="carousel-slide">
-                <img src="https://kdradon1365.github.io/MINDMOVING/photo_haeyong.jpg"
+                <img src="https://cdn.jsdelivr.net/gh/kdradon1365/MINDMOVING@main/photo_haeyong.jpg"
                      alt="강사 사진"
                      style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;">
               </div>
@@ -1360,7 +1360,7 @@
     _ct = active.length;
     track.innerHTML = active.map(p =>
       `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy"
-        onerror="this.onerror=null;this.src='photo_haeyong.jpg'"></div>`
+        onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/kdradon1365/MINDMOVING@main/photo_haeyong.jpg'"></div>`
     ).join('');
     if (dotsWrap) dotsWrap.innerHTML = active.map((_,i) =>
       `<div class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`
