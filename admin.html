@@ -615,6 +615,21 @@
         <div class="ce-col">
           <div class="ce-section-label">상단 배너 &amp; 메인 화면</div>
           <div class="ce-field">
+            <label>메인 배경 사진 <span class="opt">(선택)</span></label>
+            <div class="photo-upload-wrap">
+              <label class="photo-upload-btn" for="heroBgFile">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                배경 사진 선택
+              </label>
+              <input type="file" id="heroBgFile" accept="image/*" style="display:none" onchange="previewHeroBg(this)">
+              <button type="button" onclick="clearHeroBg()" style="font-size:0.78rem;color:var(--danger);background:none;border:none;cursor:pointer;">제거</button>
+            </div>
+            <div id="heroBgPreviewWrap" style="margin-top:0.5rem;display:none">
+              <img id="heroBgPreview" style="max-width:100%;max-height:100px;border-radius:4px;border:1px solid var(--border)">
+            </div>
+            <input type="hidden" id="ce_heroBgUrl">
+          </div>
+          <div class="ce-field">
             <label>상단 배너 문구</label>
             <input type="text" id="ce_topBar" placeholder="Move your mind, move your life.">
           </div>
@@ -700,6 +715,30 @@
         <button class="ce-save-btn" onclick="saveContent()">저장하기</button>
         <button class="ce-reset-btn" onclick="resetContent()">기본값으로 초기화</button>
       </div>
+    </div>
+  </div>
+
+  <!-- 강사 사진 관리 -->
+  <div class="content-editor-wrap" style="margin-top:1rem;">
+    <div class="ce-header" onclick="togglePhotos()">
+      <div class="ce-header-left">
+        <strong>강사 사진 관리</strong>
+        <span>캐러셀에 표시될 강사 사진 추가 / 삭제 / 순서 변경</span>
+      </div>
+      <svg class="ce-arrow" id="photosArrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ce-body" id="photosBody" style="display:none;padding:1.5rem 2rem 2rem;">
+      <div class="photo-upload-wrap" style="margin-bottom:1rem;">
+        <label class="photo-upload-btn" for="instrPhotoFile">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          사진 추가
+        </label>
+        <input type="file" id="instrPhotoFile" accept="image/*" style="display:none" onchange="addInstructorPhoto(this)" multiple>
+        <span style="font-size:0.8rem;color:var(--gray-light)">여러 장 동시 선택 가능</span>
+      </div>
+      <div id="instrPhotoList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.75rem;"></div>
     </div>
   </div>
 
@@ -880,7 +919,7 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
       initDateSelects();
-      loadContentFields();
+      await loadContentFields();
       checkDbStatus();
       await loadCategoryOptions();
       await fetchLectures();
@@ -948,38 +987,141 @@
     lecturesCache = data || [];
   }
 
-  function getContent() {
-    try {
-      const legacy = JSON.parse(localStorage.getItem('mindmoving_contact')) || {};
-      const main   = JSON.parse(localStorage.getItem(CONTENT_KEY)) || {};
-      return Object.assign({}, legacy, main);
-    } catch { return {}; }
-  }
-
-  function loadContentFields() {
-    const c = getContent();
+  async function loadContentFields() {
+    const { data, error } = await sb.from('site_content').select('*');
+    const c = {};
+    if (!error && data) data.forEach(r => { c[r.key] = r.value; });
     Object.keys(CONTENT_DEFAULTS).forEach(key => {
       const el = document.getElementById('ce_' + key);
       if (el) el.value = c[key] !== undefined ? c[key] : CONTENT_DEFAULTS[key];
     });
+    if (c.heroBgUrl) {
+      document.getElementById('ce_heroBgUrl').value = c.heroBgUrl;
+      document.getElementById('heroBgPreview').src = c.heroBgUrl;
+      document.getElementById('heroBgPreviewWrap').style.display = 'block';
+    }
   }
 
-  function saveContent() {
+  async function saveContent() {
     const data = {};
     Object.keys(CONTENT_DEFAULTS).forEach(key => {
       const el = document.getElementById('ce_' + key);
       if (el) data[key] = el.value;
     });
-    localStorage.setItem(CONTENT_KEY, JSON.stringify(data));
-    showToast('✓ 문구가 저장되었습니다.', 'success');
+    // Hero BG upload if file selected
+    const bgFile = document.getElementById('heroBgFile').files[0];
+    if (bgFile) {
+      showToast('📤 배경 사진 업로드 중…');
+      const ext = bgFile.name.split('.').pop();
+      const name = `hero_bg_${Date.now()}.${ext}`;
+      const { error: upErr } = await sb.storage.from('site-images').upload(name, bgFile, { upsert: true });
+      if (!upErr) {
+        const { data: urlData } = sb.storage.from('site-images').getPublicUrl(name);
+        data.heroBgUrl = urlData.publicUrl;
+        document.getElementById('ce_heroBgUrl').value = data.heroBgUrl;
+      }
+    } else {
+      data.heroBgUrl = document.getElementById('ce_heroBgUrl').value || '';
+    }
+    const rows = Object.entries(data).map(([key, value]) => ({ key, value }));
+    const { error } = await sb.from('site_content').upsert(rows, { onConflict: 'key' });
+    if (error) { showToast('⚠️ 저장 실패: ' + error.message, 'error'); return; }
+    showToast('✓ 저장되었습니다.', 'success');
   }
 
-  function resetContent() {
+  function previewHeroBg(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('heroBgPreview').src = e.target.result;
+      document.getElementById('heroBgPreviewWrap').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearHeroBg() {
+    document.getElementById('heroBgFile').value = '';
+    document.getElementById('ce_heroBgUrl').value = '';
+    document.getElementById('heroBgPreviewWrap').style.display = 'none';
+  }
+
+  async function resetContent() {
     if (!confirm('모든 문구를 기본값으로 초기화하시겠습니까?')) return;
-    localStorage.removeItem(CONTENT_KEY);
-    localStorage.removeItem('mindmoving_contact');
+    const rows = Object.entries(CONTENT_DEFAULTS).map(([key, value]) => ({ key, value }));
+    await sb.from('site_content').upsert(rows, { onConflict: 'key' });
     loadContentFields();
     showToast('기본값으로 초기화되었습니다.');
+  }
+
+  // ── 강사 사진 관리 ────────────────────────────────────────
+  function togglePhotos() {
+    const body = document.getElementById('photosBody');
+    const arrow = document.getElementById('photosArrow');
+    const open = body.style.display === 'none';
+    body.style.display = open ? 'block' : 'none';
+    arrow.style.transform = open ? 'rotate(180deg)' : '';
+    if (open) loadInstructorPhotos();
+  }
+
+  async function loadInstructorPhotos() {
+    const { data } = await sb.from('instructor_photos').select('*').order('sort_order');
+    const list = document.getElementById('instrPhotoList');
+    if (!data || !data.length) {
+      list.innerHTML = '<p style="font-size:0.85rem;color:var(--gray-light)">등록된 사진이 없습니다.</p>';
+      return;
+    }
+    list.innerHTML = data.map(p => `
+      <div style="position:relative;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+        <img src="${p.url}" style="width:100%;height:140px;object-fit:cover;object-position:top;display:block;">
+        <div style="padding:0.4rem 0.5rem;background:#fafafa;">
+          <input type="text" value="${p.caption || ''}" placeholder="설명(선택)"
+            style="width:100%;font-size:0.75rem;border:none;background:transparent;outline:none;"
+            onchange="updatePhotoCaption(${p.id}, this.value)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.3rem;">
+            <label style="font-size:0.72rem;cursor:pointer;display:flex;align-items:center;gap:0.3rem;">
+              <input type="checkbox" ${p.active ? 'checked' : ''} onchange="togglePhotoActive(${p.id}, this.checked)">
+              표시
+            </label>
+            <button onclick="deleteInstructorPhoto(${p.id})" style="font-size:0.72rem;color:var(--danger);background:none;border:none;cursor:pointer;">삭제</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function addInstructorPhoto(input) {
+    const files = Array.from(input.files);
+    if (!files.length) return;
+    const list = document.getElementById('instrPhotoList');
+    list.innerHTML = '<p style="font-size:0.85rem;color:var(--teal)">⏳ 업로드 중…</p>';
+    const { data: existing } = await sb.from('instructor_photos').select('sort_order').order('sort_order', { ascending: false }).limit(1);
+    let nextOrder = existing && existing.length ? existing[0].sort_order + 1 : 0;
+    for (const file of files) {
+      const ext = file.name.split('.').pop();
+      const name = `instr_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await sb.storage.from('instructor-photos').upload(name, file, { upsert: true });
+      if (upErr) { showToast('업로드 실패: ' + upErr.message, 'error'); continue; }
+      const { data: urlData } = sb.storage.from('instructor-photos').getPublicUrl(name);
+      await sb.from('instructor_photos').insert({ url: urlData.publicUrl, sort_order: nextOrder++, active: true });
+    }
+    input.value = '';
+    await loadInstructorPhotos();
+    showToast('✓ 사진이 추가되었습니다.', 'success');
+  }
+
+  async function deleteInstructorPhoto(id) {
+    if (!confirm('이 사진을 삭제하시겠습니까?')) return;
+    await sb.from('instructor_photos').delete().eq('id', id);
+    await loadInstructorPhotos();
+  }
+
+  async function togglePhotoActive(id, active) {
+    await sb.from('instructor_photos').update({ active }).eq('id', id);
+  }
+
+  async function updatePhotoCaption(id, caption) {
+    await sb.from('instructor_photos').update({ caption }).eq('id', id);
   }
 
   function toggleCE() {

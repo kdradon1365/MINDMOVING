@@ -166,3 +166,53 @@ for update using (bucket_id = 'lecture-photos');
 
 create policy "anon delete lecture photos" on storage.objects
 for delete using (bucket_id = 'lecture-photos');
+for delete using (bucket_id = 'lecture-photos');
+
+-- ============================================================
+-- 강사 사진 캐러셀용 테이블 + 버킷
+-- ============================================================
+create table if not exists instructor_photos (
+  id         serial primary key,
+  url        text not null,
+  caption    text,
+  sort_order int  not null default 0,
+  active     boolean not null default true,
+  created_at timestamptz default now()
+);
+alter table instructor_photos enable row level security;
+drop policy if exists "public read" on instructor_photos;
+drop policy if exists "anon all"    on instructor_photos;
+create policy "public read" on instructor_photos for select using (true);
+create policy "anon all"    on instructor_photos for all   using (true);
+
+-- site_content 키를 camelCase로 통일 (관리자 CONTENT_DEFAULTS 키와 일치)
+insert into site_content (key, value) values
+  ('topBar',      'Move your mind, move your life.'),
+  ('heroLine1',   '마음이'),
+  ('heroLine2',   '움직이면'),
+  ('heroLine3',   '삶이 바뀐다'),
+  ('heroDesc',    '현장을 이해하는 교육,<br>사람을 움직이는 경험,<br>조직을 바꾸는 변화.'),
+  ('heroBgUrl',   ''),
+  ('phil1Title',  'Roll-Play(롤플레이)를 활용한<br>체험 중심 교육'),
+  ('phil1Desc',   '연극적 기법과 심리치료를 결합한 Roll-Play(롤플레이)로 참여자 스스로 변화를 체험하고 내면화할 수 있도록 설계합니다.'),
+  ('phil2Title',  '현장 맞춤형<br>기업 교육 설계'),
+  ('phil2Desc',   '각 기관과 조직의 현황을 면밀히 분석하여 현장에서 바로 적용 가능한 맞춤형 교육 프로그램을 제공합니다.'),
+  ('phil3Title',  '감정과 이성의<br>균형 있는 성장'),
+  ('phil3Desc',   '감정관리·회복탄력성·스트레스 관리를 통해 개인과 조직이 지속 가능한 방식으로 성장할 수 있는 기반을 만듭니다.'),
+  ('aboutName',   '김해용'),
+  ('aboutRole',   '마인드무빙 컨설팅 대표'),
+  ('aboutText1',  'Roll-Play(롤플레이) 기반의 체험 중심 교육으로 수많은 공공기관과 기업 교육기관에서 강의를 진행하고 있습니다.'),
+  ('aboutText2',  '이론이 아닌 현장에서 검증된 방식으로 참여자 스스로 변화를 체험하고, 조직과 개인의 실질적인 성장을 이루도록 돕습니다.'),
+  ('contactDesc', '강의 및 컨설팅 관련 문의는 언제든지 편하게 연락 주세요.'),
+  ('email',       '2haeyong@naver.com'),
+  ('phone',       '010-5468-9215')
+on conflict (key) do update set value = excluded.value;
+
+-- 이미지용 Storage 버킷
+insert into storage.buckets (id, name, public) values ('instructor-photos', 'instructor-photos', true) on conflict (id) do nothing;
+insert into storage.buckets (id, name, public) values ('site-images',        'site-images',        true) on conflict (id) do nothing;
+
+create policy "public read instructor-photos"  on storage.objects for select using (bucket_id = 'instructor-photos');
+create policy "anon all instructor-photos"     on storage.objects for all    using (bucket_id = 'instructor-photos');
+create policy "public read site-images"        on storage.objects for select using (bucket_id = 'site-images');
+create policy "anon all site-images"           on storage.objects for all    using (bucket_id = 'site-images');

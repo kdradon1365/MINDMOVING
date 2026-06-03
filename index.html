@@ -389,6 +389,22 @@
     object-position: top center;
     box-shadow: 0 6px 28px rgba(0,0,0,0.13);
   }
+  /* CAROUSEL */
+  .photo-carousel { position: relative; width: 260px; }
+  .carousel-viewport { width: 260px; height: 325px; overflow: hidden; box-shadow: 0 6px 28px rgba(0,0,0,0.13); }
+  .carousel-track-inner { display: flex; transition: transform 0.45s ease; }
+  .carousel-slide { min-width: 260px; height: 325px; flex-shrink: 0; }
+  .carousel-slide img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .carousel-nav-row { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-top: 0.65rem; }
+  .carousel-btn { background: var(--teal); color: white; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .carousel-btn:hover { background: var(--teal-dark); }
+  .carousel-dots-wrap { display: flex; gap: 0.4rem; }
+  .carousel-dot { width: 7px; height: 7px; border-radius: 50%; background: #C8DEDE; cursor: pointer; transition: background 0.2s; }
+  .carousel-dot.active { background: var(--teal); }
+  /* HERO BG */
+  #hero { position: relative; background-size: cover; background-position: center; }
+  .hero-bg-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.82); pointer-events: none; z-index: 0; }
+  #hero > .hero-left, #hero > .hero-right { position: relative; z-index: 1; }
   .about-left-badge {
     background: var(--teal);
     color: white;
@@ -773,6 +789,7 @@
 
 <!-- HERO -->
 <section id="hero">
+  <div class="hero-bg-overlay" id="heroBgOverlay" style="display:none"></div>
   <div class="hero-left">
     <div class="hero-eyebrow">Mind Moving Consulting</div>
     <h1 class="hero-title">
@@ -851,7 +868,18 @@
     <h2 class="section-title" style="margin-bottom: 3rem;">강사 소개</h2>
     <div class="about-inner">
       <div class="about-photo-panel">
-        <img src="photo_haeyong.jpg" alt="김해용 강사">
+        <div class="photo-carousel" id="instructorCarousel">
+          <div class="carousel-viewport">
+            <div class="carousel-track-inner" id="carouselTrack">
+              <div class="carousel-slide"><img src="photo_haeyong.jpg" alt="강사 사진"></div>
+            </div>
+          </div>
+          <div class="carousel-nav-row" id="carouselNavRow" style="display:none">
+            <button class="carousel-btn" onclick="carouselPrev()">&#8249;</button>
+            <div class="carousel-dots-wrap" id="carouselDots"></div>
+            <button class="carousel-btn" onclick="carouselNext()">&#8250;</button>
+          </div>
+        </div>
         <span class="about-left-badge">Lecturer</span>
       </div>
       <div class="about-content">
@@ -1123,17 +1151,17 @@
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdWNlb3F6eWN1eHBheHp0aXFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0Mzc1MzEsImV4cCI6MjA5NjAxMzUzMX0.28CaEwmGTZF8tmZXr8UZ6jAy5uBvXyG8beec6rax9D0';
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  // ── localStorage 헬퍼 (어드민 수동 편집 fallback) ─────────
-  function getLocalSaved() {
-    try {
-      const legacy = JSON.parse(localStorage.getItem('mindmoving_contact')) || {};
-      const main   = JSON.parse(localStorage.getItem(CONTENT_KEY)) || {};
-      return Object.assign({}, legacy, main);
-    } catch { return {}; }
-  }
+  const setText = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== '') el.textContent = val; };
+  const setHTML = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined && val !== '') el.innerHTML = val; };
 
-  const setText = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
-  const setHTML = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerHTML = val; };
+  // ── 히어로 배경 이미지 ────────────────────────────────────
+  function applyHeroBg(url) {
+    if (!url) return;
+    const hero = document.getElementById('hero');
+    const overlay = document.getElementById('heroBgOverlay');
+    if (hero) hero.style.backgroundImage = `url('${url}')`;
+    if (overlay) overlay.style.display = 'block';
+  }
 
   // ── 강의 분야 렌더링 ──────────────────────────────────────
   function renderLectures(areas) {
@@ -1172,66 +1200,87 @@
       .join('');
   }
 
-  // ── site_content 적용 ─────────────────────────────────────
+  // ── site_content 적용 (camelCase 키) ─────────────────────
   function applyContent(rows) {
     const c = {};
     rows.forEach(r => { c[r.key] = r.value; });
-
-    setHTML('heroDesc',    c.hero_desc);
-    setText('aboutName',   c.about_name);
-    setText('aboutRole',   c.about_role);
-    setHTML('aboutText1',  c.about_text1);
-    setHTML('aboutText2',  c.about_text2);
-    setHTML('contactDesc', c.contact_desc);
-    if (c.contact_email) {
-      setText('contactEmail', c.contact_email);
+    if (c.heroBgUrl) applyHeroBg(c.heroBgUrl);
+    setText('topBar',    c.topBar);
+    setText('heroLine1', c.heroLine1);
+    setText('heroLine2', c.heroLine2);
+    setText('heroLine3', c.heroLine3);
+    setHTML('heroDesc',  c.heroDesc);
+    setHTML('phil1Title', c.phil1Title ? c.phil1Title.replace(/\n/g,'<br>') : '');
+    setHTML('phil1Desc',  c.phil1Desc);
+    setHTML('phil2Title', c.phil2Title ? c.phil2Title.replace(/\n/g,'<br>') : '');
+    setHTML('phil2Desc',  c.phil2Desc);
+    setHTML('phil3Title', c.phil3Title ? c.phil3Title.replace(/\n/g,'<br>') : '');
+    setHTML('phil3Desc',  c.phil3Desc);
+    setText('aboutName',  c.aboutName);
+    setText('aboutRole',  c.aboutRole);
+    setHTML('aboutText1', c.aboutText1);
+    setHTML('aboutText2', c.aboutText2);
+    setHTML('contactDesc',c.contactDesc);
+    if (c.email) {
+      setText('contactEmail', c.email);
       const cta = document.querySelector('.contact-cta');
-      if (cta) cta.href = 'mailto:' + c.contact_email;
+      if (cta) cta.href = 'mailto:' + c.email;
     }
-    if (c.contact_phone) setText('contactPhone', c.contact_phone);
-    if (c.company_name)  { const el = document.querySelector('.ci-value'); /* Company row */ }
+    if (c.phone) setText('contactPhone', c.phone);
   }
 
-  // ── localStorage fallback 적용 ────────────────────────────
-  function applyLocalContent() {
-    const saved = getLocalSaved();
-    const setT = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
-    const setH = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerHTML = val.replace(/\n/g, '<br>'); };
-    setT('topBar', saved.topBar); setT('heroLine1', saved.heroLine1);
-    setT('heroLine2', saved.heroLine2); setT('heroLine3', saved.heroLine3);
-    setH('heroDesc', saved.heroDesc);
-    setH('phil1Title', saved.phil1Title); setH('phil1Desc', saved.phil1Desc);
-    setH('phil2Title', saved.phil2Title); setH('phil2Desc', saved.phil2Desc);
-    setH('phil3Title', saved.phil3Title); setH('phil3Desc', saved.phil3Desc);
-    setT('aboutName', saved.aboutName); setT('aboutRole', saved.aboutRole);
-    setH('aboutText1', saved.aboutText1); setH('aboutText2', saved.aboutText2);
-    setH('contactDesc', saved.contactDesc);
-    if (saved.email) { setT('contactEmail', saved.email); const cta = document.querySelector('.contact-cta'); if (cta) cta.href = 'mailto:' + saved.email; }
-    if (saved.phone) setT('contactPhone', saved.phone);
+  // ── 강사 사진 캐러셀 ─────────────────────────────────────
+  let _ci = 0, _ct = 0, _ctimer = null;
+
+  function initCarousel(photos) {
+    const track   = document.getElementById('carouselTrack');
+    const navRow  = document.getElementById('carouselNavRow');
+    const dotsWrap= document.getElementById('carouselDots');
+    if (!track) return;
+    const active = photos.filter(p => p.active).sort((a,b) => a.sort_order - b.sort_order);
+    _ct = active.length;
+    if (!_ct) return;
+    track.innerHTML = active.map(p =>
+      `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy"></div>`
+    ).join('');
+    if (dotsWrap) dotsWrap.innerHTML = active.map((_,i) =>
+      `<div class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`
+    ).join('');
+    if (navRow) navRow.style.display = _ct > 1 ? 'flex' : 'none';
+    if (_ct > 1) _ctimer = setInterval(() => goSlide((_ci+1)%_ct), 4500);
   }
+
+  function goSlide(i) {
+    _ci = i;
+    const track = document.getElementById('carouselTrack');
+    if (track) track.style.transform = `translateX(-${i*260}px)`;
+    document.querySelectorAll('.carousel-dot').forEach((d,idx) => d.classList.toggle('active', idx===i));
+  }
+  function carouselPrev() { clearInterval(_ctimer); goSlide((_ci-1+_ct)%_ct); }
+  function carouselNext() { clearInterval(_ctimer); goSlide((_ci+1)%_ct); }
 
   // ── Supabase에서 전체 데이터 로드 ────────────────────────
   async function loadFromSupabase() {
     try {
-      const [contentRes, lecturesRes, orgsRes, tagsRes] = await Promise.all([
+      const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes] = await Promise.all([
         sb.from('site_content').select('*'),
         sb.from('lecture_areas').select('*'),
         sb.from('about_orgs').select('*'),
         sb.from('about_tags').select('*'),
+        sb.from('instructor_photos').select('*'),
       ]);
       if (contentRes.data  && contentRes.data.length)  applyContent(contentRes.data);
       if (lecturesRes.data && lecturesRes.data.length)  renderLectures(lecturesRes.data);
       if (orgsRes.data     && orgsRes.data.length)      renderOrgs(orgsRes.data);
       if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
+      if (photosRes.data   && photosRes.data.length)    initCarousel(photosRes.data);
     } catch (e) {
-      console.warn('Supabase load failed, using local fallback:', e);
-      applyLocalContent();
+      console.warn('Supabase load failed:', e);
     }
   }
 
   document.getElementById('cpYear').textContent = new Date().getFullYear();
-  applyLocalContent();   // 빠른 초기 렌더
-  loadFromSupabase();    // Supabase 데이터로 교체
+  loadFromSupabase();
   fetchAndRenderHistory();
   renderStats();
 </script>
