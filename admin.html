@@ -565,6 +565,8 @@
       <button class="logout-btn" onclick="logout()">로그아웃</button>
     </div>
   </div>
+  <div id="dbStatusBanner" style="display:none; padding:0.65rem 2rem; font-size:0.82rem; font-weight:600;"></div>
+  </div>
 
   <div class="stats-row">
     <div class="stat-card">
@@ -879,6 +881,7 @@
       document.getElementById('adminPanel').style.display = 'block';
       initDateSelects();
       loadContentFields();
+      checkDbStatus();
       await loadCategoryOptions();
       await fetchLectures();
       initYearFilter();
@@ -902,6 +905,27 @@
   let lecturesCache = [];
 
   function getLectures() { return lecturesCache; }
+
+  async function checkDbStatus() {
+    const banner = document.getElementById('dbStatusBanner');
+    banner.style.display = 'block';
+    banner.style.background = '#FFF3CD';
+    banner.style.color = '#856404';
+    banner.textContent = '⏳ Supabase 연결 확인 중…';
+
+    const { data, error } = await sb.from('lectures').select('id').limit(1);
+    if (error) {
+      banner.style.background = '#F8D7DA';
+      banner.style.color = '#721C24';
+      banner.innerHTML = `❌ Supabase 연결 실패 — <strong>${error.message}</strong><br>
+        <small>→ Supabase SQL Editor에서 lectures 테이블 생성 후 새로고침 하세요.</small>`;
+    } else {
+      banner.style.background = '#D4EDDA';
+      banner.style.color = '#155724';
+      banner.textContent = `✅ Supabase 연결 정상 (lectures 테이블 확인됨, 현재 ${data.length >= 1 ? '데이터 있음' : '비어있음'})`;
+      setTimeout(() => { banner.style.display = 'none'; }, 4000);
+    }
+  }
 
   async function loadCategoryOptions() {
     const { data } = await sb.from('lecture_areas')
