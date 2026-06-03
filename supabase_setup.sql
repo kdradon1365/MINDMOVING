@@ -3,6 +3,28 @@
 -- Supabase 대시보드 → SQL Editor 에서 실행하세요
 -- ============================================================
 
+-- 0. 강의 이력 (localStorage 완전 대체)
+create table if not exists lectures (
+  id           text primary key,
+  title        text not null,
+  organization text not null,
+  date         text not null,
+  category     text,
+  note         text,
+  photo_url    text,
+  created_at   timestamptz default now()
+);
+
+alter table lectures enable row level security;
+drop policy if exists "public read"   on lectures;
+drop policy if exists "anon insert"   on lectures;
+drop policy if exists "anon update"   on lectures;
+drop policy if exists "anon delete"   on lectures;
+create policy "public read" on lectures for select using (true);
+create policy "anon insert" on lectures for insert with check (true);
+create policy "anon update" on lectures for update using (true);
+create policy "anon delete" on lectures for delete using (true);
+
 -- 1. 사이트 텍스트 콘텐츠 (key-value)
 create table if not exists site_content (
   key   text primary key,

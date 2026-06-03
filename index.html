@@ -974,12 +974,15 @@
 </footer>
 
 <script>
-  const STORAGE_KEY = 'mindmoving_lectures';
   const CONTENT_KEY = 'mindmoving_content';
 
-  function getLectures() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch { return []; }
+  let lecturesCache = [];
+  function getLectures() { return lecturesCache; }
+
+  async function fetchAndRenderHistory() {
+    const { data, error } = await sb.from('lectures').select('*').order('date', { ascending: false });
+    if (!error) lecturesCache = data || [];
+    renderHistory();
   }
 
   function escapeHtml(str) {
@@ -1214,7 +1217,7 @@
   document.getElementById('cpYear').textContent = new Date().getFullYear();
   applyLocalContent();   // 빠른 초기 렌더
   loadFromSupabase();    // Supabase 데이터로 교체
-  renderHistory();
+  fetchAndRenderHistory();
   renderStats();
 </script>
 </body>

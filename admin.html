@@ -905,6 +905,7 @@
       document.getElementById('adminPanel').style.display = 'block';
       initDateSelects();
       loadContentFields();
+      await fetchLectures();
       initYearFilter();
       renderStats();
       renderList();
@@ -923,11 +924,15 @@
     cancelEdit();
   }
 
-  function getLectures() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-    catch { return []; }
+  let lecturesCache = [];
+
+  function getLectures() { return lecturesCache; }
+
+  async function fetchLectures() {
+    const { data, error } = await sb.from('lectures').select('*').order('date', { ascending: false });
+    if (error) { console.error('fetchLectures:', error); return; }
+    lecturesCache = data || [];
   }
-  function saveLectures(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 
   function getContent() {
     try {
@@ -1031,21 +1036,22 @@
       else showToast('⚠️ 사진 업로드 실패 (텍스트 내용은 저장됩니다)', 'error');
     }
 
-    const ls = getLectures();
     if (editingId) {
-      const idx = ls.findIndex(l => l.id === editingId);
-      if (idx > -1) ls[idx] = { ...ls[idx], title, organization: org, date, category: cat, note, photo_url: photoUrl };
-      saveLectures(ls);
-      showToast('✓ 수정되었습니다.', 'success');
-      cancelEdit();
+      const { error } = await sb.from('lectures').update(
+        { title, organization: org, date, category: cat, note, photo_url: photoUrl }
+      ).eq('id', editingId);
+      if (error) { showToast('⚠️ 저장 실패: ' + error.message, 'error'); }
+      else { showToast('✓ 수정되었습니다.', 'success'); cancelEdit(); }
     } else {
-      ls.push({ id: Date.now().toString(), title, organization: org, date, category: cat, note, photo_url: photoUrl });
-      saveLectures(ls);
-      showToast('✓ 추가되었습니다.', 'success');
-      clearForm();
+      const { error } = await sb.from('lectures').insert(
+        { id: Date.now().toString(), title, organization: org, date, category: cat, note, photo_url: photoUrl }
+      );
+      if (error) { showToast('⚠️ 저장 실패: ' + error.message, 'error'); }
+      else { showToast('✓ 추가되었습니다.', 'success'); clearForm(); }
     }
     btn.disabled = false;
     btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> 추가하기';
+    await fetchLectures();
     initYearFilter();
     renderStats();
     renderList();
@@ -1091,10 +1097,12 @@
     renderList();
   }
 
-  function deleteLecture(id) {
+  async function deleteLecture(id) {
     if (!confirm('이 강의 이력을 삭제하시겠습니까?')) return;
     if (editingId === id) cancelEdit();
-    saveLectures(getLectures().filter(l => l.id !== id));
+    const { error } = await sb.from('lectures').delete().eq('id', id);
+    if (error) { showToast('⚠️ 삭제 실패: ' + error.message, 'error'); return; }
+    await fetchLectures();
     initYearFilter();
     renderStats();
     renderList();
