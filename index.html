@@ -1344,13 +1344,16 @@
     const navRow  = document.getElementById('carouselNavRow');
     const dotsWrap= document.getElementById('carouselDots');
     if (!track) return;
+    // Always include the default photo as the first slide
+    const defaultSlide = { url: 'photo_haeyong.jpg', caption: '강사 사진' };
     const active = photos.filter(p => p.active).sort((a,b) => a.sort_order - b.sort_order);
-    _ct = active.length;
-    if (!_ct) return;
-    track.innerHTML = active.map(p =>
-      `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy" onerror="this.onerror=null;this.src='photo_haeyong.jpg'"></div>`
+    // Combine: default first, then Supabase photos (skip duplicates of the same filename)
+    const slides = [defaultSlide, ...active.filter(p => !p.url.includes('photo_haeyong.jpg'))];
+    _ct = slides.length;
+    track.innerHTML = slides.map(p =>
+      `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy"></div>`
     ).join('');
-    if (dotsWrap) dotsWrap.innerHTML = active.map((_,i) =>
+    if (dotsWrap) dotsWrap.innerHTML = slides.map((_,i) =>
       `<div class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`
     ).join('');
     if (navRow) navRow.style.display = _ct > 1 ? 'flex' : 'none';
