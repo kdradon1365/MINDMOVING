@@ -952,7 +952,10 @@
         <div class="photo-carousel" id="instructorCarousel">
           <div class="carousel-viewport">
             <div class="carousel-track-inner" id="carouselTrack">
-              <div class="carousel-slide"><img src="photo_haeyong.jpg" alt="강사 사진"></div>
+              <div class="carousel-slide">
+                <img id="instructorMainPhoto" src="photo_haeyong.jpg" alt="강사 사진"
+                  onerror="this.onerror=null;this.style.background='var(--teal-pale)'">
+              </div>
             </div>
           </div>
           <div class="carousel-nav-row" id="carouselNavRow" style="display:none">
@@ -1344,16 +1347,21 @@
     const navRow  = document.getElementById('carouselNavRow');
     const dotsWrap= document.getElementById('carouselDots');
     if (!track) return;
-    // Always include the default photo as the first slide
-    const defaultSlide = { url: 'photo_haeyong.jpg', caption: '강사 사진' };
-    const active = photos.filter(p => p.active).sort((a,b) => a.sort_order - b.sort_order);
-    // Combine: default first, then Supabase photos (skip duplicates of the same filename)
-    const slides = [defaultSlide, ...active.filter(p => !p.url.includes('photo_haeyong.jpg'))];
-    _ct = slides.length;
-    track.innerHTML = slides.map(p =>
-      `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy"></div>`
+
+    const active = (photos || []).filter(p => p.active).sort((a,b) => a.sort_order - b.sort_order);
+
+    // If Supabase has photos uploaded via admin, use only those
+    // Otherwise keep the default photo_haeyong.jpg that's already in the HTML
+    if (active.length === 0) return;
+
+    // Build slides: use Supabase photos only
+    // (admin-uploaded photos replace the default)
+    _ct = active.length;
+    track.innerHTML = active.map(p =>
+      `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy"
+        onerror="this.onerror=null;this.src='photo_haeyong.jpg'"></div>`
     ).join('');
-    if (dotsWrap) dotsWrap.innerHTML = slides.map((_,i) =>
+    if (dotsWrap) dotsWrap.innerHTML = active.map((_,i) =>
       `<div class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`
     ).join('');
     if (navRow) navRow.style.display = _ct > 1 ? 'flex' : 'none';
@@ -1486,7 +1494,8 @@
     if (lecturesRes.data && lecturesRes.data.length)  renderLectures(lecturesRes.data);
     if (orgsRes.data     && orgsRes.data.length)      renderOrgs(orgsRes.data);
     if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
-    if (photosRes.data   && photosRes.data.length)    initCarousel(photosRes.data);
+    // Only call initCarousel if Supabase has active photos to show
+    if (photosRes.data && photosRes.data.some(p => p.active)) initCarousel(photosRes.data);
     if (credRes.data)  renderCredentials(credRes.data);
     if (tmRes.data)    renderTestimonials(tmRes.data);
     if (dlRes.data)    renderDownloads(dlRes.data);
