@@ -742,19 +742,6 @@
           <label>강의 분야 <span class="opt">(선택)</span></label>
           <select id="fCategory">
             <option value="">선택 안 함</option>
-            <option value="리더십/조직문화">리더십 / 조직문화</option>
-            <option value="세일즈/영업코칭">세일즈 / 영업 코칭</option>
-            <option value="심리/멘탈코칭">심리 / 멘탈 코칭</option>
-            <option value="커뮤니케이션/협상">커뮤니케이션 / 협상</option>
-            <option value="기업교육/HRD">기업교육 / HRD</option>
-            <option value="드라마테라피">드라마테라피 활용 강의</option>
-            <option value="민원응대">민원 응대</option>
-            <option value="서비스교육">서비스 교육</option>
-            <option value="연극활용기업교육">연극 활용 기업교육</option>
-            <option value="스트레스관리">스트레스 관리</option>
-            <option value="회복탄력성">회복탄력성</option>
-            <option value="감정관리">감정관리 교육</option>
-            <option value="핵심가치내재화">핵심가치 내재화 교육</option>
           </select>
         </div>
         <div class="form-group">
@@ -793,19 +780,6 @@
         </select>
         <select class="filter-select" id="categoryFilter" onchange="renderList()">
           <option value="">전체 분야</option>
-          <option value="리더십/조직문화">리더십/조직문화</option>
-          <option value="세일즈/영업코칭">세일즈/영업코칭</option>
-          <option value="심리/멘탈코칭">심리/멘탈코칭</option>
-          <option value="커뮤니케이션/협상">커뮤니케이션/협상</option>
-          <option value="기업교육/HRD">기업교육/HRD</option>
-          <option value="드라마테라피">드라마테라피</option>
-          <option value="민원응대">민원응대</option>
-          <option value="서비스교육">서비스교육</option>
-          <option value="연극활용기업교육">연극활용기업교육</option>
-          <option value="스트레스관리">스트레스관리</option>
-          <option value="회복탄력성">회복탄력성</option>
-          <option value="감정관리">감정관리</option>
-          <option value="핵심가치내재화">핵심가치내재화</option>
         </select>
         <span class="count-badge" id="countBadge">0</span>
       </div>
@@ -905,6 +879,7 @@
       document.getElementById('adminPanel').style.display = 'block';
       initDateSelects();
       loadContentFields();
+      await loadCategoryOptions();
       await fetchLectures();
       initYearFilter();
       renderStats();
@@ -927,6 +902,17 @@
   let lecturesCache = [];
 
   function getLectures() { return lecturesCache; }
+
+  async function loadCategoryOptions() {
+    const { data } = await sb.from('lecture_areas')
+      .select('title, category_key')
+      .eq('active', true)
+      .order('sort_order');
+    const areas = (data || []).filter(a => a.category_key);
+    const opts = areas.map(a => `<option value="${a.category_key}">${a.title}</option>`).join('');
+    document.getElementById('fCategory').innerHTML      = '<option value="">선택 안 함</option>' + opts;
+    document.getElementById('categoryFilter').innerHTML = '<option value="">전체 분야</option>' + opts;
+  }
 
   async function fetchLectures() {
     const { data, error } = await sb.from('lectures').select('*').order('date', { ascending: false });

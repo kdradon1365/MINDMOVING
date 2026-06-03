@@ -1132,7 +1132,12 @@
     grid.innerHTML = areas
       .filter(a => a.active)
       .sort((a, b) => a.sort_order - b.sort_order)
-      .map(a => `<div class="lecture-card"><span class="lecture-icon">${a.icon}</span><h4>${a.title}</h4></div>`)
+      .map(a => {
+        const key   = a.category_key || '';
+        const title = a.title.replace(/'/g, "\\'");
+        const click = key ? `onclick="openCategoryModal('${key}','${title}')"` : '';
+        return `<div class="lecture-card" data-category="${key}" ${click}><span class="lecture-icon">${a.icon}</span><h4>${a.title}</h4></div>`;
+      })
       .join('');
   }
 

@@ -33,11 +33,12 @@ create table if not exists site_content (
 
 -- 2. 강의 분야
 create table if not exists lecture_areas (
-  id         serial primary key,
-  icon       text not null,
-  title      text not null,
-  sort_order int  not null default 0,
-  active     boolean not null default true
+  id           serial primary key,
+  icon         text not null,
+  title        text not null,
+  category_key text,
+  sort_order   int  not null default 0,
+  active       boolean not null default true
 );
 
 -- 3. 출강 기관
@@ -93,19 +94,33 @@ insert into site_content (key, value) values
   ('company_rep',   '김해용')
 on conflict (key) do update set value = excluded.value;
 
--- 강의 분야
-insert into lecture_areas (icon, title, sort_order) values
-  ('🏆', '리더십 / 조직문화',              1),
-  ('💬', '커뮤니케이션 및 갈등관리 / 협상', 2),
-  ('🧠', '심리 / 멘탈 코칭',              3),
-  ('📈', '세일즈 / 영업코칭 및 서비스',    4),
-  ('📚', '기업교육 / HRD',                5),
-  ('🎭', 'Roll-Play(롤플레이) 활용 강의',  6),
-  ('🤝', '민원 응대',                     7),
-  ('🎬', '연극 활용 기업교육',             8),
-  ('🌿', '스트레스 감정관리 교육',         9),
-  ('💪', '회복탄력성',                    10),
-  ('🎯', '핵심가치 내재화 교육',          11);
+-- 강의 분야 (category_key 포함)
+insert into lecture_areas (icon, title, category_key, sort_order) values
+  ('🏆', '리더십 / 조직문화',              '리더십/조직문화',    1),
+  ('💬', '커뮤니케이션 및 갈등관리 / 협상', '커뮤니케이션/협상',  2),
+  ('🧠', '심리 / 멘탈 코칭',              '심리/멘탈코칭',      3),
+  ('📈', '세일즈 / 영업코칭 및 서비스',    '세일즈/영업코칭',    4),
+  ('📚', '기업교육 / HRD',                '기업교육/HRD',       5),
+  ('🎭', 'Roll-Play(롤플레이) 활용 강의',  '드라마테라피',       6),
+  ('🤝', '민원 응대',                     '민원응대',           7),
+  ('🎬', '연극 활용 기업교육',             '연극활용기업교육',   8),
+  ('🌿', '스트레스 감정관리 교육',         '스트레스관리',       9),
+  ('💪', '회복탄력성',                    '회복탄력성',         10),
+  ('🎯', '핵심가치 내재화 교육',          '핵심가치내재화',     11);
+
+-- 기존 lecture_areas에 category_key 컬럼 추가 (이미 테이블 있는 경우)
+alter table lecture_areas add column if not exists category_key text;
+update lecture_areas set category_key = '리더십/조직문화'   where title like '%리더십%'      and category_key is null;
+update lecture_areas set category_key = '커뮤니케이션/협상' where title like '%커뮤니케이션%' and category_key is null;
+update lecture_areas set category_key = '심리/멘탈코칭'     where title like '%심리%'        and category_key is null;
+update lecture_areas set category_key = '세일즈/영업코칭'   where title like '%세일즈%'      and category_key is null;
+update lecture_areas set category_key = '기업교육/HRD'      where title like '%HRD%'         and category_key is null;
+update lecture_areas set category_key = '드라마테라피'      where title like '%Roll-Play%'   and category_key is null;
+update lecture_areas set category_key = '민원응대'          where title like '%민원%'        and category_key is null;
+update lecture_areas set category_key = '연극활용기업교육'  where title like '%연극%'        and category_key is null;
+update lecture_areas set category_key = '스트레스관리'      where title like '%스트레스%'    and category_key is null;
+update lecture_areas set category_key = '회복탄력성'        where title like '%회복탄력%'    and category_key is null;
+update lecture_areas set category_key = '핵심가치내재화'    where title like '%핵심%'        and category_key is null;
 
 -- 출강 기관
 insert into about_orgs (badge, name, sort_order) values
