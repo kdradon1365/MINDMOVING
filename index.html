@@ -1468,29 +1468,26 @@
 
   // ── Supabase에서 전체 데이터 로드 ────────────────────────
   async function loadFromSupabase() {
-    try {
-      const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes, credRes, tmRes, dlRes] = await Promise.all([
-        sb.from('site_content').select('*'),
-        sb.from('lecture_areas').select('*'),
-        sb.from('about_orgs').select('*'),
-        sb.from('about_tags').select('*'),
-        sb.from('instructor_photos').select('*'),
-        sb.from('credentials').select('*'),
-        sb.from('testimonials').select('*'),
-        sb.from('downloads').select('*'),
-      ]);
-      if (contentRes.data  && contentRes.data.length)  applyContent(contentRes.data);
-      if (lecturesRes.data && lecturesRes.data.length)  renderLectures(lecturesRes.data);
-      if (orgsRes.data     && orgsRes.data.length)      renderOrgs(orgsRes.data);
-      if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
-      if (photosRes.data   && photosRes.data.length)    initCarousel(photosRes.data);
-      if (credRes.data)  renderCredentials(credRes.data);
-      if (tmRes.data)    renderTestimonials(tmRes.data);
-      if (dlRes.data)    renderDownloads(dlRes.data);
-      loadContactCategories();
-    } catch (e) {
-      console.warn('Supabase load failed:', e);
-    }
+    const get = (table, query='*') => sb.from(table).select(query).catch(() => ({ data: null }));
+    const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes, credRes, tmRes, dlRes] = await Promise.all([
+      get('site_content'),
+      get('lecture_areas'),
+      get('about_orgs'),
+      get('about_tags'),
+      get('instructor_photos'),
+      get('credentials'),
+      get('testimonials'),
+      get('downloads'),
+    ]);
+    if (contentRes.data  && contentRes.data.length)  applyContent(contentRes.data);
+    if (lecturesRes.data && lecturesRes.data.length)  renderLectures(lecturesRes.data);
+    if (orgsRes.data     && orgsRes.data.length)      renderOrgs(orgsRes.data);
+    if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
+    if (photosRes.data   && photosRes.data.length)    initCarousel(photosRes.data);
+    if (credRes.data)  renderCredentials(credRes.data);
+    if (tmRes.data)    renderTestimonials(tmRes.data);
+    if (dlRes.data)    renderDownloads(dlRes.data);
+    loadContactCategories();
   }
 
   document.getElementById('cpYear').textContent = new Date().getFullYear();
