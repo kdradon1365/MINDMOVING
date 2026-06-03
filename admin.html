@@ -338,6 +338,9 @@
   .form-group textarea:focus { border-color: var(--teal); }
   .form-group textarea { resize: vertical; min-height: 64px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .date-selects { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr; gap: 0.5rem; }
+  .date-sel { padding: 0.65rem 0.5rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: var(--bg); color: var(--text); cursor: pointer; }
+  .date-sel:focus { outline: none; border-color: var(--teal); }
 
   .submit-btn {
     width: 100%;
@@ -711,7 +714,23 @@
           </div>
           <div class="form-group">
             <label>날짜 <span class="req">*</span></label>
-            <input type="month" id="fDate">
+            <div class="date-selects">
+              <select id="fYear" class="date-sel">
+                <option value="">년</option>
+              </select>
+              <select id="fMonth" class="date-sel">
+                <option value="">월</option>
+                <option value="01">1월</option><option value="02">2월</option>
+                <option value="03">3월</option><option value="04">4월</option>
+                <option value="05">5월</option><option value="06">6월</option>
+                <option value="07">7월</option><option value="08">8월</option>
+                <option value="09">9월</option><option value="10">10월</option>
+                <option value="11">11월</option><option value="12">12월</option>
+              </select>
+              <select id="fDay" class="date-sel">
+                <option value="">일 (선택)</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="form-group">
@@ -808,11 +827,29 @@
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
+  function initDateSelects() {
+    const yearSel = document.getElementById('fYear');
+    const daySel  = document.getElementById('fDay');
+    const curYear = new Date().getFullYear();
+    for (let y = curYear + 1; y >= 2000; y--) {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = y + '년';
+      yearSel.appendChild(opt);
+    }
+    for (let d = 1; d <= 31; d++) {
+      const opt = document.createElement('option');
+      opt.value = String(d).padStart(2, '0');
+      opt.textContent = d + '일';
+      daySel.appendChild(opt);
+    }
+  }
+
   async function login() {
     const hash = await hashPw(document.getElementById('pwInput').value);
     if (hash === PASSWORD_HASH) {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'block';
+      initDateSelects();
       loadContentFields();
       initYearFilter();
       renderStats();
@@ -895,10 +932,34 @@
       years.map(y => `<option value="${y}">${y}년</option>`).join('');
   }
 
+  function getDateValue() {
+    const y = document.getElementById('fYear').value;
+    const m = document.getElementById('fMonth').value;
+    const d = document.getElementById('fDay').value;
+    if (!y || !m) return '';
+    return d ? `${y}-${m}-${d}` : `${y}-${m}`;
+  }
+
+  function formatDateDisplay(date) {
+    if (!date) return '';
+    const parts = date.split('-');
+    if (parts.length === 3) return `${parts[0]}년 ${parseInt(parts[1])}월 ${parseInt(parts[2])}일`;
+    if (parts.length === 2) return `${parts[0]}년 ${parseInt(parts[1])}월`;
+    return date;
+  }
+
+  function populateDateFields(date) {
+    if (!date) return;
+    const parts = date.split('-');
+    document.getElementById('fYear').value  = parts[0] || '';
+    document.getElementById('fMonth').value = parts[1] || '';
+    document.getElementById('fDay').value   = parts[2] || '';
+  }
+
   function submitForm() {
     const title = document.getElementById('fTitle').value.trim();
     const org   = document.getElementById('fOrg').value.trim();
-    const date  = document.getElementById('fDate').value;
+    const date  = getDateValue();
     const cat   = document.getElementById('fCategory').value;
     const note  = document.getElementById('fNote').value.trim();
     if (!title || !org || !date) { showToast('⚠️ 강의명, 기관명, 날짜는 필수입니다.', 'error'); return; }
@@ -921,7 +982,7 @@
   }
 
   function clearForm() {
-    ['fTitle','fOrg','fDate','fNote'].forEach(id => document.getElementById(id).value = '');
+    ['fTitle','fOrg','fYear','fMonth','fDay','fNote'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('fCategory').value = '';
   }
 
@@ -931,7 +992,7 @@
     editingId = id;
     document.getElementById('fTitle').value    = l.title;
     document.getElementById('fOrg').value      = l.organization;
-    document.getElementById('fDate').value     = l.date;
+    populateDateFields(l.date);
     document.getElementById('fCategory').value = l.category || '';
     document.getElementById('fNote').value     = l.note || '';
     document.getElementById('formTitle').textContent = '강의 이력 수정';
@@ -982,7 +1043,7 @@
       <div class="list-item${editingId === l.id ? ' editing' : ''}">
         <div class="list-item-info">
           <div class="list-item-date">
-            ${esc(l.date)}
+            ${formatDateDisplay(l.date)}
             ${l.category ? `<span class="category-tag">${esc(l.category)}</span>` : ''}
           </div>
           <div class="list-item-title" title="${esc(l.title)}">${esc(l.title)}</div>
