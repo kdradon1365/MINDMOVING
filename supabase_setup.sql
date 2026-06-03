@@ -216,3 +216,89 @@ create policy "public read instructor-photos"  on storage.objects for select usi
 create policy "anon all instructor-photos"     on storage.objects for all    using (bucket_id = 'instructor-photos');
 create policy "public read site-images"        on storage.objects for select using (bucket_id = 'site-images');
 create policy "anon all site-images"           on storage.objects for all    using (bucket_id = 'site-images');
+
+-- ============================================================
+-- 자격/경력 배지
+-- ============================================================
+create table if not exists credentials (
+  id         serial primary key,
+  icon       text not null default '🏅',
+  title      text not null,
+  issuer     text,
+  year       text,
+  sort_order int  not null default 0,
+  active     boolean not null default true
+);
+alter table credentials enable row level security;
+drop policy if exists "public read" on credentials;
+drop policy if exists "anon all"    on credentials;
+create policy "public read" on credentials for select using (true);
+create policy "anon all"    on credentials for all   using (true);
+
+-- ============================================================
+-- 수강 후기
+-- ============================================================
+create table if not exists testimonials (
+  id               serial primary key,
+  reviewer_name    text not null,
+  reviewer_company text,
+  reviewer_role    text,
+  content          text not null,
+  sort_order       int  not null default 0,
+  active           boolean not null default true,
+  created_at       timestamptz default now()
+);
+alter table testimonials enable row level security;
+drop policy if exists "public read" on testimonials;
+drop policy if exists "anon all"    on testimonials;
+create policy "public read" on testimonials for select using (true);
+create policy "anon all"    on testimonials for all   using (true);
+
+-- ============================================================
+-- 강의 문의 수신함
+-- ============================================================
+create table if not exists contact_requests (
+  id         serial primary key,
+  name       text not null,
+  phone      text not null,
+  email      text,
+  org        text,
+  category   text,
+  message    text not null,
+  status     text not null default 'new',
+  created_at timestamptz default now()
+);
+alter table contact_requests enable row level security;
+drop policy if exists "anon insert contact" on contact_requests;
+drop policy if exists "anon read contact"   on contact_requests;
+drop policy if exists "anon update contact" on contact_requests;
+drop policy if exists "anon delete contact" on contact_requests;
+create policy "anon insert contact" on contact_requests for insert with check (true);
+create policy "anon read contact"   on contact_requests for select using (true);
+create policy "anon update contact" on contact_requests for update using (true);
+create policy "anon delete contact" on contact_requests for delete using (true);
+
+-- ============================================================
+-- 강의 자료 다운로드
+-- ============================================================
+create table if not exists downloads (
+  id          serial primary key,
+  title       text not null,
+  description text,
+  file_url    text not null,
+  sort_order  int  not null default 0,
+  active      boolean not null default true,
+  created_at  timestamptz default now()
+);
+alter table downloads enable row level security;
+drop policy if exists "public read" on downloads;
+drop policy if exists "anon all"    on downloads;
+create policy "public read" on downloads for select using (true);
+create policy "anon all"    on downloads for all   using (true);
+
+-- Storage 버킷: 강의 자료
+insert into storage.buckets (id, name, public) values ('downloads', 'downloads', true) on conflict (id) do nothing;
+drop policy if exists "public read downloads" on storage.objects;
+drop policy if exists "anon all downloads"    on storage.objects;
+create policy "public read downloads" on storage.objects for select using (bucket_id = 'downloads');
+create policy "anon all downloads"    on storage.objects for all    using (bucket_id = 'downloads');

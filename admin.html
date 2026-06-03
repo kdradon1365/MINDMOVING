@@ -742,6 +742,100 @@
     </div>
   </div>
 
+  <!-- 자격/경력 배지 관리 -->
+  <div class="content-editor-wrap" style="margin-top:1rem;">
+    <div class="ce-header" onclick="toggleSection('creds')">
+      <div class="ce-header-left">
+        <strong>자격 / 경력 배지 관리</strong>
+        <span>강사 소개 아래에 표시되는 자격·수료·경력 배지</span>
+      </div>
+      <svg class="ce-arrow" id="credsArrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ce-body" id="credsBody" style="display:none;padding:1.5rem 2rem 2rem;">
+      <div style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;">
+        <input type="text" id="credIcon" placeholder="아이콘 🏅" style="width:70px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;font-size:1rem;">
+        <input type="text" id="credTitle" placeholder="자격명 / 수료명 *" style="flex:1;min-width:150px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        <input type="text" id="credIssuer" placeholder="발급기관" style="flex:1;min-width:130px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        <input type="text" id="credYear" placeholder="취득연도" style="width:95px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        <button onclick="addCredential()" style="padding:0.6rem 1.2rem;background:var(--teal);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;white-space:nowrap;">추가</button>
+      </div>
+      <div id="credList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+    </div>
+  </div>
+
+  <!-- 수강 후기 관리 -->
+  <div class="content-editor-wrap" style="margin-top:1rem;">
+    <div class="ce-header" onclick="toggleSection('testimonials')">
+      <div class="ce-header-left">
+        <strong>수강 후기 / 리뷰 관리</strong>
+        <span>홈페이지에 표시되는 수강 후기 추가 · 관리</span>
+      </div>
+      <svg class="ce-arrow" id="testimonialsArrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ce-body" id="testimonialsBody" style="display:none;padding:1.5rem 2rem 2rem;">
+      <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem;">
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+          <input type="text" id="tmName" placeholder="이름 *" style="flex:1;min-width:110px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+          <input type="text" id="tmCompany" placeholder="회사 / 기관" style="flex:1;min-width:130px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+          <input type="text" id="tmRole" placeholder="직책" style="flex:1;min-width:100px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        </div>
+        <textarea id="tmContent" placeholder="후기 내용 *" rows="3" style="width:100%;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;resize:vertical;font-family:inherit;font-size:0.88rem;"></textarea>
+        <button onclick="addTestimonial()" style="padding:0.6rem 1.2rem;background:var(--teal);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;align-self:flex-start;">후기 추가</button>
+      </div>
+      <div id="testimonialList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+    </div>
+  </div>
+
+  <!-- 강의 문의 수신함 -->
+  <div class="content-editor-wrap" style="margin-top:1rem;">
+    <div class="ce-header" onclick="toggleSection('inbox')">
+      <div class="ce-header-left">
+        <strong>강의 문의 수신함</strong>
+        <span id="inboxBadge">홈페이지 문의 양식으로 접수된 문의</span>
+      </div>
+      <svg class="ce-arrow" id="inboxArrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ce-body" id="inboxBody" style="display:none;padding:1.5rem 2rem 2rem;">
+      <div id="inboxList"></div>
+    </div>
+  </div>
+
+  <!-- 강의 자료 PDF 관리 -->
+  <div class="content-editor-wrap" style="margin-top:1rem;">
+    <div class="ce-header" onclick="toggleSection('downloads')">
+      <div class="ce-header-left">
+        <strong>강의 자료 / PDF 다운로드 관리</strong>
+        <span>홈페이지 문의 섹션에 표시될 다운로드 자료</span>
+      </div>
+      <svg class="ce-arrow" id="downloadsArrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ce-body" id="downloadsBody" style="display:none;padding:1.5rem 2rem 2rem;">
+      <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem;">
+        <input type="text" id="dlTitle" placeholder="자료명 *" style="padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        <input type="text" id="dlDesc" placeholder="설명 (선택)" style="padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;">
+          <label class="photo-upload-btn" for="dlFile" style="cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            파일 선택
+          </label>
+          <input type="file" id="dlFile" accept=".pdf,.pptx,.ppt,.docx,.doc" style="display:none"
+            onchange="document.getElementById('dlFileName').textContent=this.files[0]?.name||'선택 없음'">
+          <span id="dlFileName" style="font-size:0.8rem;color:var(--gray-light)">선택된 파일 없음</span>
+          <button onclick="addDownload()" style="padding:0.6rem 1.2rem;background:var(--teal);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;">추가</button>
+        </div>
+      </div>
+      <div id="downloadList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+    </div>
+  </div>
+
   <div class="admin-body">
     <div class="card" style="position: sticky; top: 76px;">
       <div class="card-header">
@@ -926,6 +1020,12 @@
       initYearFilter();
       renderStats();
       renderList();
+      // Show unread inbox count in badge
+      sb.from('contact_requests').select('id').eq('status','new').then(({data}) => {
+        const badge = document.getElementById('inboxBadge');
+        if (badge && data && data.length > 0)
+          badge.textContent = `미확인 문의 ${data.length}건 있음 ← 클릭하여 확인`;
+      });
     } else {
       document.getElementById('loginError').style.display = 'block';
       document.getElementById('pwInput').value = '';
@@ -1310,6 +1410,221 @@
     t.className = type ? `show ${type}` : 'show';
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.className = '', 2800);
+  }
+
+  // ── 섹션 토글 헬퍼 ───────────────────────────────────────
+  function toggleSection(key) {
+    const body  = document.getElementById(key + 'Body');
+    const arrow = document.getElementById(key + 'Arrow');
+    const open  = body.style.display === 'none';
+    body.style.display = open ? 'block' : 'none';
+    arrow.style.transform = open ? 'rotate(180deg)' : '';
+    if (open) {
+      if (key === 'creds')        loadCredentials();
+      if (key === 'testimonials') loadTestimonials();
+      if (key === 'inbox')        loadInbox();
+      if (key === 'downloads')    loadDownloads();
+    }
+  }
+
+  // ── 자격/경력 배지 ────────────────────────────────────────
+  async function loadCredentials() {
+    const { data } = await sb.from('credentials').select('*').order('sort_order');
+    const list = document.getElementById('credList');
+    if (!data || !data.length) {
+      list.innerHTML = '<p style="font-size:0.85rem;color:var(--gray-light)">등록된 자격/경력이 없습니다.</p>';
+      return;
+    }
+    list.innerHTML = data.map(c => `
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.7rem 0.85rem;background:#fafafa;border:1px solid var(--border);border-radius:6px;">
+        <span style="font-size:1.4rem;">${esc(c.icon||'🏅')}</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:0.9rem;">${esc(c.title)}</div>
+          <div style="font-size:0.78rem;color:var(--teal);">${esc(c.issuer||'')} ${c.year?'· '+esc(c.year):''}</div>
+        </div>
+        <label style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+          <input type="checkbox" ${c.active?'checked':''} onchange="toggleCredActive(${c.id},this.checked)"> 표시
+        </label>
+        <button onclick="deleteCredential(${c.id})" style="font-size:0.78rem;color:var(--danger);background:none;border:none;cursor:pointer;">삭제</button>
+      </div>`).join('');
+  }
+
+  async function addCredential() {
+    const title  = document.getElementById('credTitle').value.trim();
+    const icon   = document.getElementById('credIcon').value.trim() || '🏅';
+    const issuer = document.getElementById('credIssuer').value.trim();
+    const year   = document.getElementById('credYear').value.trim();
+    if (!title) { showToast('자격명을 입력해주세요.', 'error'); return; }
+    const { data: existing } = await sb.from('credentials').select('sort_order').order('sort_order', { ascending: false }).limit(1);
+    const sort_order = existing && existing.length ? existing[0].sort_order + 1 : 0;
+    const { error } = await sb.from('credentials').insert({ icon, title, issuer, year, sort_order, active: true });
+    if (error) { showToast('추가 실패: ' + error.message, 'error'); return; }
+    ['credTitle','credIssuer','credYear'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('credIcon').value = '';
+    await loadCredentials();
+    showToast('✓ 추가되었습니다.', 'success');
+  }
+
+  async function deleteCredential(id) {
+    if (!confirm('삭제하시겠습니까?')) return;
+    await sb.from('credentials').delete().eq('id', id);
+    await loadCredentials();
+  }
+
+  async function toggleCredActive(id, active) {
+    await sb.from('credentials').update({ active }).eq('id', id);
+  }
+
+  // ── 수강 후기 ─────────────────────────────────────────────
+  async function loadTestimonials() {
+    const { data } = await sb.from('testimonials').select('*').order('sort_order');
+    const list = document.getElementById('testimonialList');
+    if (!data || !data.length) {
+      list.innerHTML = '<p style="font-size:0.85rem;color:var(--gray-light)">등록된 후기가 없습니다.</p>';
+      return;
+    }
+    list.innerHTML = data.map(t => `
+      <div style="padding:0.85rem;background:#fafafa;border:1px solid var(--border);border-radius:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;">
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:0.88rem;">${esc(t.reviewer_name)} ${t.reviewer_company?'<span style=\'color:var(--teal);font-weight:400;\'>· '+esc(t.reviewer_company)+'</span>':''}</div>
+            ${t.reviewer_role?`<div style="font-size:0.78rem;color:var(--gray-light);">${esc(t.reviewer_role)}</div>`:''}
+            <p style="font-size:0.85rem;color:var(--gray);margin-top:0.4rem;line-height:1.6;">${esc(t.content)}</p>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;flex-shrink:0;">
+            <label style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+              <input type="checkbox" ${t.active?'checked':''} onchange="toggleTmActive(${t.id},this.checked)"> 표시
+            </label>
+            <button onclick="deleteTestimonial(${t.id})" style="font-size:0.78rem;color:var(--danger);background:none;border:none;cursor:pointer;">삭제</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  async function addTestimonial() {
+    const reviewer_name = document.getElementById('tmName').value.trim();
+    const content       = document.getElementById('tmContent').value.trim();
+    if (!reviewer_name || !content) { showToast('이름과 후기 내용은 필수입니다.', 'error'); return; }
+    const { data: existing } = await sb.from('testimonials').select('sort_order').order('sort_order', { ascending: false }).limit(1);
+    const sort_order = existing && existing.length ? existing[0].sort_order + 1 : 0;
+    const { error } = await sb.from('testimonials').insert({
+      reviewer_name, content,
+      reviewer_company: document.getElementById('tmCompany').value.trim(),
+      reviewer_role:    document.getElementById('tmRole').value.trim(),
+      sort_order, active: true,
+    });
+    if (error) { showToast('추가 실패: ' + error.message, 'error'); return; }
+    ['tmName','tmCompany','tmRole','tmContent'].forEach(id => document.getElementById(id).value = '');
+    await loadTestimonials();
+    showToast('✓ 후기가 추가되었습니다.', 'success');
+  }
+
+  async function deleteTestimonial(id) {
+    if (!confirm('삭제하시겠습니까?')) return;
+    await sb.from('testimonials').delete().eq('id', id);
+    await loadTestimonials();
+  }
+
+  async function toggleTmActive(id, active) {
+    await sb.from('testimonials').update({ active }).eq('id', id);
+  }
+
+  // ── 강의 문의 수신함 ──────────────────────────────────────
+  async function loadInbox() {
+    const { data, error } = await sb.from('contact_requests').select('*').order('created_at', { ascending: false });
+    const list = document.getElementById('inboxList');
+    if (error) { list.innerHTML = `<p style="color:var(--danger);font-size:0.85rem;">조회 실패: ${error.message}</p>`; return; }
+    const badge = document.getElementById('inboxBadge');
+    if (badge) badge.textContent = data && data.length ? `총 ${data.length}건 (미확인: ${data.filter(r=>r.status==='new').length}건)` : '접수된 문의가 없습니다.';
+    if (!data || !data.length) {
+      list.innerHTML = '<p style="font-size:0.85rem;color:var(--gray-light)">접수된 문의가 없습니다.</p>';
+      return;
+    }
+    list.innerHTML = data.map(r => `
+      <div style="padding:1rem;background:${r.status==='new'?'#EBF4F4':'#fafafa'};border:1px solid ${r.status==='new'?'#C8DEDE':'var(--border)'};border-radius:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;flex-wrap:wrap;">
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;">${esc(r.name)} <span style="font-weight:400;color:var(--teal);">${esc(r.phone)}</span></div>
+            ${r.email?`<div style="font-size:0.8rem;color:var(--gray-light);">${esc(r.email)}</div>`:''}
+            ${r.org?`<div style="font-size:0.8rem;color:var(--gray);">${esc(r.org)}</div>`:''}
+            ${r.category?`<div style="font-size:0.75rem;color:var(--teal);font-weight:600;margin-top:0.25rem;">${esc(r.category)}</div>`:''}
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center;flex-shrink:0;">
+            <span style="font-size:0.72rem;color:#888;">${new Date(r.created_at).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})}</span>
+            ${r.status==='new'?`<button onclick="markInboxRead(${r.id})" style="font-size:0.75rem;padding:0.25rem 0.6rem;background:var(--teal);color:white;border:none;border-radius:4px;cursor:pointer;">확인</button>`:'<span style="font-size:0.72rem;color:#aaa;">확인됨</span>'}
+            <button onclick="deleteInbox(${r.id})" style="font-size:0.75rem;color:var(--danger);background:none;border:none;cursor:pointer;">삭제</button>
+          </div>
+        </div>
+        <p style="font-size:0.87rem;color:var(--gray);margin-top:0.6rem;line-height:1.6;padding-top:0.6rem;border-top:1px solid #e0e0e0;">${esc(r.message)}</p>
+      </div>`).join('');
+  }
+
+  async function markInboxRead(id) {
+    await sb.from('contact_requests').update({ status: 'read' }).eq('id', id);
+    await loadInbox();
+  }
+
+  async function deleteInbox(id) {
+    if (!confirm('이 문의를 삭제하시겠습니까?')) return;
+    await sb.from('contact_requests').delete().eq('id', id);
+    await loadInbox();
+  }
+
+  // ── 강의 자료 / PDF 관리 ──────────────────────────────────
+  async function loadDownloads() {
+    const { data } = await sb.from('downloads').select('*').order('sort_order');
+    const list = document.getElementById('downloadList');
+    if (!data || !data.length) {
+      list.innerHTML = '<p style="font-size:0.85rem;color:var(--gray-light)">등록된 자료가 없습니다.</p>';
+      return;
+    }
+    list.innerHTML = data.map(d => `
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.7rem 0.85rem;background:#fafafa;border:1px solid var(--border);border-radius:6px;">
+        <span style="font-size:1.4rem;">📄</span>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:0.88rem;">${esc(d.title)}</div>
+          ${d.description?`<div style="font-size:0.78rem;color:var(--gray-light);">${esc(d.description)}</div>`:''}
+          <a href="${esc(d.file_url)}" target="_blank" style="font-size:0.75rem;color:var(--teal);">링크 보기</a>
+        </div>
+        <label style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+          <input type="checkbox" ${d.active?'checked':''} onchange="toggleDownloadActive(${d.id},this.checked)"> 표시
+        </label>
+        <button onclick="deleteDownload(${d.id})" style="font-size:0.78rem;color:var(--danger);background:none;border:none;cursor:pointer;">삭제</button>
+      </div>`).join('');
+  }
+
+  async function addDownload() {
+    const title = document.getElementById('dlTitle').value.trim();
+    const desc  = document.getElementById('dlDesc').value.trim();
+    const file  = document.getElementById('dlFile').files[0];
+    if (!title) { showToast('자료명을 입력해주세요.', 'error'); return; }
+    if (!file)  { showToast('파일을 선택해주세요.', 'error'); return; }
+    showToast('📤 업로드 중…');
+    const ext  = file.name.split('.').pop();
+    const name = `dl_${Date.now()}.${ext}`;
+    const { error: upErr } = await sb.storage.from('downloads').upload(name, file, { upsert: true });
+    if (upErr) { showToast('업로드 실패: ' + upErr.message, 'error'); return; }
+    const { data: urlData } = sb.storage.from('downloads').getPublicUrl(name);
+    const { data: existing } = await sb.from('downloads').select('sort_order').order('sort_order', { ascending: false }).limit(1);
+    const sort_order = existing && existing.length ? existing[0].sort_order + 1 : 0;
+    const { error } = await sb.from('downloads').insert({ title, description: desc, file_url: urlData.publicUrl, sort_order, active: true });
+    if (error) { showToast('저장 실패: ' + error.message, 'error'); return; }
+    document.getElementById('dlTitle').value = '';
+    document.getElementById('dlDesc').value  = '';
+    document.getElementById('dlFile').value  = '';
+    document.getElementById('dlFileName').textContent = '선택된 파일 없음';
+    await loadDownloads();
+    showToast('✓ 자료가 추가되었습니다.', 'success');
+  }
+
+  async function deleteDownload(id) {
+    if (!confirm('삭제하시겠습니까?')) return;
+    await sb.from('downloads').delete().eq('id', id);
+    await loadDownloads();
+  }
+
+  async function toggleDownloadActive(id, active) {
+    await sb.from('downloads').update({ active }).eq('id', id);
   }
 </script>
 </body>

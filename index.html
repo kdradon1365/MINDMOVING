@@ -717,6 +717,82 @@
   }
   .ci-value.empty { color: #444; font-weight: 400; font-size: 0.9rem; }
 
+  /* CREDENTIALS */
+  #credentials { background: var(--taupe-pale); border-top: 1px solid #DDD6CE; border-bottom: 1px solid #DDD6CE; }
+  .cred-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+  .cred-card {
+    background: white; border-radius: 10px; padding: 1.75rem 1.5rem;
+    display: flex; flex-direction: column; gap: 0.5rem;
+    border: 1px solid #DDD6CE; transition: box-shadow 0.2s;
+  }
+  .cred-card:hover { box-shadow: 0 4px 16px rgba(59,138,140,0.1); }
+  .cred-icon { font-size: 2rem; margin-bottom: 0.25rem; }
+  .cred-title { font-size: 0.92rem; font-weight: 700; color: var(--black); line-height: 1.35; }
+  .cred-issuer { font-size: 0.8rem; color: var(--teal); font-weight: 600; }
+  .cred-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
+
+  /* TESTIMONIALS */
+  #testimonials { background: var(--white); border-top: 1px solid var(--border); }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .testimonial-card {
+    background: var(--teal-pale); border: 1px solid #C8DEDE; border-radius: 10px;
+    padding: 2rem; display: flex; flex-direction: column;
+  }
+  .testimonial-quote { font-size: 3.5rem; color: var(--teal); line-height: 0.8; font-family: Georgia, serif; margin-bottom: 0.75rem; opacity: 0.3; }
+  .testimonial-content { font-size: 0.93rem; color: var(--gray); line-height: 1.8; flex: 1; margin-bottom: 1.5rem; }
+  .testimonial-author { border-top: 1px solid #C8DEDE; padding-top: 1rem; }
+  .testimonial-name { font-size: 0.9rem; font-weight: 700; color: var(--black); }
+  .testimonial-role { font-size: 0.78rem; color: var(--taupe); margin-top: 0.2rem; }
+  .testimonials-empty { text-align: center; padding: 4rem 2rem; color: var(--gray-light); font-size: 0.9rem; }
+
+  /* CONTACT FORM */
+  .contact-form { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 1.75rem; }
+  .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+  .cf-input, .cf-select, .cf-textarea {
+    width: 100%; padding: 0.72rem 1rem;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 6px; color: white; font-family: inherit; font-size: 0.87rem;
+    transition: border-color 0.2s;
+  }
+  .cf-input:focus, .cf-select:focus, .cf-textarea:focus {
+    outline: none; border-color: var(--teal);
+  }
+  .cf-input::placeholder, .cf-textarea::placeholder { color: rgba(255,255,255,0.4); }
+  .cf-select { color: rgba(255,255,255,0.6); }
+  .cf-select option { color: var(--black); background: white; }
+  .cf-textarea { resize: none; height: 100px; }
+  .cf-submit {
+    background: var(--teal); color: white; font-weight: 700; border: none;
+    padding: 0.9rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
+    font-family: inherit; transition: background 0.2s; text-align: left;
+  }
+  .cf-submit:hover { background: var(--teal-dark); }
+  .cf-submit:disabled { opacity: 0.6; cursor: default; }
+  .cf-success {
+    background: rgba(56,161,105,0.15); border: 1px solid rgba(56,161,105,0.4);
+    color: #9AE6B4; padding: 1rem; border-radius: 6px; font-size: 0.87rem;
+    text-align: center; display: none; margin-top: 0.25rem;
+  }
+
+  /* DOWNLOADS */
+  .downloads-wrap { margin-top: 0.75rem; }
+  .downloads-label { font-size: 0.65rem; color: #888; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 600; margin-bottom: 0.75rem; }
+  .download-item {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.65rem 0.85rem; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; margin-bottom: 0.5rem;
+  }
+  .download-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .download-info { flex: 1; min-width: 0; }
+  .download-title { font-size: 0.85rem; font-weight: 600; color: #E0E0E0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .download-desc { font-size: 0.74rem; color: #666; margin-top: 0.1rem; }
+  .download-btn {
+    background: rgba(59,138,140,0.3); color: #7ECFCF; border: 1px solid rgba(59,138,140,0.4);
+    padding: 0.35rem 0.75rem; border-radius: 4px; font-size: 0.78rem; cursor: pointer;
+    text-decoration: none; white-space: nowrap; font-family: inherit;
+  }
+  .download-btn:hover { background: rgba(59,138,140,0.5); }
+
   /* FOOTER */
   footer {
     background: #0F0F0F;
@@ -751,6 +827,9 @@
     .contact-inner { grid-template-columns: 1fr; }
     .contact-left { padding: 3rem 2.5rem; border-right: none; border-bottom: 1px solid #2A2A2A; }
     .contact-right { padding: 3rem 2.5rem; }
+    .cf-row { grid-template-columns: 1fr; }
+    .cred-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    .testimonials-grid { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
   }
 </style>
@@ -773,6 +852,7 @@
     <li><a href="#about">강사 소개</a></li>
     <li><a href="#lectures">강의 분야</a></li>
     <li><a href="#history">강의 이력</a></li>
+    <li><a href="#testimonials">수강 후기</a></li>
     <li><a href="#contact">문의</a></li>
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="메뉴" aria-expanded="false">
@@ -784,6 +864,7 @@
   <a href="#about" onclick="closeMenu()">강사 소개</a>
   <a href="#lectures" onclick="closeMenu()">강의 분야</a>
   <a href="#history" onclick="closeMenu()">강의 이력</a>
+  <a href="#testimonials" onclick="closeMenu()">수강 후기</a>
   <a href="#contact" onclick="closeMenu()">문의</a>
 </div>
 
@@ -914,6 +995,15 @@
   </div>
 </section>
 
+<!-- CREDENTIALS -->
+<section id="credentials" class="section-wrap" style="display:none;">
+  <div class="container">
+    <div class="eyebrow">Credentials</div>
+    <h2 class="section-title">자격 및 수료</h2>
+    <div class="cred-grid" id="credGrid"></div>
+  </div>
+</section>
+
 <!-- LECTURES -->
 <section id="lectures" class="section-wrap" style="background: var(--white);">
   <div class="container">
@@ -940,6 +1030,15 @@
   </div>
 </section>
 
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="section-wrap" style="display:none;">
+  <div class="container">
+    <div class="eyebrow">Testimonials</div>
+    <h2 class="section-title">수강 후기</h2>
+    <div class="testimonials-grid" id="testimonialsGrid"></div>
+  </div>
+</section>
+
 <!-- HISTORY -->
 <section id="history" class="section-wrap">
   <div class="container">
@@ -958,14 +1057,22 @@
   <div class="contact-inner">
     <div class="contact-left">
       <div class="eyebrow">Contact</div>
-      <h2 class="section-title" style="color: white; margin-bottom: 1rem;">강의 문의</h2>
+      <h2 class="section-title" style="color: white; margin-bottom: 0.5rem;">강의 문의</h2>
       <p class="contact-desc-text" id="contactDesc">강의 및 컨설팅 관련 문의는 언제든지 편하게 연락 주세요.</p>
-      <a href="mailto:2haeyong@naver.com" class="contact-cta">
-        문의하기
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
+      <form class="contact-form" id="contactForm" onsubmit="submitContactForm(event)" novalidate>
+        <div class="cf-row">
+          <input class="cf-input" id="cfName" type="text" placeholder="이름 *" required>
+          <input class="cf-input" id="cfPhone" type="tel" placeholder="전화번호 *" required>
+        </div>
+        <input class="cf-input" id="cfEmail" type="email" placeholder="이메일 (선택)">
+        <input class="cf-input" id="cfOrg" type="text" placeholder="소속 기관 / 회사 (선택)">
+        <select class="cf-select" id="cfCategory">
+          <option value="">강의 분야 선택 (선택)</option>
+        </select>
+        <textarea class="cf-textarea" id="cfMessage" placeholder="문의 내용을 입력해주세요. *" required></textarea>
+        <button type="submit" class="cf-submit" id="cfSubmitBtn">문의 보내기 →</button>
+        <div class="cf-success" id="cfSuccess">✓ 문의가 접수되었습니다. 빠른 시일 내에 연락드리겠습니다.</div>
+      </form>
     </div>
     <div class="contact-right">
       <div class="contact-item">
@@ -983,6 +1090,10 @@
       <div class="contact-item">
         <div class="ci-label">Phone</div>
         <div class="ci-value" id="contactPhone">010-5468-9215</div>
+      </div>
+      <div id="downloadsSection" style="display:none;">
+        <div class="ci-label">강의 자료</div>
+        <div class="downloads-wrap" id="downloadsList"></div>
       </div>
     </div>
   </div>
@@ -1221,11 +1332,7 @@
     setHTML('aboutText1', c.aboutText1);
     setHTML('aboutText2', c.aboutText2);
     setHTML('contactDesc',c.contactDesc);
-    if (c.email) {
-      setText('contactEmail', c.email);
-      const cta = document.querySelector('.contact-cta');
-      if (cta) cta.href = 'mailto:' + c.email;
-    }
+    if (c.email) setText('contactEmail', c.email);
     if (c.phone) setText('contactPhone', c.phone);
   }
 
@@ -1259,21 +1366,128 @@
   function carouselPrev() { clearInterval(_ctimer); goSlide((_ci-1+_ct)%_ct); }
   function carouselNext() { clearInterval(_ctimer); goSlide((_ci+1)%_ct); }
 
+  // ── 자격/경력 배지 렌더링 ────────────────────────────────
+  function renderCredentials(data) {
+    const sec  = document.getElementById('credentials');
+    const grid = document.getElementById('credGrid');
+    if (!grid) return;
+    const active = data.filter(c => c.active).sort((a,b) => a.sort_order - b.sort_order);
+    if (!active.length) return;
+    sec.style.display = '';
+    grid.innerHTML = active.map(c => `
+      <div class="cred-card">
+        <div class="cred-icon">${escapeHtml(c.icon || '🏅')}</div>
+        <div class="cred-title">${escapeHtml(c.title)}</div>
+        ${c.issuer ? `<div class="cred-issuer">${escapeHtml(c.issuer)}</div>` : ''}
+        ${c.year   ? `<div class="cred-year">${escapeHtml(c.year)}</div>` : ''}
+      </div>`).join('');
+  }
+
+  // ── 수강 후기 렌더링 ─────────────────────────────────────
+  function renderTestimonials(data) {
+    const sec  = document.getElementById('testimonials');
+    const grid = document.getElementById('testimonialsGrid');
+    if (!grid) return;
+    const active = data.filter(t => t.active).sort((a,b) => a.sort_order - b.sort_order);
+    if (!active.length) return;
+    sec.style.display = '';
+    grid.innerHTML = active.map(t => `
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-content">${escapeHtml(t.content)}</p>
+        <div class="testimonial-author">
+          <div class="testimonial-name">${escapeHtml(t.reviewer_name)}</div>
+          <div class="testimonial-role">${[t.reviewer_company, t.reviewer_role].filter(Boolean).map(escapeHtml).join(' · ')}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── 강의 자료 다운로드 렌더링 ────────────────────────────
+  function renderDownloads(data) {
+    const sec  = document.getElementById('downloadsSection');
+    const list = document.getElementById('downloadsList');
+    if (!list || !sec) return;
+    const active = data.filter(d => d.active).sort((a,b) => a.sort_order - b.sort_order);
+    if (!active.length) return;
+    sec.style.display = 'block';
+    list.innerHTML = active.map(d => `
+      <div class="download-item">
+        <div class="download-icon">📄</div>
+        <div class="download-info">
+          <div class="download-title">${escapeHtml(d.title)}</div>
+          ${d.description ? `<div class="download-desc">${escapeHtml(d.description)}</div>` : ''}
+        </div>
+        <a href="${escapeHtml(d.file_url)}" target="_blank" download class="download-btn">다운로드</a>
+      </div>`).join('');
+  }
+
+  // ── 문의 폼 카테고리 옵션 로드 ──────────────────────────
+  async function loadContactCategories() {
+    const { data } = await sb.from('lecture_areas').select('title, category_key')
+      .eq('active', true).order('sort_order');
+    const sel = document.getElementById('cfCategory');
+    if (!sel || !data) return;
+    sel.innerHTML = '<option value="">강의 분야 선택 (선택)</option>' +
+      data.filter(a => a.category_key)
+          .map(a => `<option value="${escapeHtml(a.category_key)}">${escapeHtml(a.title)}</option>`)
+          .join('');
+  }
+
+  // ── 문의 폼 제출 ─────────────────────────────────────────
+  async function submitContactForm(e) {
+    e.preventDefault();
+    const name    = document.getElementById('cfName').value.trim();
+    const phone   = document.getElementById('cfPhone').value.trim();
+    const message = document.getElementById('cfMessage').value.trim();
+    if (!name || !phone || !message) {
+      alert('이름, 전화번호, 문의 내용은 필수입니다.');
+      return;
+    }
+    const btn = document.getElementById('cfSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = '전송 중…';
+    const { error } = await sb.from('contact_requests').insert({
+      name,
+      phone,
+      email:    document.getElementById('cfEmail').value.trim(),
+      org:      document.getElementById('cfOrg').value.trim(),
+      category: document.getElementById('cfCategory').value,
+      message,
+      status:   'new',
+    });
+    if (error) {
+      btn.disabled = false;
+      btn.textContent = '문의 보내기 →';
+      alert('전송 실패: ' + error.message);
+      return;
+    }
+    document.getElementById('cfSuccess').style.display = 'block';
+    document.getElementById('contactForm').reset();
+    btn.textContent = '전송 완료 ✓';
+  }
+
   // ── Supabase에서 전체 데이터 로드 ────────────────────────
   async function loadFromSupabase() {
     try {
-      const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes] = await Promise.all([
+      const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes, credRes, tmRes, dlRes] = await Promise.all([
         sb.from('site_content').select('*'),
         sb.from('lecture_areas').select('*'),
         sb.from('about_orgs').select('*'),
         sb.from('about_tags').select('*'),
         sb.from('instructor_photos').select('*'),
+        sb.from('credentials').select('*'),
+        sb.from('testimonials').select('*'),
+        sb.from('downloads').select('*'),
       ]);
       if (contentRes.data  && contentRes.data.length)  applyContent(contentRes.data);
       if (lecturesRes.data && lecturesRes.data.length)  renderLectures(lecturesRes.data);
       if (orgsRes.data     && orgsRes.data.length)      renderOrgs(orgsRes.data);
       if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
       if (photosRes.data   && photosRes.data.length)    initCarousel(photosRes.data);
+      if (credRes.data)  renderCredentials(credRes.data);
+      if (tmRes.data)    renderTestimonials(tmRes.data);
+      if (dlRes.data)    renderDownloads(dlRes.data);
+      loadContactCategories();
     } catch (e) {
       console.warn('Supabase load failed:', e);
     }
