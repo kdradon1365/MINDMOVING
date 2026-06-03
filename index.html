@@ -1348,7 +1348,7 @@
     _ct = active.length;
     if (!_ct) return;
     track.innerHTML = active.map(p =>
-      `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy"></div>`
+      `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy" onerror="this.onerror=null;this.src='photo_haeyong.jpg'"></div>`
     ).join('');
     if (dotsWrap) dotsWrap.innerHTML = active.map((_,i) =>
       `<div class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`
