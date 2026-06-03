@@ -104,3 +104,28 @@ insert into about_tags (label, sort_order) values
   ('커뮤니케이션',       7),
   ('팀빌딩',            8),
   ('조직 활성화',        9);
+
+-- ============================================================
+-- 강의 사진 업로드용 Storage 버킷 설정
+-- (아직 실행하지 않은 경우 아래도 함께 실행하세요)
+-- ============================================================
+
+-- Storage 버킷 생성 (public)
+insert into storage.buckets (id, name, public)
+values ('lecture-photos', 'lecture-photos', true)
+on conflict (id) do nothing;
+
+-- 퍼블릭 읽기 허용
+create policy "public read lecture photos" on storage.objects
+for select using (bucket_id = 'lecture-photos');
+
+-- 관리자(anon key)에서 업로드 허용
+create policy "anon upload lecture photos" on storage.objects
+for insert with check (bucket_id = 'lecture-photos');
+
+-- 관리자(anon key)에서 삭제/교체 허용
+create policy "anon update lecture photos" on storage.objects
+for update using (bucket_id = 'lecture-photos');
+
+create policy "anon delete lecture photos" on storage.objects
+for delete using (bucket_id = 'lecture-photos');

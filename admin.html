@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>관리자 | 마인드무빙 컨설팅</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --teal: #3B8A8C;
@@ -338,6 +339,10 @@
   .form-group textarea:focus { border-color: var(--teal); }
   .form-group textarea { resize: vertical; min-height: 64px; }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .photo-upload-wrap { display: flex; align-items: center; gap: 0.75rem; }
+  .photo-upload-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; background: var(--teal); color: white; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .photo-upload-btn:hover { background: var(--teal-dark); }
+  .photo-filename { font-size: 0.8rem; color: var(--gray-light); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .date-selects { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr; gap: 0.5rem; }
   .date-sel { padding: 0.65rem 0.5rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: var(--bg); color: var(--text); cursor: pointer; }
   .date-sel:focus { outline: none; border-color: var(--teal); }
@@ -756,6 +761,22 @@
           <label>메모 <span class="opt">(선택)</span></label>
           <textarea id="fNote" placeholder="예: 임원 대상 2회차, 참석 인원 50명"></textarea>
         </div>
+        <div class="form-group">
+          <label>강의 사진 <span class="opt">(선택)</span></label>
+          <div class="photo-upload-wrap">
+            <label class="photo-upload-btn" for="fPhoto">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              사진 선택
+            </label>
+            <input type="file" id="fPhoto" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+            <span id="photoFileName" class="photo-filename">선택된 파일 없음</span>
+          </div>
+          <div id="photoPreviewWrap" style="display:none; margin-top:0.6rem;">
+            <img id="photoPreview" style="max-width:100%; max-height:160px; border-radius:6px; border:1px solid var(--border);">
+            <button type="button" onclick="clearPhoto()" style="display:block; margin-top:0.4rem; font-size:0.78rem; color:var(--danger); background:none; border:none; cursor:pointer;">사진 제거</button>
+          </div>
+          <input type="hidden" id="fPhotoUrl">
+        </div>
         <button class="submit-btn" id="submitBtn" onclick="submitForm()">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           추가하기
@@ -801,6 +822,10 @@
   const CONTENT_KEY = 'mindmoving_content';
   let editingId = null;
 
+  const SUPABASE_URL  = 'https://diuceoqzycuxpaxztiql.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdWNlb3F6eWN1eHBheHp0aXFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0Mzc1MzEsImV4cCI6MjA5NjAxMzUzMX0.28CaEwmGTZF8tmZXr8UZ6jAy5uBvXyG8beec6rax9D0';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
   const CONTENT_DEFAULTS = {
     topBar:      'Move your mind, move your life.',
     heroLine1:   '마음이',
@@ -825,6 +850,35 @@
   async function hashPw(pw) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function previewPhoto(input) {
+    const file = input.files[0];
+    if (!file) return;
+    document.getElementById('photoFileName').textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('photoPreview').src = e.target.result;
+      document.getElementById('photoPreviewWrap').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearPhoto() {
+    document.getElementById('fPhoto').value = '';
+    document.getElementById('fPhotoUrl').value = '';
+    document.getElementById('photoFileName').textContent = '선택된 파일 없음';
+    document.getElementById('photoPreviewWrap').style.display = 'none';
+    document.getElementById('photoPreview').src = '';
+  }
+
+  async function uploadPhoto(file) {
+    const ext  = file.name.split('.').pop();
+    const name = `${Date.now()}.${ext}`;
+    const { data, error } = await sb.storage.from('lecture-photos').upload(name, file, { upsert: true });
+    if (error) { console.error('Upload error:', error); return null; }
+    const { data: urlData } = sb.storage.from('lecture-photos').getPublicUrl(name);
+    return urlData.publicUrl;
   }
 
   function initDateSelects() {
@@ -956,26 +1010,42 @@
     document.getElementById('fDay').value   = parts[2] || '';
   }
 
-  function submitForm() {
+  async function submitForm() {
     const title = document.getElementById('fTitle').value.trim();
     const org   = document.getElementById('fOrg').value.trim();
     const date  = getDateValue();
     const cat   = document.getElementById('fCategory').value;
     const note  = document.getElementById('fNote').value.trim();
     if (!title || !org || !date) { showToast('⚠️ 강의명, 기관명, 날짜는 필수입니다.', 'error'); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '저장 중…';
+
+    let photoUrl = document.getElementById('fPhotoUrl').value || '';
+    const photoFile = document.getElementById('fPhoto').files[0];
+    if (photoFile) {
+      showToast('📤 사진 업로드 중…');
+      const url = await uploadPhoto(photoFile);
+      if (url) photoUrl = url;
+      else showToast('⚠️ 사진 업로드 실패 (텍스트 내용은 저장됩니다)', 'error');
+    }
+
     const ls = getLectures();
     if (editingId) {
       const idx = ls.findIndex(l => l.id === editingId);
-      if (idx > -1) ls[idx] = { ...ls[idx], title, organization: org, date, category: cat, note };
+      if (idx > -1) ls[idx] = { ...ls[idx], title, organization: org, date, category: cat, note, photo_url: photoUrl };
       saveLectures(ls);
       showToast('✓ 수정되었습니다.', 'success');
       cancelEdit();
     } else {
-      ls.push({ id: Date.now().toString(), title, organization: org, date, category: cat, note });
+      ls.push({ id: Date.now().toString(), title, organization: org, date, category: cat, note, photo_url: photoUrl });
       saveLectures(ls);
       showToast('✓ 추가되었습니다.', 'success');
       clearForm();
     }
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg> 추가하기';
     initYearFilter();
     renderStats();
     renderList();
@@ -984,6 +1054,7 @@
   function clearForm() {
     ['fTitle','fOrg','fYear','fMonth','fDay','fNote'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('fCategory').value = '';
+    clearPhoto();
   }
 
   function startEdit(id) {
@@ -995,6 +1066,12 @@
     populateDateFields(l.date);
     document.getElementById('fCategory').value = l.category || '';
     document.getElementById('fNote').value     = l.note || '';
+    if (l.photo_url) {
+      document.getElementById('fPhotoUrl').value = l.photo_url;
+      document.getElementById('photoPreview').src = l.photo_url;
+      document.getElementById('photoPreviewWrap').style.display = 'block';
+      document.getElementById('photoFileName').textContent = '기존 사진';
+    }
     document.getElementById('formTitle').textContent = '강의 이력 수정';
     document.getElementById('submitBtn').innerHTML = '수정 저장';
     document.getElementById('submitBtn').classList.add('edit-mode');

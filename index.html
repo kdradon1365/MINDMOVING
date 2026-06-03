@@ -604,6 +604,43 @@
     font-size: 0.9rem;
   }
 
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(3px);
+    align-items: center; justify-content: center; padding: 1.5rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white; max-width: 560px; width: 100%;
+    max-height: 90vh; overflow-y: auto; position: relative;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px;
+    background: #F5F2EF; border: none; cursor: pointer; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #555;
+  }
+  .modal-close:hover { background: #EAE5E0; }
+  .modal-photo { width: 100%; max-height: 280px; object-fit: cover; display: block; }
+  .modal-body { padding: 2rem 2rem 2.5rem; }
+  .modal-date { font-size: 0.72rem; color: var(--taupe); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .modal-title { font-size: 1.4rem; font-weight: 800; color: var(--black); line-height: 1.3; margin-bottom: 0.4rem; }
+  .modal-org { font-size: 0.9rem; color: var(--teal); font-weight: 600; margin-bottom: 1.25rem; }
+  .modal-category { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; color: white; background: var(--teal); padding: 0.2rem 0.7rem; margin-bottom: 1rem; }
+  .modal-note { font-size: 0.88rem; color: var(--gray); line-height: 1.7; padding-top: 1rem; border-top: 1px solid #EAE5E0; }
+  .modal-list { display: flex; flex-direction: column; gap: 0; }
+  .modal-list-item { padding: 1rem 0; border-bottom: 1px solid #EAE5E0; cursor: pointer; }
+  .modal-list-item:last-child { border-bottom: none; }
+  .modal-list-item:hover .modal-list-title { color: var(--teal); }
+  .modal-list-date { font-size: 0.7rem; color: var(--taupe); font-weight: 700; letter-spacing: 1px; margin-bottom: 0.2rem; }
+  .modal-list-title { font-size: 0.93rem; font-weight: 700; color: var(--black); }
+  .modal-list-org { font-size: 0.82rem; color: var(--gray-light); margin-top: 0.15rem; }
+  .modal-empty { text-align: center; padding: 3rem 1rem; color: var(--gray-light); font-size: 0.9rem; }
+  .history-card { cursor: pointer; }
+  .history-card:hover { background: #F5F2EF; }
+  .lecture-card { cursor: pointer; }
+
   /* CONTACT */
   #contact { background: var(--black); }
   .contact-inner {
@@ -860,17 +897,17 @@
       <p class="section-desc">다양한 현장 경험과 전문 지식을 바탕으로<br>맞춤형 기업 교육 프로그램을 제공합니다.</p>
     </div>
     <div class="lectures-grid">
-      <div class="lecture-card"><span class="lecture-icon">🏆</span><h4>리더십 / 조직문화</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">💬</span><h4>커뮤니케이션 및 갈등관리 / 협상</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">🧠</span><h4>심리 / 멘탈 코칭</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">📈</span><h4>세일즈 / 영업코칭 및 서비스</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">📚</span><h4>기업교육 / HRD</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">🎭</span><h4>Roll-Play(롤플레이) 활용 강의</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">🤝</span><h4>민원 응대</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">🎬</span><h4>연극 활용 기업교육</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">🌿</span><h4>스트레스 감정관리 교육</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">💪</span><h4>회복탄력성</h4></div>
-      <div class="lecture-card"><span class="lecture-icon">🎯</span><h4>핵심가치 내재화 교육</h4></div>
+      <div class="lecture-card" data-category="리더십/조직문화" onclick="openCategoryModal('리더십/조직문화','리더십 / 조직문화')"><span class="lecture-icon">🏆</span><h4>리더십 / 조직문화</h4></div>
+      <div class="lecture-card" data-category="커뮤니케이션/협상" onclick="openCategoryModal('커뮤니케이션/협상','커뮤니케이션 및 갈등관리 / 협상')"><span class="lecture-icon">💬</span><h4>커뮤니케이션 및 갈등관리 / 협상</h4></div>
+      <div class="lecture-card" data-category="심리/멘탈코칭" onclick="openCategoryModal('심리/멘탈코칭','심리 / 멘탈 코칭')"><span class="lecture-icon">🧠</span><h4>심리 / 멘탈 코칭</h4></div>
+      <div class="lecture-card" data-category="세일즈/영업코칭" onclick="openCategoryModal('세일즈/영업코칭','세일즈 / 영업코칭 및 서비스')"><span class="lecture-icon">📈</span><h4>세일즈 / 영업코칭 및 서비스</h4></div>
+      <div class="lecture-card" data-category="기업교육/HRD" onclick="openCategoryModal('기업교육/HRD','기업교육 / HRD')"><span class="lecture-icon">📚</span><h4>기업교육 / HRD</h4></div>
+      <div class="lecture-card" data-category="드라마테라피" onclick="openCategoryModal('드라마테라피','Roll-Play(롤플레이) 활용 강의')"><span class="lecture-icon">🎭</span><h4>Roll-Play(롤플레이) 활용 강의</h4></div>
+      <div class="lecture-card" data-category="민원응대" onclick="openCategoryModal('민원응대','민원 응대')"><span class="lecture-icon">🤝</span><h4>민원 응대</h4></div>
+      <div class="lecture-card" data-category="연극활용기업교육" onclick="openCategoryModal('연극활용기업교육','연극 활용 기업교육')"><span class="lecture-icon">🎬</span><h4>연극 활용 기업교육</h4></div>
+      <div class="lecture-card" data-category="스트레스관리" onclick="openCategoryModal('스트레스관리','스트레스 감정관리 교육')"><span class="lecture-icon">🌿</span><h4>스트레스 감정관리 교육</h4></div>
+      <div class="lecture-card" data-category="회복탄력성" onclick="openCategoryModal('회복탄력성','회복탄력성')"><span class="lecture-icon">💪</span><h4>회복탄력성</h4></div>
+      <div class="lecture-card" data-category="핵심가치내재화" onclick="openCategoryModal('핵심가치내재화','핵심가치 내재화 교육')"><span class="lecture-icon">🎯</span><h4>핵심가치 내재화 교육</h4></div>
     </div>
   </div>
 </section>
@@ -923,6 +960,14 @@
   </div>
 </section>
 
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
 <footer>
   <span>© <span id="cpYear"></span> 마인드무빙 컨설팅. All rights reserved.</span>
   <a href="admin.html">관리자</a>
@@ -941,6 +986,14 @@
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
+  function fmtDate(date) {
+    if (!date) return '';
+    const p = date.split('-');
+    if (p.length === 3) return `${p[0]}년 ${parseInt(p[1])}월 ${parseInt(p[2])}일`;
+    if (p.length === 2) return `${p[0]}년 ${parseInt(p[1])}월`;
+    return date;
+  }
+
   function renderHistory() {
     const grid = document.getElementById('historyGrid');
     const lectures = getLectures();
@@ -950,14 +1003,71 @@
     }
     const sorted = [...lectures].sort((a, b) => b.date.localeCompare(a.date));
     grid.innerHTML = sorted.map(l => `
-      <div class="history-card">
-        <div class="history-date">${escapeHtml(l.date)}</div>
+      <div class="history-card" onclick="openLectureModal('${escapeHtml(l.id)}')">
+        ${l.photo_url ? `<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">` : ''}
+        <div class="history-date">${fmtDate(l.date)}</div>
         <div class="history-title">${escapeHtml(l.title)}</div>
         <div class="history-org">${escapeHtml(l.organization)}</div>
-        ${l.note ? `<div class="history-note">${escapeHtml(l.note)}</div>` : ''}
+        ${l.category ? `<div style="margin-top:0.5rem;font-size:0.7rem;color:var(--teal);font-weight:700;">${escapeHtml(l.category)}</div>` : ''}
       </div>
     `).join('');
   }
+
+  // ── 강의 이력 팝업 ────────────────────────────────────────
+  function openLectureModal(id) {
+    const l = getLectures().find(l => l.id === id);
+    if (!l) return;
+    document.getElementById('modalContent').innerHTML = `
+      ${l.photo_url ? `<img src="${escapeHtml(l.photo_url)}" class="modal-photo">` : ''}
+      <div class="modal-body">
+        <div class="modal-date">${fmtDate(l.date)}</div>
+        <div class="modal-title">${escapeHtml(l.title)}</div>
+        <div class="modal-org">${escapeHtml(l.organization)}</div>
+        ${l.category ? `<span class="modal-category">${escapeHtml(l.category)}</span>` : ''}
+        ${l.note ? `<div class="modal-note">${escapeHtml(l.note)}</div>` : ''}
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // ── 강의 분야별 팝업 ─────────────────────────────────────
+  function openCategoryModal(category, label) {
+    const items = getLectures()
+      .filter(l => l.category === category)
+      .sort((a, b) => b.date.localeCompare(a.date));
+    const listHtml = items.length
+      ? items.map(l => `
+          <div class="modal-list-item" onclick="closeModalDirect();setTimeout(()=>openLectureModal('${escapeHtml(l.id)}'),150)">
+            <div class="modal-list-date">${fmtDate(l.date)}</div>
+            <div class="modal-list-title">${escapeHtml(l.title)}</div>
+            <div class="modal-list-org">${escapeHtml(l.organization)}</div>
+          </div>`).join('')
+      : `<div class="modal-empty">아직 등록된 강의 이력이 없습니다.</div>`;
+    document.getElementById('modalContent').innerHTML = `
+      <div class="modal-body">
+        <div class="modal-date">강의 분야</div>
+        <div class="modal-title">${escapeHtml(label)}</div>
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid #EAE5E0;">
+          <div style="font-size:0.72rem;color:var(--taupe);font-weight:700;letter-spacing:1px;margin-bottom:0.75rem;">관련 강의 이력 ${items.length ? `(${items.length}건)` : ''}</div>
+          <div class="modal-list">${listHtml}</div>
+        </div>
+      </div>
+    `;
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
 
   function renderStats() {
     const lectures = getLectures();
