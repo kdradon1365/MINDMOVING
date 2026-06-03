@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>마인드무빙 컨설팅 | 김해용</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     --teal: #3B8A8C;
@@ -994,51 +995,115 @@
     btn.setAttribute('aria-expanded', 'false');
   }
 
-  function loadContent() {
-    let saved = {};
+  // ── Supabase 설정 ──────────────────────────────────────────
+  const SUPABASE_URL  = 'https://diuceoqzycuxpaxztiql.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpdWNlb3F6eWN1eHBheHp0aXFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0Mzc1MzEsImV4cCI6MjA5NjAxMzUzMX0.28CaEwmGTZF8tmZXr8UZ6jAy5uBvXyG8beec6rax9D0';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // ── localStorage 헬퍼 (어드민 수동 편집 fallback) ─────────
+  function getLocalSaved() {
     try {
       const legacy = JSON.parse(localStorage.getItem('mindmoving_contact')) || {};
       const main   = JSON.parse(localStorage.getItem(CONTENT_KEY)) || {};
-      saved = Object.assign({}, legacy, main);
-    } catch {}
+      return Object.assign({}, legacy, main);
+    } catch { return {}; }
+  }
 
-    const setText = (id, val) => {
-      const el = document.getElementById(id);
-      if (el && val) el.textContent = val;
-    };
-    const setHTML = (id, val) => {
-      const el = document.getElementById(id);
-      if (el && val) el.innerHTML = val.replace(/\n/g, '<br>');
-    };
+  const setText = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+  const setHTML = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerHTML = val; };
 
-    setText('topBar',     saved.topBar);
-    setText('heroLine1',  saved.heroLine1);
-    setText('heroLine2',  saved.heroLine2);
-    setText('heroLine3',  saved.heroLine3);
-    setHTML('heroDesc',   saved.heroDesc);
-    setHTML('phil1Title', saved.phil1Title);
-    setHTML('phil1Desc',  saved.phil1Desc);
-    setHTML('phil2Title', saved.phil2Title);
-    setHTML('phil2Desc',  saved.phil2Desc);
-    setHTML('phil3Title', saved.phil3Title);
-    setHTML('phil3Desc',  saved.phil3Desc);
-    setText('aboutName',  saved.aboutName);
-    setText('aboutRole',  saved.aboutRole);
-    setHTML('aboutText1', saved.aboutText1);
-    setHTML('aboutText2', saved.aboutText2);
-    setHTML('contactDesc',saved.contactDesc);
-    if (saved.email) {
-      document.getElementById('contactEmail').textContent = saved.email;
+  // ── 강의 분야 렌더링 ──────────────────────────────────────
+  function renderLectures(areas) {
+    const grid = document.querySelector('.lectures-grid');
+    if (!grid || !areas.length) return;
+    grid.innerHTML = areas
+      .filter(a => a.active)
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map(a => `<div class="lecture-card"><span class="lecture-icon">${a.icon}</span><h4>${a.title}</h4></div>`)
+      .join('');
+  }
+
+  // ── 출강 기관 렌더링 ──────────────────────────────────────
+  function renderOrgs(orgs) {
+    const list = document.querySelector('.about-orgs-list');
+    if (!list || !orgs.length) return;
+    list.innerHTML = orgs
+      .filter(o => o.active)
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map(o => `<div class="org-item"><span class="org-badge">${o.badge}</span>${o.name}</div>`)
+      .join('');
+  }
+
+  // ── 태그 렌더링 ───────────────────────────────────────────
+  function renderTags(tags) {
+    const wrap = document.querySelector('.about-tags');
+    if (!wrap || !tags.length) return;
+    wrap.innerHTML = tags
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map(t => `<span class="tag">${t.label}</span>`)
+      .join('');
+  }
+
+  // ── site_content 적용 ─────────────────────────────────────
+  function applyContent(rows) {
+    const c = {};
+    rows.forEach(r => { c[r.key] = r.value; });
+
+    setHTML('heroDesc',    c.hero_desc);
+    setText('aboutName',   c.about_name);
+    setText('aboutRole',   c.about_role);
+    setHTML('aboutText1',  c.about_text1);
+    setHTML('aboutText2',  c.about_text2);
+    setHTML('contactDesc', c.contact_desc);
+    if (c.contact_email) {
+      setText('contactEmail', c.contact_email);
       const cta = document.querySelector('.contact-cta');
-      if (cta) cta.href = 'mailto:' + saved.email;
+      if (cta) cta.href = 'mailto:' + c.contact_email;
     }
-    if (saved.phone) {
-      document.getElementById('contactPhone').textContent = saved.phone;
+    if (c.contact_phone) setText('contactPhone', c.contact_phone);
+    if (c.company_name)  { const el = document.querySelector('.ci-value'); /* Company row */ }
+  }
+
+  // ── localStorage fallback 적용 ────────────────────────────
+  function applyLocalContent() {
+    const saved = getLocalSaved();
+    const setT = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+    const setH = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerHTML = val.replace(/\n/g, '<br>'); };
+    setT('topBar', saved.topBar); setT('heroLine1', saved.heroLine1);
+    setT('heroLine2', saved.heroLine2); setT('heroLine3', saved.heroLine3);
+    setH('heroDesc', saved.heroDesc);
+    setH('phil1Title', saved.phil1Title); setH('phil1Desc', saved.phil1Desc);
+    setH('phil2Title', saved.phil2Title); setH('phil2Desc', saved.phil2Desc);
+    setH('phil3Title', saved.phil3Title); setH('phil3Desc', saved.phil3Desc);
+    setT('aboutName', saved.aboutName); setT('aboutRole', saved.aboutRole);
+    setH('aboutText1', saved.aboutText1); setH('aboutText2', saved.aboutText2);
+    setH('contactDesc', saved.contactDesc);
+    if (saved.email) { setT('contactEmail', saved.email); const cta = document.querySelector('.contact-cta'); if (cta) cta.href = 'mailto:' + saved.email; }
+    if (saved.phone) setT('contactPhone', saved.phone);
+  }
+
+  // ── Supabase에서 전체 데이터 로드 ────────────────────────
+  async function loadFromSupabase() {
+    try {
+      const [contentRes, lecturesRes, orgsRes, tagsRes] = await Promise.all([
+        sb.from('site_content').select('*'),
+        sb.from('lecture_areas').select('*'),
+        sb.from('about_orgs').select('*'),
+        sb.from('about_tags').select('*'),
+      ]);
+      if (contentRes.data  && contentRes.data.length)  applyContent(contentRes.data);
+      if (lecturesRes.data && lecturesRes.data.length)  renderLectures(lecturesRes.data);
+      if (orgsRes.data     && orgsRes.data.length)      renderOrgs(orgsRes.data);
+      if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
+    } catch (e) {
+      console.warn('Supabase load failed, using local fallback:', e);
+      applyLocalContent();
     }
   }
 
   document.getElementById('cpYear').textContent = new Date().getFullYear();
-  loadContent();
+  applyLocalContent();   // 빠른 초기 렌더
+  loadFromSupabase();    // Supabase 데이터로 교체
   renderHistory();
   renderStats();
 </script>
