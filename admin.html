@@ -916,7 +916,11 @@
 
   async function fetchLectures() {
     const { data, error } = await sb.from('lectures').select('*').order('date', { ascending: false });
-    if (error) { console.error('fetchLectures:', error); return; }
+    if (error) {
+      console.error('fetchLectures:', error);
+      showToast('⚠️ Supabase 연결 오류: ' + error.message + '\n→ SQL Editor에서 lectures 테이블을 생성해주세요.', 'error');
+      return;
+    }
     lecturesCache = data || [];
   }
 

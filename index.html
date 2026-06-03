@@ -980,8 +980,18 @@
   function getLectures() { return lecturesCache; }
 
   async function fetchAndRenderHistory() {
-    const { data, error } = await sb.from('lectures').select('*').order('date', { ascending: false });
-    if (!error) lecturesCache = data || [];
+    try {
+      const { data, error } = await sb.from('lectures').select('*').order('date', { ascending: false });
+      if (error) {
+        console.error('lectures fetch error:', error);
+        document.getElementById('historyGrid').innerHTML =
+          `<div class="history-empty">⚠️ 강의 이력을 불러오지 못했습니다.<br><small style="color:#aaa">${error.message}</small></div>`;
+        return;
+      }
+      lecturesCache = data || [];
+    } catch(e) {
+      console.error('lectures fetch exception:', e);
+    }
     renderHistory();
   }
 
