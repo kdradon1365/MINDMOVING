@@ -1512,8 +1512,7 @@
     if (lecturesRes.data && lecturesRes.data.length)  renderLectures(lecturesRes.data);
     if (orgsRes.data     && orgsRes.data.length)      renderOrgs(orgsRes.data);
     if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
-    // Only call initCarousel if Supabase has active photos to show
-    if (photosRes.data && photosRes.data.some(p => p.active)) initCarousel(photosRes.data);
+    // initCarousel 비활성화: Supabase 사진이 carousel을 밀어내 기본 사진이 안보이는 버그 방지
     if (credRes.data)  renderCredentials(credRes.data);
     if (tmRes.data)    renderTestimonials(tmRes.data);
     if (dlRes.data)    renderDownloads(dlRes.data);
@@ -1529,12 +1528,15 @@
 <script>
 (function() {
   function applyPhoto(src) {
+    // 기본 사진 설정
     var img = document.getElementById('instructorDefaultPhoto');
     if (img) { img.onerror = null; img.src = src; }
+    // 캐러셀 내 모든 img에 폴백 적용 + 트랙을 0위치로 리셋
     var track = document.getElementById('carouselTrack');
     if (track) {
+      track.style.transform = 'translateX(0)';
       var imgs = track.querySelectorAll('img');
-      imgs.forEach(function(i) { if(!i.src || i.naturalWidth===0) { i.onerror=null; i.src=src; } });
+      imgs.forEach(function(i) { i.onerror = null; i.src = src; });
     }
   }
   // photo.js (base64) 비동기 로드
