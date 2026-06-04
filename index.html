@@ -1341,7 +1341,7 @@
   }
 
   // ── 강사 사진 캐러셀 ─────────────────────────────────────
-  let _ci = 0, _ct = 0, _ctimer = null;
+  let _ci = 0, _ct = 1, _ctimer = null;
 
   function initCarousel(photos) {
     const track   = document.getElementById('carouselTrack');
@@ -1352,30 +1352,36 @@
     const active = (photos || []).filter(p => p.active).sort((a,b) => a.sort_order - b.sort_order);
     if (active.length === 0) return;
 
-    // Save default photo src before replacing HTML
-    if (!window._defPhoto) {
-      const defImg = track.querySelector('img');
-      window._defPhoto = defImg ? defImg.src : '';
-    }
+    // 기본 슬라이드(base64)를 유지하고 Supabase 사진을 추가
+    active.forEach(p => {
+      const slide = document.createElement('div');
+      slide.className = 'carousel-slide';
+      const img = document.createElement('img');
+      img.src = p.url;
+      img.alt = p.caption || '강사 사진';
+      img.loading = 'lazy';
+      img.onerror = function() {
+        // 깨진 사진 슬라이드 제거 후 카운트 재계산
+        this.closest('.carousel-slide').remove();
+        _ct = track.querySelectorAll('.carousel-slide').length;
+        _ci = Math.min(_ci, _ct - 1);
+      };
+      slide.appendChild(img);
+      track.appendChild(slide);
+    });
 
-    _ct = active.length;
-    track.innerHTML = active.map(p =>
-      `<div class="carousel-slide"><img src="${p.url}" alt="${p.caption || '강사 사진'}" loading="lazy" onerror="this.onerror=null;this.src=window._defPhoto||this.src"></div>`
-    ).join('');
+    _ct = track.querySelectorAll('.carousel-slide').length;
 
-    // Show nav only when multiple slides
     if (navRow && _ct > 1) {
       navRow.style.display = '';
       if (dotsWrap) {
-        dotsWrap.innerHTML = active.map((_,i) =>
+        dotsWrap.innerHTML = Array.from({length: _ct}, (_,i) =>
           `<span class="carousel-dot${i===0?' active':''}" onclick="goSlide(${i})"></span>`
         ).join('');
       }
+      clearInterval(_ctimer);
+      _ctimer = setInterval(() => goSlide((_ci+1)%_ct), 4000);
     }
-
-    goSlide(0);
-    clearInterval(_ctimer);
-    _ctimer = setInterval(() => goSlide((_ci+1)%_ct), 4000);
   }
 
   function goSlide(i) {
@@ -1386,6 +1392,7 @@
   }
   function carouselPrev() { clearInterval(_ctimer); goSlide((_ci-1+_ct)%_ct); }
   function carouselNext() { clearInterval(_ctimer); goSlide((_ci+1)%_ct); }
+
 
 
   // ── 자격/경력 배지 렌더링 ────────────────────────────────
