@@ -742,8 +742,23 @@
   .cred-issuer { font-size: 0.8rem; color: var(--teal); font-weight: 600; }
   .cred-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
 
+  /* AWARDS */
+  #awards { background: var(--white); border-top: 1px solid var(--border); }
+  .awards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+  .award-card {
+    background: linear-gradient(135deg, #FFFDF8 0%, #FFF8EE 100%);
+    border-radius: 10px; padding: 1.75rem 1.5rem;
+    display: flex; flex-direction: column; gap: 0.5rem;
+    border: 1px solid #E8DEC8; transition: box-shadow 0.2s;
+  }
+  .award-card:hover { box-shadow: 0 4px 16px rgba(180,130,30,0.12); }
+  .award-icon { font-size: 2rem; margin-bottom: 0.25rem; }
+  .award-title { font-size: 0.92rem; font-weight: 700; color: var(--black); line-height: 1.35; }
+  .award-org { font-size: 0.8rem; color: #A07830; font-weight: 600; }
+  .award-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
+
   /* TESTIMONIALS */
-  #testimonials { background: var(--white); border-top: 1px solid var(--border); }
+  #testimonials { background: var(--taupe-pale); border-top: 1px solid var(--border); }
   .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
   .testimonial-card {
     background: var(--teal-pale); border: 1px solid #C8DEDE; border-radius: 10px;
@@ -1016,6 +1031,15 @@
     <div class="eyebrow">Credentials</div>
     <h2 class="section-title">자격 및 수료</h2>
     <div class="cred-grid" id="credGrid"></div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="awards" class="section-wrap" style="display:none;">
+  <div class="container">
+    <div class="eyebrow">Awards</div>
+    <h2 class="section-title">수상 경력</h2>
+    <div class="awards-grid" id="awardsGrid"></div>
   </div>
 </section>
 
@@ -1453,6 +1477,23 @@
       </div>`).join('');
   }
 
+  // ── 수상경력 렌더링 ──────────────────────────────────────
+  function renderAwards(data) {
+    const sec  = document.getElementById('awards');
+    const grid = document.getElementById('awardsGrid');
+    if (!grid) return;
+    const active = data.filter(a => a.active).sort((a,b) => a.sort_order - b.sort_order);
+    if (!active.length) return;
+    sec.style.display = '';
+    grid.innerHTML = active.map(a => `
+      <div class="award-card">
+        <div class="award-icon">${escapeHtml(a.icon || '🏆')}</div>
+        <div class="award-title">${escapeHtml(a.title)}</div>
+        ${a.org  ? `<div class="award-org">${escapeHtml(a.org)}</div>` : ''}
+        ${a.year ? `<div class="award-year">${escapeHtml(a.year)}</div>` : ''}
+      </div>`).join('');
+  }
+
   // ── 수강 후기 렌더링 ─────────────────────────────────────
   function renderTestimonials(data) {
     const sec  = document.getElementById('testimonials');
@@ -1539,13 +1580,14 @@
   // ── Supabase에서 전체 데이터 로드 ────────────────────────
   async function loadFromSupabase() {
     const get = (table, query='*') => sb.from(table).select(query).catch(() => ({ data: null }));
-    const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes, credRes, tmRes, dlRes] = await Promise.all([
+    const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes, credRes, awardsRes, tmRes, dlRes] = await Promise.all([
       get('site_content'),
       get('lecture_areas'),
       get('about_orgs'),
       get('about_tags'),
       get('instructor_photos'),
       get('credentials'),
+      get('awards'),
       get('testimonials'),
       get('downloads'),
     ]);
@@ -1554,9 +1596,10 @@
     if (orgsRes.data     && orgsRes.data.length)      renderOrgs(orgsRes.data);
     if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
     // initCarousel 비활성화: Supabase 사진이 carousel을 밀어내 기본 사진이 안보이는 버그 방지
-    if (credRes.data)  renderCredentials(credRes.data);
-    if (tmRes.data)    renderTestimonials(tmRes.data);
-    if (dlRes.data)    renderDownloads(dlRes.data);
+    if (credRes.data)    renderCredentials(credRes.data);
+    if (awardsRes.data)  renderAwards(awardsRes.data);
+    if (tmRes.data)      renderTestimonials(tmRes.data);
+    if (dlRes.data)      renderDownloads(dlRes.data);
     loadContactCategories();
   }
 

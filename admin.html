@@ -765,6 +765,29 @@
     </div>
   </div>
 
+  <!-- 수상경력 관리 -->
+  <div class="content-editor-wrap" style="margin-top:1rem;">
+    <div class="ce-header" onclick="toggleSection('awards')">
+      <div class="ce-header-left">
+        <strong>수상경력 관리</strong>
+        <span>홈페이지에 표시되는 수상 경력 추가 · 관리</span>
+      </div>
+      <svg class="ce-arrow" id="awardsArrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="ce-body" id="awardsBody" style="display:none;padding:1.5rem 2rem 2rem;">
+      <div style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;">
+        <input type="text" id="awIcon" placeholder="아이콘 🏆" style="width:70px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;font-size:1rem;">
+        <input type="text" id="awTitle" placeholder="수상명 *" style="flex:1;min-width:150px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        <input type="text" id="awOrg" placeholder="수여기관" style="flex:1;min-width:130px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        <input type="text" id="awYear" placeholder="수상연도" style="width:95px;padding:0.6rem;border:1.5px solid var(--border);border-radius:6px;">
+        <button onclick="addAward()" style="padding:0.6rem 1.2rem;background:var(--teal);color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;white-space:nowrap;">추가</button>
+      </div>
+      <div id="awardList" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+    </div>
+  </div>
+
   <!-- 수강 후기 관리 -->
   <div class="content-editor-wrap" style="margin-top:1rem;">
     <div class="ce-header" onclick="toggleSection('testimonials')">
@@ -1501,6 +1524,7 @@
     arrow.style.transform = open ? 'rotate(180deg)' : '';
     if (open) {
       if (key === 'creds')        loadCredentials();
+      if (key === 'awards')       loadAwards();
       if (key === 'testimonials') loadTestimonials();
       if (key === 'inbox')        loadInbox();
       if (key === 'downloads')    loadDownloads();
@@ -1553,6 +1577,54 @@
 
   async function toggleCredActive(id, active) {
     await sb.from('credentials').update({ active }).eq('id', id);
+  }
+
+  // ── 수상경력 ──────────────────────────────────────────────
+  async function loadAwards() {
+    const { data } = await sb.from('awards').select('*').order('sort_order');
+    const list = document.getElementById('awardList');
+    if (!data || !data.length) {
+      list.innerHTML = '<p style="font-size:0.85rem;color:var(--gray-light)">등록된 수상경력이 없습니다.</p>';
+      return;
+    }
+    list.innerHTML = data.map(a => `
+      <div style="display:flex;align-items:center;gap:0.75rem;padding:0.7rem 0.85rem;background:#fafafa;border:1px solid var(--border);border-radius:6px;">
+        <span style="font-size:1.4rem;">${esc(a.icon||'🏆')}</span>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:0.9rem;">${esc(a.title)}</div>
+          <div style="font-size:0.78rem;color:#A07830;">${esc(a.org||'')} ${a.year?'· '+esc(a.year):''}</div>
+        </div>
+        <label style="font-size:0.75rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+          <input type="checkbox" ${a.active?'checked':''} onchange="toggleAwardActive(${a.id},this.checked)"> 표시
+        </label>
+        <button onclick="deleteAward(${a.id})" style="font-size:0.78rem;color:var(--danger);background:none;border:none;cursor:pointer;">삭제</button>
+      </div>`).join('');
+  }
+
+  async function addAward() {
+    const title = document.getElementById('awTitle').value.trim();
+    const icon  = document.getElementById('awIcon').value.trim() || '🏆';
+    const org   = document.getElementById('awOrg').value.trim();
+    const year  = document.getElementById('awYear').value.trim();
+    if (!title) { showToast('수상명을 입력해주세요.', 'error'); return; }
+    const { data: existing } = await sb.from('awards').select('sort_order').order('sort_order', { ascending: false }).limit(1);
+    const sort_order = existing && existing.length ? existing[0].sort_order + 1 : 0;
+    const { error } = await sb.from('awards').insert({ icon, title, org, year, sort_order, active: true });
+    if (error) { showToast('추가 실패: ' + error.message, 'error'); return; }
+    ['awTitle','awOrg','awYear'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('awIcon').value = '';
+    await loadAwards();
+    showToast('✓ 추가되었습니다.', 'success');
+  }
+
+  async function deleteAward(id) {
+    if (!confirm('삭제하시겠습니까?')) return;
+    await sb.from('awards').delete().eq('id', id);
+    await loadAwards();
+  }
+
+  async function toggleAwardActive(id, active) {
+    await sb.from('awards').update({ active }).eq('id', id);
   }
 
   // ── 수강 후기 ─────────────────────────────────────────────
