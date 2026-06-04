@@ -953,7 +953,7 @@
           <div class="carousel-viewport">
             <div class="carousel-track-inner" id="carouselTrack">
               <div class="carousel-slide">
-                <img src="https://raw.githubusercontent.com/kdradon1365/MINDMOVING/main/photo_haeyong.jpg"
+                <img src="photo_haeyong.jpg" id="instructorDefaultPhoto"
                      alt="강사 사진"
                      style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;">
               </div>
@@ -1524,6 +1524,27 @@
   loadFromSupabase();
   fetchAndRenderHistory();
   renderStats();
+</script>
+
+<script>
+(function() {
+  function applyPhoto(src) {
+    var img = document.getElementById('instructorDefaultPhoto');
+    if (img) { img.onerror = null; img.src = src; }
+    var track = document.getElementById('carouselTrack');
+    if (track) {
+      var imgs = track.querySelectorAll('img');
+      imgs.forEach(function(i) { if(!i.src || i.naturalWidth===0) { i.onerror=null; i.src=src; } });
+    }
+  }
+  // photo.js (base64) 비동기 로드
+  var s = document.createElement('script');
+  s.src = 'photo.js';
+  s.onload = function() {
+    if (window.INSTRUCTOR_PHOTO) applyPhoto(window.INSTRUCTOR_PHOTO);
+  };
+  document.body.appendChild(s);
+})();
 </script>
 </body>
 </html>
