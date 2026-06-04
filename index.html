@@ -833,6 +833,7 @@
     footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
   }
 </style>
+<script src="photo.js" defer></script>
 </head>
 <body>
 
@@ -1525,28 +1526,5 @@
   renderStats();
 </script>
 
-<script>
-(function() {
-  function applyPhoto(src) {
-    // 기본 사진 설정
-    var img = document.getElementById('instructorDefaultPhoto');
-    if (img) { img.onerror = null; img.src = src; }
-    // 캐러셀 내 모든 img에 폴백 적용 + 트랙을 0위치로 리셋
-    var track = document.getElementById('carouselTrack');
-    if (track) {
-      track.style.transform = 'translateX(0)';
-      var imgs = track.querySelectorAll('img');
-      imgs.forEach(function(i) { i.onerror = null; i.src = src; });
-    }
-  }
-  // photo.js (base64) 비동기 로드
-  var s = document.createElement('script');
-  s.src = 'photo.js';
-  s.onload = function() {
-    if (window.INSTRUCTOR_PHOTO) applyPhoto(window.INSTRUCTOR_PHOTO);
-  };
-  document.body.appendChild(s);
-})();
-</script>
 </body>
 </html>
