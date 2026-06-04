@@ -879,9 +879,31 @@
             <option value="">선택 안 함</option>
           </select>
         </div>
+        <div class="form-group" style="margin-bottom:0.5rem;">
+          <label>강의 부제목 <span class="opt">(선택)</span></label>
+          <input type="text" id="fSubtitle" placeholder="예: 리더십의 이해 및 구성원과의 소통 역량 강화">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>대상 <span class="opt">(선택)</span></label>
+            <input type="text" id="fTarget" placeholder="예: 팀장급 관리자 30여 명">
+          </div>
+          <div class="form-group">
+            <label>형태 <span class="opt">(선택)</span></label>
+            <input type="text" id="fFormat" placeholder="예: 참여형 워크숍 (강의·실습·토의)">
+          </div>
+        </div>
         <div class="form-group">
-          <label>메모 <span class="opt">(선택)</span></label>
-          <textarea id="fNote" placeholder="예: 임원 대상 2회차, 참석 인원 50명"></textarea>
+          <label>강의 소개 <span class="opt">(선택)</span></label>
+          <textarea id="fIntro" rows="3" placeholder="강의 소개 및 배경을 입력하세요."></textarea>
+        </div>
+        <div class="form-group">
+          <label>주요 내용 <span class="opt">(선택 · 항목마다 줄바꿈)</span></label>
+          <textarea id="fPoints" rows="4" placeholder="관리자에서 리더로: 역할 전환의 핵심 관점&#10;성격 유형별 공감 소통법&#10;세대별 소통 차이와 접점 찾기"></textarea>
+        </div>
+        <div class="form-group">
+          <label>교육 효과 <span class="opt">(선택)</span></label>
+          <textarea id="fOutcome" rows="2" placeholder="교육 후 기대되는 변화 및 효과를 입력하세요."></textarea>
         </div>
         <div class="form-group">
           <label>강의 사진 <span class="opt">(선택)</span></label>
@@ -1288,12 +1310,52 @@
     document.getElementById('fDay').value   = parts[2] || '';
   }
 
+  function getNoteValue() {
+    const subtitle = document.getElementById('fSubtitle').value.trim();
+    const target   = document.getElementById('fTarget').value.trim();
+    const fmt      = document.getElementById('fFormat').value.trim();
+    const intro    = document.getElementById('fIntro').value.trim();
+    const points   = document.getElementById('fPoints').value.trim();
+    const outcome  = document.getElementById('fOutcome').value.trim();
+    if (!subtitle && !target && !fmt && !intro && !points && !outcome) return '';
+    return JSON.stringify({ subtitle, target, fmt, intro, points, outcome });
+  }
+
+  function setNoteValue(note) {
+    clearNoteFields();
+    if (!note) return;
+    try {
+      const d = JSON.parse(note);
+      document.getElementById('fSubtitle').value = d.subtitle || '';
+      document.getElementById('fTarget').value   = d.target   || '';
+      document.getElementById('fFormat').value   = d.fmt      || '';
+      document.getElementById('fIntro').value    = d.intro    || '';
+      document.getElementById('fPoints').value   = d.points   || '';
+      document.getElementById('fOutcome').value  = d.outcome  || '';
+    } catch(e) {
+      document.getElementById('fIntro').value = note;
+    }
+  }
+
+  function clearNoteFields() {
+    ['fSubtitle','fTarget','fFormat','fIntro','fPoints','fOutcome']
+      .forEach(id => { document.getElementById(id).value = ''; });
+  }
+
+  function notePreview(note) {
+    if (!note) return '';
+    try {
+      const d = JSON.parse(note);
+      return d.subtitle || d.intro || d.target || '';
+    } catch(e) { return note; }
+  }
+
   async function submitForm() {
     const title = document.getElementById('fTitle').value.trim();
     const org   = document.getElementById('fOrg').value.trim();
     const date  = getDateValue();
     const cat   = document.getElementById('fCategory').value;
-    const note  = document.getElementById('fNote').value.trim();
+    const note  = getNoteValue();
     if (!title || !org || !date) { showToast('⚠️ 강의명, 기관명, 날짜는 필수입니다.', 'error'); return; }
 
     const btn = document.getElementById('submitBtn');
@@ -1331,8 +1393,9 @@
   }
 
   function clearForm() {
-    ['fTitle','fOrg','fYear','fMonth','fDay','fNote'].forEach(id => document.getElementById(id).value = '');
+    ['fTitle','fOrg','fYear','fMonth','fDay'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('fCategory').value = '';
+    clearNoteFields();
     clearPhoto();
   }
 
@@ -1344,7 +1407,7 @@
     document.getElementById('fOrg').value      = l.organization;
     populateDateFields(l.date);
     document.getElementById('fCategory').value = l.category || '';
-    document.getElementById('fNote').value     = l.note || '';
+    setNoteValue(l.note || '');
     if (l.photo_url) {
       document.getElementById('fPhotoUrl').value = l.photo_url;
       document.getElementById('photoPreview').src = l.photo_url;
@@ -1406,7 +1469,7 @@
           </div>
           <div class="list-item-title" title="${esc(l.title)}">${esc(l.title)}</div>
           <div class="list-item-org">${esc(l.organization)}</div>
-          ${l.note ? `<div class="list-item-note">${esc(l.note)}</div>` : ''}
+          ${l.note ? `<div class="list-item-note">${esc(notePreview(l.note))}</div>` : ''}
         </div>
         <div class="list-item-actions">
           <button class="edit-btn" onclick="startEdit('${l.id}')">수정</button>

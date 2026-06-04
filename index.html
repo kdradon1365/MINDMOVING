@@ -645,6 +645,17 @@
   .modal-org { font-size: 0.9rem; color: var(--teal); font-weight: 600; margin-bottom: 1.25rem; }
   .modal-category { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; color: white; background: var(--teal); padding: 0.2rem 0.7rem; margin-bottom: 1rem; }
   .modal-note { font-size: 0.88rem; color: var(--gray); line-height: 1.7; padding-top: 1rem; border-top: 1px solid #EAE5E0; }
+  .modal-note-subtitle { font-size: 1rem; font-weight: 800; color: var(--black); margin-bottom: 0.75rem; }
+  .modal-note-meta { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 0.9rem; }
+  .modal-note-meta span { font-size: 0.83rem; color: var(--gray); }
+  .modal-note-meta strong { color: var(--black); font-weight: 700; margin-right: 0.4rem; }
+  .modal-note-intro { margin-bottom: 1rem; }
+  .modal-note-section { margin-bottom: 0.85rem; }
+  .modal-note-section > strong { display: block; font-size: 0.88rem; font-weight: 800; color: var(--black); margin-bottom: 0.45rem; }
+  .modal-note-section > p { margin: 0; }
+  .modal-note-points { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+  .modal-note-points li { display: flex; gap: 0.5rem; align-items: flex-start; }
+  .modal-note-points li::before { content: '•'; color: var(--teal); font-weight: 700; flex-shrink: 0; margin-top: 0.05rem; }
   .modal-list { display: flex; flex-direction: column; gap: 0; }
   .modal-list-item { padding: 1rem 0; border-bottom: 1px solid #EAE5E0; cursor: pointer; }
   .modal-list-item:last-child { border-bottom: none; }
@@ -1142,6 +1153,36 @@
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
+  function renderNote(note) {
+    if (!note) return '';
+    try {
+      const d = JSON.parse(note);
+      let html = '<div class="modal-note">';
+      if (d.subtitle) html += `<div class="modal-note-subtitle">${escapeHtml(d.subtitle)}</div>`;
+      if (d.target || d.fmt) {
+        html += '<div class="modal-note-meta">';
+        if (d.target) html += `<span><strong>대상</strong>${escapeHtml(d.target)}</span>`;
+        if (d.fmt)    html += `<span><strong>형태</strong>${escapeHtml(d.fmt)}</span>`;
+        html += '</div>';
+      }
+      if (d.intro) html += `<p class="modal-note-intro">${escapeHtml(d.intro)}</p>`;
+      if (d.points) {
+        const items = d.points.split('\n').map(s => s.trim()).filter(Boolean);
+        if (items.length) {
+          html += '<div class="modal-note-section"><strong>주요 내용</strong>';
+          html += '<ul class="modal-note-points">';
+          items.forEach(item => { html += `<li>${escapeHtml(item.replace(/^[-•]\s*/,''))}</li>`; });
+          html += '</ul></div>';
+        }
+      }
+      if (d.outcome) html += `<div class="modal-note-section"><strong>교육 효과</strong><p>${escapeHtml(d.outcome)}</p></div>`;
+      html += '</div>';
+      return html;
+    } catch(e) {
+      return `<div class="modal-note">${escapeHtml(note)}</div>`;
+    }
+  }
+
   function fmtDate(date) {
     if (!date) return '';
     const p = date.split('-');
@@ -1180,7 +1221,7 @@
         <div class="modal-title">${escapeHtml(l.title)}</div>
         <div class="modal-org">${escapeHtml(l.organization)}</div>
         ${l.category ? `<span class="modal-category">${escapeHtml(l.category)}</span>` : ''}
-        ${l.note ? `<div class="modal-note">${escapeHtml(l.note)}</div>` : ''}
+        ${renderNote(l.note)}
       </div>
     `;
     document.getElementById('modalOverlay').classList.add('open');
