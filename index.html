@@ -1521,19 +1521,30 @@
     const sec  = document.getElementById('awards');
     const grid = document.getElementById('awardsGrid');
     if (!grid || !data || !data.length) return;
-    const sorted = [...data].sort((a,b) => {
-      if (a.year && b.year) return String(b.year).localeCompare(String(a.year));
-      return (a.sort_order || 0) - (b.sort_order || 0);
+    // 같은 수상명+기관끼리 그룹핑
+    const groups = {};
+    data.forEach(a => {
+      const key = (a.title || '') + '||' + (a.org || '');
+      if (!groups[key]) groups[key] = { ...a, years: [] };
+      if (a.year) groups[key].years.push(String(a.year));
+    });
+    // 그룹별로 연도 정렬(최신→오래된), 전체는 최신 연도 기준 정렬
+    const grouped = Object.values(groups).map(g => {
+      g.years = [...new Set(g.years)].sort((a,b) => b.localeCompare(a));
+      return g;
+    }).sort((a,b) => {
+      const ay = a.years[0] || '0', by = b.years[0] || '0';
+      return by.localeCompare(ay);
     });
     sec.style.display = 'block';
-    grid.innerHTML = sorted.map(a => `
+    grid.innerHTML = grouped.map(a => `
       <div class="award-row">
         <div class="award-row-icon">${escapeHtml(a.icon || '🏆')}</div>
         <div class="award-row-info">
           <div class="award-row-title">${escapeHtml(a.title)}</div>
           ${a.org ? `<div class="award-row-sub">${escapeHtml(a.org)}</div>` : ''}
         </div>
-        ${a.year ? `<div class="award-row-year">${escapeHtml(a.year)}</div>` : ''}
+        ${a.years.length ? `<div class="award-row-year">${a.years.map(escapeHtml).join(' · ')}</div>` : ''}
       </div>`).join('');
   }
 
