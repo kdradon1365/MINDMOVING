@@ -1197,6 +1197,19 @@
         <input class="cf-input" id="cfOrg" type="text" placeholder="소속 기관 / 회사 (선택)">
         <select class="cf-select" id="cfCategory">
           <option value="">강의 분야 선택 (선택)</option>
+          <option value="선택안함">선택 안함</option>
+          <option value="상담후결정">상담 후 결정</option>
+          <option value="리더십/조직문화">리더십 / 조직문화</option>
+          <option value="커뮤니케이션/협상">커뮤니케이션 및 갈등관리 / 협상</option>
+          <option value="심리/멘탈코칭">심리 / 멘탈 코칭</option>
+          <option value="세일즈/영업코칭">세일즈 / 영업코칭 및 서비스</option>
+          <option value="기업교육/HRD">기업교육 / HRD</option>
+          <option value="드라마테라피">Roll-Play(롤플레이) 활용 강의</option>
+          <option value="민원응대">민원 응대</option>
+          <option value="연극활용기업교육">연극 활용 기업교육</option>
+          <option value="스트레스관리">스트레스 감정관리 교육</option>
+          <option value="회복탄력성">회복탄력성</option>
+          <option value="핵심가치내재화">핵심가치 내재화 교육</option>
         </select>
         <textarea class="cf-textarea" id="cfMessage" placeholder="문의 내용을 입력해주세요. *" required></textarea>
         <button type="submit" class="cf-submit" id="cfSubmitBtn">문의 보내기 →</button>
@@ -1799,6 +1812,7 @@
   }
 
   document.getElementById('cpYear').textContent = new Date().getFullYear();
+  loadContactCategories();
   loadFromSupabase();
   loadAwards();
   fetchAndRenderHistory();
