@@ -1524,7 +1524,7 @@
     const sec  = document.getElementById('awards');
     const grid = document.getElementById('awardsGrid');
     if (!grid) return;
-    const active = data.filter(a => a.active).sort((a,b) => {
+    const active = data.filter(a => a.active !== false).sort((a,b) => {
       if (a.year && b.year) return b.year.localeCompare(a.year);
       return a.sort_order - b.sort_order;
     });
