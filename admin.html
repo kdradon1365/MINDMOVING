@@ -1112,12 +1112,20 @@
   }
 
   async function loadCategoryOptions() {
-    const { data } = await sb.from('lecture_areas')
-      .select('title, category_key')
-      .eq('active', true)
-      .order('sort_order');
-    const areas = (data || []).filter(a => a.category_key);
-    const opts = areas.map(a => `<option value="${a.category_key}">${a.title}</option>`).join('');
+    const staticCategories = [
+      { key: '리더십/조직문화',    label: '리더십 / 조직문화' },
+      { key: '커뮤니케이션/협상',   label: '커뮤니케이션 및 갈등관리 / 협상' },
+      { key: '심리/멘탈코칭',      label: '심리 / 멘탈 코칭' },
+      { key: '세일즈/영업코칭',     label: '세일즈 / 영업코칭 및 서비스' },
+      { key: '기업교육/HRD',       label: '기업교육 / HRD' },
+      { key: '드라마테라피',        label: 'Roll-Play(롤플레이) 활용 강의' },
+      { key: '민원응대',            label: '민원 응대' },
+      { key: '연극활용기업교육',     label: '연극 활용 기업교육' },
+      { key: '스트레스관리',        label: '스트레스 감정관리 교육' },
+      { key: '회복탄력성',          label: '회복탄력성' },
+      { key: '핵심가치내재화',      label: '핵심가치 내재화 교육' },
+    ];
+    const opts = staticCategories.map(c => `<option value="${c.key}">${c.label}</option>`).join('');
     document.getElementById('fCategory').innerHTML      = '<option value="">선택 안 함</option>' + opts;
     document.getElementById('categoryFilter').innerHTML = '<option value="">전체 분야</option>' + opts;
   }
