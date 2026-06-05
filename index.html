@@ -566,11 +566,35 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
     flex-wrap: wrap;
     gap: 1.5rem;
   }
-  .history-grid {
+  .history-grid { display: flex; flex-direction: column; gap: 2.5rem; }
+  .history-year-group {}
+  .history-year-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--teal);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .history-year-count {
+    background: var(--teal);
+    color: white;
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    letter-spacing: 0;
+  }
+  .history-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 0;
@@ -1219,19 +1243,34 @@
     const grid = document.getElementById('historyGrid');
     const lectures = getLectures();
     if (lectures.length === 0) {
-      grid.innerHTML = `<div class="history-empty">📋 아직 등록된 강의 이력이 없습니다.</div>`;
+      grid.innerHTML = `<div style="text-align:center;padding:6rem 2rem;color:var(--gray-light);font-size:0.9rem;">📋 아직 등록된 강의 이력이 없습니다.</div>`;
       return;
     }
-    const sorted = [...lectures].sort((a, b) => b.date.localeCompare(a.date));
-    grid.innerHTML = sorted.map(l => `
-      <div class="history-card" onclick="openLectureModal('${escapeHtml(l.id)}')">
-        ${l.photo_url ? `<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">` : ''}
-        <div class="history-date">${fmtDate(l.date)}</div>
-        <div class="history-title">${escapeHtml(l.title)}</div>
-        <div class="history-org">${escapeHtml(l.organization)}</div>
-        ${l.category ? `<div style="margin-top:0.5rem;font-size:0.7rem;color:var(--teal);font-weight:700;">${escapeHtml(l.category)}</div>` : ''}
-      </div>
-    `).join('');
+    const sorted = [...lectures].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    const byYear = {};
+    sorted.forEach(l => {
+      const year = (l.date || '').split('-')[0] || '날짜 미정';
+      if (!byYear[year]) byYear[year] = [];
+      byYear[year].push(l);
+    });
+    const years = Object.keys(byYear).sort((a, b) => b.localeCompare(a));
+    grid.innerHTML = years.map(year => `
+      <div class="history-year-group">
+        <div class="history-year-label">
+          ${escapeHtml(year)}년
+          <span class="history-year-count">${byYear[year].length}건</span>
+        </div>
+        <div class="history-cards">
+          ${byYear[year].map(l => `
+            <div class="history-card" onclick="openLectureModal('${escapeHtml(l.id)}')">
+              ${l.photo_url ? `<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">` : ''}
+              <div class="history-date">${fmtDate(l.date)}</div>
+              <div class="history-title">${escapeHtml(l.title)}</div>
+              <div class="history-org">${escapeHtml(l.organization)}</div>
+              ${l.category ? `<div style="margin-top:0.5rem;font-size:0.7rem;color:var(--teal);font-weight:700;">${escapeHtml(l.category)}</div>` : ''}
+            </div>`).join('')}
+        </div>
+      </div>`).join('');
   }
 
   // ── 강의 이력 팝업 ────────────────────────────────────────
