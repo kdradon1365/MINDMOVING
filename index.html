@@ -684,7 +684,7 @@
     font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px;
     color: var(--teal); background: var(--teal-pale);
     border: 1px solid #C8DEDE; padding: 0.25rem 0.65rem; border-radius: 20px;
-    white-space: nowrap; flex-shrink: 0;
+    flex-shrink: 0; max-width: 260px; text-align: right; line-height: 1.5;
   }
   .modal-date { font-size: 0.72rem; color: var(--taupe); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.45rem; }
   .modal-title { font-size: 1.35rem; font-weight: 800; color: var(--black); line-height: 1.35; margin-bottom: 0.4rem; }
@@ -928,6 +928,16 @@
     .cred-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
     .testimonials-grid { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+    /* 모달 모바일 */
+    .modal-box { border-radius: 12px; }
+    .modal-header { padding: 1.1rem 1.25rem 0.9rem; }
+    .modal-header-top { flex-direction: column; gap: 0.5rem; }
+    .modal-category { white-space: normal; align-self: flex-start; font-size: 0.67rem; }
+    .modal-date { font-size: 0.7rem; }
+    .modal-title { font-size: 1.1rem; }
+    .modal-body { padding: 1rem 1.25rem 1.5rem; gap: 0.9rem; }
+    .modal-photo { height: 180px; }
+    .modal-photos.photos-3 .modal-photo:not(:first-child) { height: 88px; }
   }
 </style>
 </head>
@@ -946,10 +956,10 @@
     </div>
   </a>
   <ul class="nav-links">
+    <li><a href="#philosophy">교육 방식</a></li>
     <li><a href="#about">강사 소개</a></li>
     <li><a href="#lectures">강의 분야</a></li>
     <li><a href="#history">강의 이력</a></li>
-    <li><a href="#testimonials">수강 후기</a></li>
     <li><a href="#contact">문의</a></li>
   </ul>
   <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="메뉴" aria-expanded="false">
@@ -958,10 +968,10 @@
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
+  <a href="#philosophy" onclick="closeMenu()">교육 방식</a>
   <a href="#about" onclick="closeMenu()">강사 소개</a>
   <a href="#lectures" onclick="closeMenu()">강의 분야</a>
   <a href="#history" onclick="closeMenu()">강의 이력</a>
-  <a href="#testimonials" onclick="closeMenu()">수강 후기</a>
   <a href="#contact" onclick="closeMenu()">문의</a>
 </div>
 
@@ -1015,7 +1025,7 @@
 <section id="philosophy" class="section-wrap">
   <div class="container">
     <div class="eyebrow">Our Approach</div>
-    <h2 class="section-title">강의 철학</h2>
+    <h2 class="section-title">교육 방식</h2>
     <div class="philosophy-grid">
       <div class="philosophy-card">
         <div class="philo-accent"></div>
@@ -1242,6 +1252,7 @@
       console.error('lectures fetch exception:', e);
     }
     renderHistory();
+    renderStats();
   }
 
   function escapeHtml(str) {
@@ -1771,7 +1782,6 @@
   loadFromSupabase();
   loadAwards();
   fetchAndRenderHistory();
-  renderStats();
 </script>
 
 </body>
