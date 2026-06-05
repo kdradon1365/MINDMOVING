@@ -662,7 +662,8 @@
     display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #555;
   }
   .modal-close:hover { background: #EAE5E0; }
-  .modal-photo { width: 100%; max-height: 280px; object-fit: cover; display: block; }
+  .modal-photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(0,1fr)); gap: 2px; }
+  .modal-photo { width: 100%; height: 240px; object-fit: cover; display: block; }
   .modal-body { padding: 2rem 2rem 2.5rem; }
   .modal-date { font-size: 0.72rem; color: var(--taupe); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.5rem; }
   .modal-title { font-size: 1.4rem; font-weight: 800; color: var(--black); line-height: 1.3; margin-bottom: 0.4rem; }
@@ -1266,7 +1267,7 @@
         <div class="history-cards">
           ${byYear[year].map(l => `
             <div class="history-card" onclick="openLectureModal('${escapeHtml(l.id)}')">
-              ${l.photo_url ? `<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">` : ''}
+              ${(() => { try { const p = JSON.parse(l.photo_url||''); return Array.isArray(p)&&p[0]?`<img src="${escapeHtml(p[0])}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">`:l.photo_url?`<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">`:''; } catch{ return l.photo_url?`<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">`:''; } })()}
               <div class="history-date">${fmtDate(l.date)}</div>
               <div class="history-title">${escapeHtml(l.title)}</div>
               <div class="history-org">${escapeHtml(l.organization)}</div>
@@ -1281,7 +1282,7 @@
     const l = getLectures().find(l => l.id === id);
     if (!l) return;
     document.getElementById('modalContent').innerHTML = `
-      ${l.photo_url ? `<img src="${escapeHtml(l.photo_url)}" class="modal-photo">` : ''}
+      ${(() => { const urls = (() => { try { const p = JSON.parse(l.photo_url||''); return Array.isArray(p)?p:[l.photo_url]; } catch{ return l.photo_url?[l.photo_url]:[]; } })(); return urls.length ? `<div class="modal-photos">${urls.map(u=>`<img src="${escapeHtml(u)}" class="modal-photo">`).join('')}</div>` : ''; })()}
       <div class="modal-body">
         <div class="modal-date">${fmtDate(l.date)}</div>
         <div class="modal-title">${escapeHtml(l.title)}</div>

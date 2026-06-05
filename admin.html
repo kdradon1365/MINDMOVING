@@ -929,20 +929,26 @@
           <textarea id="fOutcome" rows="2" placeholder="교육 후 기대되는 변화 및 효과를 입력하세요."></textarea>
         </div>
         <div class="form-group">
-          <label>강의 사진 <span class="opt">(선택)</span></label>
-          <div class="photo-upload-wrap">
-            <label class="photo-upload-btn" for="fPhoto">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              사진 선택
-            </label>
-            <input type="file" id="fPhoto" accept="image/*" style="display:none" onchange="previewPhoto(this)">
-            <span id="photoFileName" class="photo-filename">선택된 파일 없음</span>
+          <label>강의 사진 <span class="opt">최대 3장</span></label>
+          <div style="display:flex;flex-direction:column;gap:0.6rem;">
+            ${[1,2,3].map(n => `
+            <div style="border:1.5px solid var(--border);border-radius:8px;padding:0.75rem;">
+              <div style="font-size:0.72rem;color:var(--gray-light);font-weight:600;margin-bottom:0.5rem;">사진 ${n}</div>
+              <div class="photo-upload-wrap">
+                <label class="photo-upload-btn" for="fPhoto${n}" style="font-size:0.8rem;padding:0.4rem 0.85rem;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  선택
+                </label>
+                <input type="file" id="fPhoto${n}" accept="image/*" style="display:none" onchange="previewPhoto(this,${n})">
+                <span id="photoFileName${n}" class="photo-filename" style="font-size:0.78rem;">선택 없음</span>
+              </div>
+              <div id="photoPreviewWrap${n}" style="display:none;margin-top:0.5rem;">
+                <img id="photoPreview${n}" style="max-width:100%;max-height:120px;border-radius:5px;border:1px solid var(--border);">
+                <button type="button" onclick="clearPhoto(${n})" style="display:block;margin-top:0.3rem;font-size:0.75rem;color:var(--danger);background:none;border:none;cursor:pointer;">제거</button>
+              </div>
+              <input type="hidden" id="fPhotoUrl${n}">
+            </div>`).join('')}
           </div>
-          <div id="photoPreviewWrap" style="display:none; margin-top:0.6rem;">
-            <img id="photoPreview" style="max-width:100%; max-height:160px; border-radius:6px; border:1px solid var(--border);">
-            <button type="button" onclick="clearPhoto()" style="display:block; margin-top:0.4rem; font-size:0.78rem; color:var(--danger); background:none; border:none; cursor:pointer;">사진 제거</button>
-          </div>
-          <input type="hidden" id="fPhotoUrl">
         </div>
         <button class="submit-btn" id="submitBtn" onclick="submitForm()">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -1006,24 +1012,25 @@
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  function previewPhoto(input) {
+  function previewPhoto(input, n) {
     const file = input.files[0];
     if (!file) return;
-    document.getElementById('photoFileName').textContent = file.name;
+    document.getElementById('photoFileName' + n).textContent = file.name;
     const reader = new FileReader();
     reader.onload = e => {
-      document.getElementById('photoPreview').src = e.target.result;
-      document.getElementById('photoPreviewWrap').style.display = 'block';
+      document.getElementById('photoPreview' + n).src = e.target.result;
+      document.getElementById('photoPreviewWrap' + n).style.display = 'block';
     };
     reader.readAsDataURL(file);
   }
 
-  function clearPhoto() {
-    document.getElementById('fPhoto').value = '';
-    document.getElementById('fPhotoUrl').value = '';
-    document.getElementById('photoFileName').textContent = '선택된 파일 없음';
-    document.getElementById('photoPreviewWrap').style.display = 'none';
-    document.getElementById('photoPreview').src = '';
+  function clearPhoto(n) {
+    if (n === undefined) { [1,2,3].forEach(i => clearPhoto(i)); return; }
+    document.getElementById('fPhoto' + n).value = '';
+    document.getElementById('fPhotoUrl' + n).value = '';
+    document.getElementById('photoFileName' + n).textContent = '선택 없음';
+    document.getElementById('photoPreviewWrap' + n).style.display = 'none';
+    document.getElementById('photoPreview' + n).src = '';
   }
 
   async function uploadPhoto(file) {
@@ -1393,14 +1400,19 @@
     btn.disabled = true;
     btn.innerHTML = '저장 중…';
 
-    let photoUrl = document.getElementById('fPhotoUrl').value || '';
-    const photoFile = document.getElementById('fPhoto').files[0];
-    if (photoFile) {
-      showToast('📤 사진 업로드 중…');
-      const url = await uploadPhoto(photoFile);
-      if (url) photoUrl = url;
-      else showToast('⚠️ 사진 업로드 실패 (텍스트 내용은 저장됩니다)', 'error');
+    const photoUrls = [];
+    for (let n = 1; n <= 3; n++) {
+      let url = document.getElementById('fPhotoUrl' + n).value || '';
+      const file = document.getElementById('fPhoto' + n).files[0];
+      if (file) {
+        showToast('📤 사진 ' + n + ' 업로드 중…');
+        const uploaded = await uploadPhoto(file);
+        if (uploaded) url = uploaded;
+        else showToast('⚠️ 사진 ' + n + ' 업로드 실패', 'error');
+      }
+      if (url) photoUrls.push(url);
     }
+    const photoUrl = photoUrls.length === 1 ? photoUrls[0] : photoUrls.length > 1 ? JSON.stringify(photoUrls) : '';
 
     if (editingId) {
       const { error } = await sb.from('lectures').update(
@@ -1439,12 +1451,15 @@
     populateDateFields(l.date);
     document.getElementById('fCategory').value = l.category || '';
     setNoteValue(l.note || '');
-    if (l.photo_url) {
-      document.getElementById('fPhotoUrl').value = l.photo_url;
-      document.getElementById('photoPreview').src = l.photo_url;
-      document.getElementById('photoPreviewWrap').style.display = 'block';
-      document.getElementById('photoFileName').textContent = '기존 사진';
-    }
+    clearPhoto();
+    const urls = (() => { try { const p = JSON.parse(l.photo_url || ''); return Array.isArray(p) ? p : [l.photo_url]; } catch { return l.photo_url ? [l.photo_url] : []; } })();
+    urls.forEach((url, i) => {
+      const n = i + 1;
+      document.getElementById('fPhotoUrl' + n).value = url;
+      document.getElementById('photoPreview' + n).src = url;
+      document.getElementById('photoPreviewWrap' + n).style.display = 'block';
+      document.getElementById('photoFileName' + n).textContent = '기존 사진';
+    });
     document.getElementById('formTitle').textContent = '강의 이력 수정';
     document.getElementById('submitBtn').innerHTML = '수정 저장';
     document.getElementById('submitBtn').classList.add('edit-mode');
