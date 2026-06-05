@@ -811,18 +811,18 @@
   .cred-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
 
   /* AWARDS */
-  .awards-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0.5rem; margin-top: 1.25rem; }
+  .awards-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1.5rem; }
   .award-row {
-    display: flex; align-items: flex-start; gap: 0.7rem;
-    padding: 0.75rem 1rem; background: white;
-    border: 1px solid #E8E2DA; border-radius: 6px;
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.9rem 1.25rem; background: white;
+    border: 1px solid #E8E2DA; border-radius: 8px;
   }
-  .award-row-icon { font-size: 1rem; flex-shrink: 0; padding-top: 0.2rem; }
-  .award-row-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
-  .award-row-text { min-width: 0; }
-  .award-row-title { font-size: 0.85rem; font-weight: 700; color: var(--black); line-height: 1.4; }
-  .award-row-sub { font-size: 0.72rem; color: var(--taupe); margin-top: 0.05rem; }
-  .award-row-year { font-size: 0.7rem; font-weight: 600; color: var(--teal); line-height: 1.4; }
+  .award-row-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .award-row-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: 1.5rem; }
+  .award-row-text { flex: 1; min-width: 0; }
+  .award-row-title { font-size: 0.9rem; font-weight: 700; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .award-row-sub { font-size: 0.78rem; color: var(--taupe); white-space: nowrap; flex-shrink: 0; }
+  .award-row-year { font-size: 0.78rem; font-weight: 600; color: var(--teal); white-space: nowrap; flex-shrink: 0; margin-left: auto; }
 
   /* TESTIMONIALS */
   #testimonials { background: var(--taupe-pale); border-top: 1px solid var(--border); }
@@ -910,8 +910,9 @@
     .hero-left { padding: 4rem 2rem; }
     .section-wrap { padding: 5rem 2rem; }
     #awards { padding: 2rem 1.5rem !important; }
-    .awards-list { grid-template-columns: 1fr; }
-    .awards-list { grid-template-columns: 1fr; }
+    .award-row-info { flex-wrap: wrap; gap: 0.3rem; }
+    .award-row-sub { flex-basis: 100%; order: 3; }
+    .award-row-year { margin-left: 0; }
     .stats-bar { grid-template-columns: 1fr; }
     .stat-item { border-right: none; border-bottom: 1px solid #2A2A2A; }
     .philosophy-grid { grid-template-columns: 1fr; }
