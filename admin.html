@@ -897,10 +897,9 @@
           </div>
         </div>
         <div class="form-group">
-          <label>강의 분야 <span class="opt">(선택)</span></label>
-          <select id="fCategory">
-            <option value="">선택 안 함</option>
-          </select>
+          <label>강의 분야 <span class="opt">최대 3개</span></label>
+          <div id="fCategoryWrap" style="display:flex;flex-direction:column;gap:0.35rem;border:1.5px solid var(--border);border-radius:8px;padding:0.75rem 0.85rem;max-height:220px;overflow-y:auto;"></div>
+          <div id="fCategoryCount" style="font-size:0.72rem;color:var(--gray-light);margin-top:0.3rem;">0개 선택됨</div>
         </div>
         <div class="form-group" style="margin-bottom:0.5rem;">
           <label>강의 부제목 <span class="opt">(선택)</span></label>
@@ -1154,22 +1153,67 @@
     }
   }
 
+  const CATEGORIES = [
+    { key: '리더십/조직문화',    label: '리더십 / 조직문화' },
+    { key: '커뮤니케이션/협상',  label: '커뮤니케이션 및 갈등관리 / 협상' },
+    { key: '심리/멘탈코칭',     label: '심리 / 멘탈 코칭' },
+    { key: '세일즈/영업코칭',    label: '세일즈 / 영업코칭 및 서비스' },
+    { key: '기업교육/HRD',      label: '기업교육 / HRD' },
+    { key: '드라마테라피',       label: 'Roll-Play(롤플레이) 활용 강의' },
+    { key: '민원응대',           label: '민원 응대' },
+    { key: '연극활용기업교육',    label: '연극 활용 기업교육' },
+    { key: '스트레스관리',       label: '스트레스 감정관리 교육' },
+    { key: '회복탄력성',         label: '회복탄력성' },
+    { key: '핵심가치내재화',     label: '핵심가치 내재화 교육' },
+  ];
+
+  function catLabel(key) {
+    const found = CATEGORIES.find(c => c.key === key);
+    return found ? found.label : key;
+  }
+
+  function getCategoryValues() {
+    return CATEGORIES.filter(c => {
+      const el = document.getElementById('fcat_' + c.key.replace(/[^a-zA-Z0-9]/g,'_'));
+      return el && el.checked;
+    }).map(c => c.key);
+  }
+
+  function setCategoryValues(val) {
+    CATEGORIES.forEach(c => {
+      const el = document.getElementById('fcat_' + c.key.replace(/[^a-zA-Z0-9]/g,'_'));
+      if (el) el.checked = false;
+    });
+    if (!val) return;
+    let keys = [];
+    try { const p = JSON.parse(val); keys = Array.isArray(p) ? p : [val]; } catch { keys = [val]; }
+    keys.forEach(k => {
+      const el = document.getElementById('fcat_' + k.replace(/[^a-zA-Z0-9]/g,'_'));
+      if (el) el.checked = true;
+    });
+    updateCategoryCount();
+  }
+
+  function updateCategoryCount() {
+    const checked = getCategoryValues().length;
+    document.getElementById('fCategoryCount').textContent = checked ? `${checked}개 선택됨` : '선택 안 함';
+    CATEGORIES.forEach(c => {
+      const el = document.getElementById('fcat_' + c.key.replace(/[^a-zA-Z0-9]/g,'_'));
+      if (el && !el.checked && checked >= 3) el.disabled = true;
+      else if (el) el.disabled = false;
+    });
+  }
+
   async function loadCategoryOptions() {
-    const staticCategories = [
-      { key: '리더십/조직문화',    label: '리더십 / 조직문화' },
-      { key: '커뮤니케이션/협상',   label: '커뮤니케이션 및 갈등관리 / 협상' },
-      { key: '심리/멘탈코칭',      label: '심리 / 멘탈 코칭' },
-      { key: '세일즈/영업코칭',     label: '세일즈 / 영업코칭 및 서비스' },
-      { key: '기업교육/HRD',       label: '기업교육 / HRD' },
-      { key: '드라마테라피',        label: 'Roll-Play(롤플레이) 활용 강의' },
-      { key: '민원응대',            label: '민원 응대' },
-      { key: '연극활용기업교육',     label: '연극 활용 기업교육' },
-      { key: '스트레스관리',        label: '스트레스 감정관리 교육' },
-      { key: '회복탄력성',          label: '회복탄력성' },
-      { key: '핵심가치내재화',      label: '핵심가치 내재화 교육' },
-    ];
-    const opts = staticCategories.map(c => `<option value="${c.key}">${c.label}</option>`).join('');
-    document.getElementById('fCategory').innerHTML      = '<option value="">선택 안 함</option>' + opts;
+    const wrap = document.getElementById('fCategoryWrap');
+    wrap.innerHTML = CATEGORIES.map(c => {
+      const id = 'fcat_' + c.key.replace(/[^a-zA-Z0-9]/g,'_');
+      return `<label style="display:flex;align-items:center;gap:0.5rem;font-size:0.83rem;cursor:pointer;user-select:none;">
+        <input type="checkbox" id="${id}" value="${c.key}" onchange="updateCategoryCount()" style="width:15px;height:15px;accent-color:var(--teal);cursor:pointer;">
+        ${c.label}
+      </label>`;
+    }).join('');
+    const opts = CATEGORIES.map(c => `<option value="${c.key}">${c.label}</option>`).join('');
     document.getElementById('categoryFilter').innerHTML = '<option value="">전체 분야</option>' + opts;
   }
 
@@ -1428,7 +1472,8 @@
     const title = document.getElementById('fTitle').value.trim();
     const org   = document.getElementById('fOrg').value.trim();
     const date  = getDateValue();
-    const cat   = document.getElementById('fCategory').value;
+    const cats  = getCategoryValues();
+    const cat   = cats.length === 1 ? cats[0] : cats.length > 1 ? JSON.stringify(cats) : '';
     const note  = getNoteValue();
     if (!title || !org || !date) { showToast('⚠️ 강의명, 기관명, 날짜는 필수입니다.', 'error'); return; }
 
@@ -1478,7 +1523,7 @@
 
   function clearForm() {
     ['fTitle','fOrg','fYear','fMonth','fDay'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('fCategory').value = '';
+    setCategoryValues('');
     clearNoteFields();
     clearPhoto();
   }
@@ -1490,7 +1535,7 @@
     document.getElementById('fTitle').value    = l.title;
     document.getElementById('fOrg').value      = l.organization;
     populateDateFields(l.date);
-    document.getElementById('fCategory').value = l.category || '';
+    setCategoryValues(l.category || '');
     setNoteValue(l.note || '');
     clearPhoto();
     const urls = (() => { try { const p = JSON.parse(l.photo_url || ''); return Array.isArray(p) ? p : [l.photo_url]; } catch { return l.photo_url ? [l.photo_url] : []; } })();

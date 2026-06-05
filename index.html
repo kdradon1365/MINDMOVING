@@ -1278,6 +1278,26 @@
     }
   }
 
+  const CAT_LABELS = {
+    '리더십/조직문화':   '리더십 / 조직문화',
+    '커뮤니케이션/협상': '커뮤니케이션 및 갈등관리 / 협상',
+    '심리/멘탈코칭':    '심리 / 멘탈 코칭',
+    '세일즈/영업코칭':  '세일즈 / 영업코칭 및 서비스',
+    '기업교육/HRD':    '기업교육 / HRD',
+    '드라마테라피':     'Roll-Play(롤플레이) 활용 강의',
+    '민원응대':        '민원 응대',
+    '연극활용기업교육': '연극 활용 기업교육',
+    '스트레스관리':    '스트레스 감정관리 교육',
+    '회복탄력성':      '회복탄력성',
+    '핵심가치내재화':  '핵심가치 내재화 교육',
+  };
+  function catKeyToLabel(key) { return CAT_LABELS[key] || key; }
+  function getCatKeys(raw) {
+    if (!raw) return [];
+    try { const p = JSON.parse(raw); return Array.isArray(p) ? p : [raw]; }
+    catch { return [raw]; }
+  }
+
   function fmtDate(date) {
     if (!date) return '';
     const p = date.split('-');
@@ -1314,7 +1334,7 @@
               <div class="history-date">${fmtDate(l.date)}</div>
               <div class="history-title">${escapeHtml(l.title)}</div>
               <div class="history-org">${escapeHtml(l.organization)}</div>
-              ${l.category ? `<div style="margin-top:0.5rem;font-size:0.7rem;color:var(--teal);font-weight:700;">${escapeHtml(l.category)}</div>` : ''}
+              ${l.category ? `<div style="margin-top:0.5rem;font-size:0.7rem;color:var(--teal);font-weight:700;">${getCatKeys(l.category).map(k=>escapeHtml(catKeyToLabel(k))).join(' · ')}</div>` : ''}
             </div>`).join('')}
         </div>
       </div>`).join('');
@@ -1362,7 +1382,7 @@
             <div class="modal-title">${escapeHtml(l.title)}</div>
             <div class="modal-org-row"><span class="modal-org">📍 ${escapeHtml(l.organization)}</span></div>
           </div>
-          ${l.category ? `<span class="modal-category">📚 ${escapeHtml(l.category.split('/').pop())}</span>` : ''}
+          ${l.category ? `<span class="modal-category">📚 ${getCatKeys(l.category).map(k=>escapeHtml(catKeyToLabel(k))).join(' · ')}</span>` : ''}
         </div>
         ${badgeHtml}
       </div>
@@ -1375,7 +1395,7 @@
   // ── 강의 분야별 팝업 ─────────────────────────────────────
   function openCategoryModal(category, label) {
     const items = getLectures()
-      .filter(l => l.category === category)
+      .filter(l => getCatKeys(l.category).includes(category))
       .sort((a, b) => b.date.localeCompare(a.date));
     const listHtml = items.length
       ? items.map(l => `
