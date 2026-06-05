@@ -811,18 +811,19 @@
   .cred-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
 
   /* AWARDS */
-  .awards-list { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1.5rem; }
+  .awards-list { display: flex !important; flex-direction: column !important; gap: 0.5rem; margin-top: 1.5rem; }
   .award-row {
     display: flex; align-items: center; gap: 1rem;
-    padding: 0.9rem 1.25rem; background: white;
+    padding: 1rem 1.5rem; background: white;
     border: 1px solid #E8E2DA; border-radius: 8px;
+    width: 100%; box-sizing: border-box;
   }
-  .award-row-icon { font-size: 1.1rem; flex-shrink: 0; }
-  .award-row-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: 1.5rem; }
+  .award-row-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .award-row-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: 2rem; }
   .award-row-text { flex: 1; min-width: 0; }
-  .award-row-title { font-size: 0.9rem; font-weight: 700; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .award-row-sub { font-size: 0.78rem; color: var(--taupe); white-space: nowrap; flex-shrink: 0; }
-  .award-row-year { font-size: 0.78rem; font-weight: 600; color: var(--teal); white-space: nowrap; flex-shrink: 0; margin-left: auto; }
+  .award-row-title { font-size: 0.95rem; font-weight: 700; color: var(--black); line-height: 1.4; }
+  .award-row-sub { font-size: 0.8rem; color: var(--taupe); white-space: nowrap; flex-shrink: 0; }
+  .award-row-year { font-size: 0.8rem; font-weight: 600; color: var(--teal); white-space: nowrap; flex-shrink: 0; margin-left: auto; padding-left: 1rem; }
 
   /* TESTIMONIALS */
   #testimonials { background: var(--taupe-pale); border-top: 1px solid var(--border); }
@@ -910,9 +911,10 @@
     .hero-left { padding: 4rem 2rem; }
     .section-wrap { padding: 5rem 2rem; }
     #awards { padding: 2rem 1.5rem !important; }
-    .award-row-info { flex-wrap: wrap; gap: 0.3rem; }
-    .award-row-sub { flex-basis: 100%; order: 3; }
-    .award-row-year { margin-left: 0; }
+    .award-row { padding: 0.75rem 1rem; }
+    .award-row-info { flex-wrap: wrap; gap: 0.4rem; }
+    .award-row-sub { flex-basis: 100%; }
+    .award-row-year { margin-left: 0; padding-left: 0; }
     .stats-bar { grid-template-columns: 1fr; }
     .stat-item { border-right: none; border-bottom: 1px solid #2A2A2A; }
     .philosophy-grid { grid-template-columns: 1fr; }
@@ -1120,7 +1122,7 @@
   <div class="container">
     <div class="eyebrow">Awards</div>
     <h2 class="section-title" style="margin-bottom:0;">수상 경력</h2>
-    <div class="awards-list" id="awardsGrid"></div>
+    <div class="awards-list" id="awardsGrid" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
   </div>
 </section>
 
