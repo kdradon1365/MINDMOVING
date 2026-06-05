@@ -1523,14 +1523,13 @@
   function renderAwards(data) {
     const sec  = document.getElementById('awards');
     const grid = document.getElementById('awardsGrid');
-    if (!grid) return;
-    const active = data.filter(a => a.active !== false).sort((a,b) => {
-      if (a.year && b.year) return b.year.localeCompare(a.year);
-      return a.sort_order - b.sort_order;
+    if (!grid || !data || !data.length) return;
+    const sorted = [...data].sort((a,b) => {
+      if (a.year && b.year) return String(b.year).localeCompare(String(a.year));
+      return (a.sort_order || 0) - (b.sort_order || 0);
     });
-    if (!active.length) return;
     sec.style.display = '';
-    grid.innerHTML = active.map(a => `
+    grid.innerHTML = sorted.map(a => `
       <div class="award-row">
         <div class="award-row-icon">${escapeHtml(a.icon || '🏆')}</div>
         <div class="award-row-info">
@@ -1624,17 +1623,25 @@
     btn.textContent = '전송 완료 ✓';
   }
 
+  // ── 수상경력 별도 로드 ───────────────────────────────────
+  async function loadAwards() {
+    try {
+      const { data, error } = await sb.from('awards').select('*');
+      if (error) { console.warn('awards fetch error:', error.message); return; }
+      if (data && data.length) renderAwards(data);
+    } catch(e) { console.warn('awards exception:', e); }
+  }
+
   // ── Supabase에서 전체 데이터 로드 ────────────────────────
   async function loadFromSupabase() {
     const get = (table, query='*') => sb.from(table).select(query).catch(() => ({ data: null }));
-    const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes, credRes, awardsRes, tmRes, dlRes] = await Promise.all([
+    const [contentRes, lecturesRes, orgsRes, tagsRes, photosRes, credRes, tmRes, dlRes] = await Promise.all([
       get('site_content'),
       get('lecture_areas'),
       get('about_orgs'),
       get('about_tags'),
       get('instructor_photos'),
       get('credentials'),
-      get('awards'),
       get('testimonials'),
       get('downloads'),
     ]);
@@ -1644,7 +1651,6 @@
     if (tagsRes.data     && tagsRes.data.length)      renderTags(tagsRes.data);
     // initCarousel 비활성화: Supabase 사진이 carousel을 밀어내 기본 사진이 안보이는 버그 방지
     if (credRes.data)    renderCredentials(credRes.data);
-    if (awardsRes.data)  renderAwards(awardsRes.data);
     if (tmRes.data)      renderTestimonials(tmRes.data);
     if (dlRes.data)      renderDownloads(dlRes.data);
     loadContactCategories();
@@ -1652,6 +1658,7 @@
 
   document.getElementById('cpYear').textContent = new Date().getFullYear();
   loadFromSupabase();
+  loadAwards();
   fetchAndRenderHistory();
   renderStats();
 </script>
