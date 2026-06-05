@@ -811,18 +811,18 @@
   .cred-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
 
   /* AWARDS */
-  .awards-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.5rem; margin-top: 1.25rem; }
+  .awards-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 0.5rem; margin-top: 1.25rem; }
   .award-row {
     display: flex; align-items: flex-start; gap: 0.7rem;
-    padding: 0.65rem 0.9rem; background: white;
+    padding: 0.75rem 1rem; background: white;
     border: 1px solid #E8E2DA; border-radius: 6px;
   }
-  .award-row-icon { font-size: 1rem; flex-shrink: 0; padding-top: 0.15rem; }
-  .award-row-info { flex: 1; min-width: 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
-  .award-row-text { flex: 1; min-width: 0; }
-  .award-row-title { font-size: 0.83rem; font-weight: 700; color: var(--black); line-height: 1.4; }
-  .award-row-sub { font-size: 0.7rem; color: var(--taupe); margin-top: 0.1rem; }
-  .award-row-year { font-size: 0.7rem; font-weight: 700; color: var(--gray-light); flex-shrink: 0; text-align: right; line-height: 1.4; padding-top: 0.15rem; }
+  .award-row-icon { font-size: 1rem; flex-shrink: 0; padding-top: 0.2rem; }
+  .award-row-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+  .award-row-text { min-width: 0; }
+  .award-row-title { font-size: 0.85rem; font-weight: 700; color: var(--black); line-height: 1.4; }
+  .award-row-sub { font-size: 0.72rem; color: var(--taupe); margin-top: 0.05rem; }
+  .award-row-year { font-size: 0.7rem; font-weight: 600; color: var(--teal); line-height: 1.4; }
 
   /* TESTIMONIALS */
   #testimonials { background: var(--taupe-pale); border-top: 1px solid var(--border); }
@@ -911,8 +911,7 @@
     .section-wrap { padding: 5rem 2rem; }
     #awards { padding: 2rem 1.5rem !important; }
     .awards-list { grid-template-columns: 1fr; }
-    .award-row-info { flex-direction: column; gap: 0.2rem; }
-    .award-row-year { text-align: left; padding-top: 0; }
+    .awards-list { grid-template-columns: 1fr; }
     .stats-bar { grid-template-columns: 1fr; }
     .stat-item { border-right: none; border-bottom: 1px solid #2A2A2A; }
     .philosophy-grid { grid-template-columns: 1fr; }
