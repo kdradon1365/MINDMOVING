@@ -767,19 +767,22 @@
   .cred-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
 
   /* AWARDS */
-  #awards { background: var(--white); border-top: 1px solid var(--border); }
-  .awards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
-  .award-card {
-    background: linear-gradient(135deg, #FFFDF8 0%, #FFF8EE 100%);
-    border-radius: 10px; padding: 1.75rem 1.5rem;
-    display: flex; flex-direction: column; gap: 0.5rem;
-    border: 1px solid #E8DEC8; transition: box-shadow 0.2s;
+  #awards { background: var(--taupe-pale); border-top: 1px solid #DDD6CE; border-bottom: 1px solid #DDD6CE; }
+  .awards-list { display: flex; flex-direction: column; gap: 0; margin-top: 2.5rem; border: 1px solid #DDD6CE; border-radius: 10px; overflow: hidden; }
+  .award-row {
+    display: flex; align-items: center; gap: 1.25rem;
+    padding: 1.1rem 1.5rem;
+    background: white;
+    border-bottom: 1px solid #EAE5E0;
+    transition: background 0.15s;
   }
-  .award-card:hover { box-shadow: 0 4px 16px rgba(180,130,30,0.12); }
-  .award-icon { font-size: 2rem; margin-bottom: 0.25rem; }
-  .award-title { font-size: 0.92rem; font-weight: 700; color: var(--black); line-height: 1.35; }
-  .award-org { font-size: 0.8rem; color: #A07830; font-weight: 600; }
-  .award-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
+  .award-row:last-child { border-bottom: none; }
+  .award-row:hover { background: #FAF8F6; }
+  .award-row-icon { font-size: 1.4rem; flex-shrink: 0; width: 2rem; text-align: center; }
+  .award-row-info { flex: 1; }
+  .award-row-title { font-size: 0.92rem; font-weight: 700; color: var(--black); }
+  .award-row-sub { font-size: 0.78rem; color: var(--taupe); margin-top: 0.15rem; }
+  .award-row-year { font-size: 0.75rem; font-weight: 700; color: var(--gray-light); flex-shrink: 0; }
 
   /* TESTIMONIALS */
   #testimonials { background: var(--taupe-pale); border-top: 1px solid var(--border); }
@@ -1063,7 +1066,7 @@
   <div class="container">
     <div class="eyebrow">Awards</div>
     <h2 class="section-title">수상 경력</h2>
-    <div class="awards-grid" id="awardsGrid"></div>
+    <div class="awards-list" id="awardsGrid"></div>
   </div>
 </section>
 
@@ -1521,15 +1524,20 @@
     const sec  = document.getElementById('awards');
     const grid = document.getElementById('awardsGrid');
     if (!grid) return;
-    const active = data.filter(a => a.active).sort((a,b) => a.sort_order - b.sort_order);
+    const active = data.filter(a => a.active).sort((a,b) => {
+      if (a.year && b.year) return b.year.localeCompare(a.year);
+      return a.sort_order - b.sort_order;
+    });
     if (!active.length) return;
     sec.style.display = '';
     grid.innerHTML = active.map(a => `
-      <div class="award-card">
-        <div class="award-icon">${escapeHtml(a.icon || '🏆')}</div>
-        <div class="award-title">${escapeHtml(a.title)}</div>
-        ${a.org  ? `<div class="award-org">${escapeHtml(a.org)}</div>` : ''}
-        ${a.year ? `<div class="award-year">${escapeHtml(a.year)}</div>` : ''}
+      <div class="award-row">
+        <div class="award-row-icon">${escapeHtml(a.icon || '🏆')}</div>
+        <div class="award-row-info">
+          <div class="award-row-title">${escapeHtml(a.title)}</div>
+          ${a.org ? `<div class="award-row-sub">${escapeHtml(a.org)}</div>` : ''}
+        </div>
+        ${a.year ? `<div class="award-row-year">${escapeHtml(a.year)}</div>` : ''}
       </div>`).join('');
   }
 
