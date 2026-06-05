@@ -647,29 +647,72 @@
   /* MODAL */
   .modal-overlay {
     display: none; position: fixed; inset: 0; z-index: 1000;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(3px);
-    align-items: center; justify-content: center; padding: 1.5rem;
+    background: rgba(0,0,0,0.65); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 1.25rem;
   }
   .modal-overlay.open { display: flex; }
   .modal-box {
-    background: white; max-width: 560px; width: 100%;
-    max-height: 90vh; overflow-y: auto; position: relative;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    background: white; max-width: 680px; width: 100%;
+    max-height: 92vh; overflow-y: auto; position: relative;
+    border-radius: 16px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.3);
   }
   .modal-close {
-    position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px;
-    background: #F5F2EF; border: none; cursor: pointer; border-radius: 50%;
+    position: absolute; top: 1rem; right: 1rem; z-index: 10;
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.9); border: none; cursor: pointer; border-radius: 50%;
     display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #555;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   }
-  .modal-close:hover { background: #EAE5E0; }
-  .modal-photos { display: grid; grid-template-columns: repeat(auto-fit, minmax(0,1fr)); gap: 2px; }
-  .modal-photo { width: 100%; height: 240px; object-fit: cover; display: block; }
-  .modal-body { padding: 2rem 2rem 2.5rem; }
-  .modal-date { font-size: 0.72rem; color: var(--taupe); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .modal-title { font-size: 1.4rem; font-weight: 800; color: var(--black); line-height: 1.3; margin-bottom: 0.4rem; }
-  .modal-org { font-size: 0.9rem; color: var(--teal); font-weight: 600; margin-bottom: 1.25rem; }
-  .modal-category { display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; color: white; background: var(--teal); padding: 0.2rem 0.7rem; margin-bottom: 1rem; }
-  .modal-note { font-size: 0.88rem; color: var(--gray); line-height: 1.7; padding-top: 1rem; border-top: 1px solid #EAE5E0; }
+  .modal-close:hover { background: white; }
+  /* 사진 갤러리 */
+  .modal-photos { display: grid; gap: 3px; border-radius: 16px 16px 0 0; overflow: hidden; }
+  .modal-photos.photos-1 { grid-template-columns: 1fr; }
+  .modal-photos.photos-2 { grid-template-columns: 1fr 1fr; }
+  .modal-photos.photos-3 { grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; }
+  .modal-photo { width: 100%; height: 220px; object-fit: cover; display: block; }
+  .modal-photos.photos-3 .modal-photo:first-child { grid-row: 1 / 3; height: 100%; }
+  .modal-photos.photos-3 .modal-photo:not(:first-child) { height: 108px; }
+  /* 모달 본문 */
+  .modal-header {
+    padding: 1.75rem 2rem 1.25rem;
+    border-bottom: 1px solid #EAE5E0;
+  }
+  .modal-header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; }
+  .modal-category {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 1.2px;
+    color: var(--teal); background: var(--teal-pale);
+    border: 1px solid #C8DEDE; padding: 0.25rem 0.65rem; border-radius: 20px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .modal-date { font-size: 0.72rem; color: var(--taupe); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.45rem; }
+  .modal-title { font-size: 1.35rem; font-weight: 800; color: var(--black); line-height: 1.35; margin-bottom: 0.4rem; }
+  .modal-org-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.2rem; }
+  .modal-org { font-size: 0.9rem; color: var(--teal); font-weight: 600; }
+  /* 정보 배지 (대상/형태) */
+  .modal-info-badges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+  .modal-info-badge {
+    font-size: 0.75rem; padding: 0.3rem 0.75rem; border-radius: 6px;
+    background: #F5F2EF; color: var(--gray); font-weight: 500;
+  }
+  .modal-info-badge strong { color: var(--black); font-weight: 700; margin-right: 0.25rem; }
+  /* 본문 섹션들 */
+  .modal-body { padding: 1.5rem 2rem 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
+  .modal-intro { font-size: 0.9rem; color: var(--gray); line-height: 1.8; }
+  .modal-section {
+    background: #F9F7F5; border-radius: 10px; padding: 1.1rem 1.25rem;
+  }
+  .modal-section-label {
+    font-size: 0.68rem; font-weight: 800; color: var(--teal); letter-spacing: 1.5px;
+    text-transform: uppercase; margin-bottom: 0.65rem;
+  }
+  .modal-points { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.45rem; }
+  .modal-points li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.87rem; color: var(--gray); line-height: 1.6; }
+  .modal-points li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; font-size: 0.8rem; margin-top: 0.15rem; }
+  .modal-outcome { font-size: 0.87rem; color: var(--gray); line-height: 1.7; }
+  /* 레거시 note 스타일 (JSON 아닌 경우) */
+  .modal-note { font-size: 0.88rem; color: var(--gray); line-height: 1.7; }
   .modal-note-subtitle { font-size: 1rem; font-weight: 800; color: var(--black); margin-bottom: 0.75rem; }
   .modal-note-meta { display: flex; flex-direction: column; gap: 0.2rem; margin-bottom: 0.9rem; }
   .modal-note-meta span { font-size: 0.83rem; color: var(--gray); }
@@ -1278,18 +1321,52 @@
   }
 
   // ── 강의 이력 팝업 ────────────────────────────────────────
+  function getPhotoUrls(photo_url) {
+    if (!photo_url) return [];
+    try { const p = JSON.parse(photo_url); return Array.isArray(p) ? p : [photo_url]; }
+    catch { return [photo_url]; }
+  }
+
   function openLectureModal(id) {
     const l = getLectures().find(l => l.id === id);
     if (!l) return;
+    const urls = getPhotoUrls(l.photo_url);
+    const photoCls = urls.length >= 3 ? 'photos-3' : urls.length === 2 ? 'photos-2' : 'photos-1';
+
+    let noteHtml = '';
+    let badgeHtml = '';
+    if (l.note) {
+      try {
+        const d = JSON.parse(l.note);
+        if (d.target || d.fmt) {
+          badgeHtml = '<div class="modal-info-badges">';
+          if (d.target) badgeHtml += `<span class="modal-info-badge"><strong>대상</strong>${escapeHtml(d.target)}</span>`;
+          if (d.fmt)    badgeHtml += `<span class="modal-info-badge"><strong>형태</strong>${escapeHtml(d.fmt)}</span>`;
+          badgeHtml += '</div>';
+        }
+        if (d.intro) noteHtml += `<p class="modal-intro">${escapeHtml(d.intro)}</p>`;
+        if (d.points) {
+          const items = d.points.split('\n').map(s=>s.trim()).filter(Boolean);
+          if (items.length) noteHtml += `<div class="modal-section"><div class="modal-section-label">주요 내용</div><ul class="modal-points">${items.map(item=>`<li>${escapeHtml(item.replace(/^[-•]\s*/,''))}</li>`).join('')}</ul></div>`;
+        }
+        if (d.outcome) noteHtml += `<div class="modal-section"><div class="modal-section-label">교육 효과</div><p class="modal-outcome">${escapeHtml(d.outcome)}</p></div>`;
+      } catch { noteHtml = `<p class="modal-intro">${escapeHtml(l.note)}</p>`; }
+    }
+
     document.getElementById('modalContent').innerHTML = `
-      ${(() => { const urls = (() => { try { const p = JSON.parse(l.photo_url||''); return Array.isArray(p)?p:[l.photo_url]; } catch{ return l.photo_url?[l.photo_url]:[]; } })(); return urls.length ? `<div class="modal-photos">${urls.map(u=>`<img src="${escapeHtml(u)}" class="modal-photo">`).join('')}</div>` : ''; })()}
-      <div class="modal-body">
-        <div class="modal-date">${fmtDate(l.date)}</div>
-        <div class="modal-title">${escapeHtml(l.title)}</div>
-        <div class="modal-org">${escapeHtml(l.organization)}</div>
-        ${l.category ? `<span class="modal-category">${escapeHtml(l.category)}</span>` : ''}
-        ${renderNote(l.note)}
+      ${urls.length ? `<div class="modal-photos ${photoCls}">${urls.map(u=>`<img src="${escapeHtml(u)}" class="modal-photo">`).join('')}</div>` : ''}
+      <div class="modal-header">
+        <div class="modal-header-top">
+          <div>
+            <div class="modal-date">${fmtDate(l.date)}</div>
+            <div class="modal-title">${escapeHtml(l.title)}</div>
+            <div class="modal-org-row"><span class="modal-org">📍 ${escapeHtml(l.organization)}</span></div>
+          </div>
+          ${l.category ? `<span class="modal-category">📚 ${escapeHtml(l.category.split('/').pop())}</span>` : ''}
+        </div>
+        ${badgeHtml}
       </div>
+      ${noteHtml ? `<div class="modal-body">${noteHtml}</div>` : ''}
     `;
     document.getElementById('modalOverlay').classList.add('open');
     document.body.style.overflow = 'hidden';

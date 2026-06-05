@@ -931,23 +931,45 @@
         <div class="form-group">
           <label>강의 사진 <span class="opt">최대 3장</span></label>
           <div style="display:flex;flex-direction:column;gap:0.6rem;">
-            ${[1,2,3].map(n => `
             <div style="border:1.5px solid var(--border);border-radius:8px;padding:0.75rem;">
-              <div style="font-size:0.72rem;color:var(--gray-light);font-weight:600;margin-bottom:0.5rem;">사진 ${n}</div>
+              <div style="font-size:0.72rem;color:var(--gray-light);font-weight:600;margin-bottom:0.5rem;">사진 1</div>
               <div class="photo-upload-wrap">
-                <label class="photo-upload-btn" for="fPhoto${n}" style="font-size:0.8rem;padding:0.4rem 0.85rem;">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  선택
-                </label>
-                <input type="file" id="fPhoto${n}" accept="image/*" style="display:none" onchange="previewPhoto(this,${n})">
-                <span id="photoFileName${n}" class="photo-filename" style="font-size:0.78rem;">선택 없음</span>
+                <label class="photo-upload-btn" for="fPhoto1" style="font-size:0.8rem;padding:0.4rem 0.85rem;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 선택</label>
+                <input type="file" id="fPhoto1" accept="image/*" style="display:none" onchange="previewPhoto(this,1)">
+                <span id="photoFileName1" class="photo-filename" style="font-size:0.78rem;">선택 없음</span>
               </div>
-              <div id="photoPreviewWrap${n}" style="display:none;margin-top:0.5rem;">
-                <img id="photoPreview${n}" style="max-width:100%;max-height:120px;border-radius:5px;border:1px solid var(--border);">
-                <button type="button" onclick="clearPhoto(${n})" style="display:block;margin-top:0.3rem;font-size:0.75rem;color:var(--danger);background:none;border:none;cursor:pointer;">제거</button>
+              <div id="photoPreviewWrap1" style="display:none;margin-top:0.5rem;">
+                <img id="photoPreview1" style="max-width:100%;max-height:120px;border-radius:5px;border:1px solid var(--border);">
+                <button type="button" onclick="clearPhoto(1)" style="display:block;margin-top:0.3rem;font-size:0.75rem;color:var(--danger);background:none;border:none;cursor:pointer;">제거</button>
               </div>
-              <input type="hidden" id="fPhotoUrl${n}">
-            </div>`).join('')}
+              <input type="hidden" id="fPhotoUrl1">
+            </div>
+            <div style="border:1.5px solid var(--border);border-radius:8px;padding:0.75rem;">
+              <div style="font-size:0.72rem;color:var(--gray-light);font-weight:600;margin-bottom:0.5rem;">사진 2</div>
+              <div class="photo-upload-wrap">
+                <label class="photo-upload-btn" for="fPhoto2" style="font-size:0.8rem;padding:0.4rem 0.85rem;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 선택</label>
+                <input type="file" id="fPhoto2" accept="image/*" style="display:none" onchange="previewPhoto(this,2)">
+                <span id="photoFileName2" class="photo-filename" style="font-size:0.78rem;">선택 없음</span>
+              </div>
+              <div id="photoPreviewWrap2" style="display:none;margin-top:0.5rem;">
+                <img id="photoPreview2" style="max-width:100%;max-height:120px;border-radius:5px;border:1px solid var(--border);">
+                <button type="button" onclick="clearPhoto(2)" style="display:block;margin-top:0.3rem;font-size:0.75rem;color:var(--danger);background:none;border:none;cursor:pointer;">제거</button>
+              </div>
+              <input type="hidden" id="fPhotoUrl2">
+            </div>
+            <div style="border:1.5px solid var(--border);border-radius:8px;padding:0.75rem;">
+              <div style="font-size:0.72rem;color:var(--gray-light);font-weight:600;margin-bottom:0.5rem;">사진 3</div>
+              <div class="photo-upload-wrap">
+                <label class="photo-upload-btn" for="fPhoto3" style="font-size:0.8rem;padding:0.4rem 0.85rem;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 선택</label>
+                <input type="file" id="fPhoto3" accept="image/*" style="display:none" onchange="previewPhoto(this,3)">
+                <span id="photoFileName3" class="photo-filename" style="font-size:0.78rem;">선택 없음</span>
+              </div>
+              <div id="photoPreviewWrap3" style="display:none;margin-top:0.5rem;">
+                <img id="photoPreview3" style="max-width:100%;max-height:120px;border-radius:5px;border:1px solid var(--border);">
+                <button type="button" onclick="clearPhoto(3)" style="display:block;margin-top:0.3rem;font-size:0.75rem;color:var(--danger);background:none;border:none;cursor:pointer;">제거</button>
+              </div>
+              <input type="hidden" id="fPhotoUrl3">
+            </div>
           </div>
         </div>
         <button class="submit-btn" id="submitBtn" onclick="submitForm()">
