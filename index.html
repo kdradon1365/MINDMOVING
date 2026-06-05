@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <title>마인드무빙 컨설팅 | 김해용</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1745,12 +1746,20 @@
     sel.innerHTML = opts.map(o => `<option value="${o.key}">${o.label}</option>`).join('');
   }
 
+  // ── EmailJS 설정 (emailjs.com에서 발급받은 값으로 교체하세요) ──
+  const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // EmailJS Public Key
+  const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // 이메일 서비스 ID
+  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // 이메일 템플릿 ID
+
   // ── 문의 폼 제출 ─────────────────────────────────────────
   async function submitContactForm(e) {
     e.preventDefault();
-    const name    = document.getElementById('cfName').value.trim();
-    const phone   = document.getElementById('cfPhone').value.trim();
-    const message = document.getElementById('cfMessage').value.trim();
+    const name     = document.getElementById('cfName').value.trim();
+    const phone    = document.getElementById('cfPhone').value.trim();
+    const email    = document.getElementById('cfEmail').value.trim();
+    const org      = document.getElementById('cfOrg').value.trim();
+    const category = document.getElementById('cfCategory').value;
+    const message  = document.getElementById('cfMessage').value.trim();
     if (!name || !phone || !message) {
       alert('이름, 전화번호, 문의 내용은 필수입니다.');
       return;
@@ -1758,14 +1767,9 @@
     const btn = document.getElementById('cfSubmitBtn');
     btn.disabled = true;
     btn.textContent = '전송 중…';
+
     const { error } = await sb.from('contact_requests').insert({
-      name,
-      phone,
-      email:    document.getElementById('cfEmail').value.trim(),
-      org:      document.getElementById('cfOrg').value.trim(),
-      category: document.getElementById('cfCategory').value,
-      message,
-      status:   'new',
+      name, phone, email, org, category, message, status: 'new',
     });
     if (error) {
       btn.disabled = false;
@@ -1773,6 +1777,24 @@
       alert('전송 실패: ' + error.message);
       return;
     }
+
+    // EmailJS로 이메일 알림 발송
+    if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+      try {
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          from_name:    name,
+          from_phone:   phone,
+          from_email:   email || '미입력',
+          from_org:     org   || '미입력',
+          from_category: category || '미선택',
+          message:      message,
+        });
+      } catch(err) {
+        console.warn('EmailJS 발송 실패:', err);
+      }
+    }
+
     document.getElementById('cfSuccess').style.display = 'block';
     document.getElementById('contactForm').reset();
     btn.textContent = '전송 완료 ✓';
