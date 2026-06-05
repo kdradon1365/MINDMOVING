@@ -769,15 +769,15 @@
   /* AWARDS */
   .awards-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.5rem; margin-top: 1.25rem; }
   .award-row {
-    display: flex; align-items: center; gap: 0.7rem;
-    padding: 0.55rem 0.9rem; background: white;
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    padding: 0.65rem 0.9rem; background: white;
     border: 1px solid #E8E2DA; border-radius: 6px;
   }
-  .award-row-icon { font-size: 1rem; flex-shrink: 0; }
+  .award-row-icon { font-size: 1rem; flex-shrink: 0; padding-top: 0.1rem; }
   .award-row-info { flex: 1; min-width: 0; }
-  .award-row-title { font-size: 0.83rem; font-weight: 700; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .award-row-sub { font-size: 0.7rem; color: var(--taupe); }
-  .award-row-year { font-size: 0.7rem; font-weight: 700; color: var(--gray-light); flex-shrink: 0; }
+  .award-row-title { font-size: 0.83rem; font-weight: 700; color: var(--black); line-height: 1.4; }
+  .award-row-sub { font-size: 0.7rem; color: var(--taupe); margin-top: 0.1rem; }
+  .award-row-year { font-size: 0.7rem; font-weight: 700; color: var(--gray-light); flex-shrink: 0; padding-top: 0.15rem; white-space: nowrap; }
 
   /* TESTIMONIALS */
   #testimonials { background: var(--taupe-pale); border-top: 1px solid var(--border); }
@@ -866,6 +866,8 @@
     .section-wrap { padding: 5rem 2rem; }
     #awards { padding: 2rem 1.5rem !important; }
     .awards-list { grid-template-columns: 1fr; }
+    .award-row { flex-wrap: wrap; }
+    .award-row-year { width: 100%; padding-left: 1.7rem; padding-top: 0.2rem; }
     .stats-bar { grid-template-columns: 1fr; }
     .stat-item { border-right: none; border-bottom: 1px solid #2A2A2A; }
     .philosophy-grid { grid-template-columns: 1fr; }
