@@ -767,22 +767,17 @@
   .cred-year { font-size: 0.72rem; color: var(--gray-light); font-weight: 500; margin-top: 0.2rem; }
 
   /* AWARDS */
-  #awards { background: var(--taupe-pale); border-top: 1px solid #DDD6CE; border-bottom: 1px solid #DDD6CE; }
-  .awards-list { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-direction: column; flex-direction: column; gap: 0; margin-top: 1.75rem; border: 1px solid #DDD6CE; border-radius: 8px; overflow: hidden; }
+  .awards-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0.5rem; margin-top: 1.25rem; }
   .award-row {
-    display: -webkit-box; display: -ms-flexbox; display: flex;
-    -webkit-box-align: center; -ms-flex-align: center; align-items: center;
-    gap: 0.9rem; padding: 0.7rem 1.1rem;
-    background: white; border-bottom: 1px solid #EAE5E0;
-    -webkit-transition: background 0.15s; transition: background 0.15s;
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.55rem 0.9rem; background: white;
+    border: 1px solid #E8E2DA; border-radius: 6px;
   }
-  .award-row:last-child { border-bottom: none; }
-  .award-row:hover { background: #FAF8F6; }
-  .award-row-icon { font-size: 1.1rem; -webkit-flex-shrink: 0; -ms-flex-negative: 0; flex-shrink: 0; width: 1.5rem; text-align: center; }
-  .award-row-info { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; }
-  .award-row-title { font-size: 0.86rem; font-weight: 700; color: var(--black); }
-  .award-row-sub { font-size: 0.73rem; color: var(--taupe); margin-top: 0.1rem; }
-  .award-row-year { font-size: 0.72rem; font-weight: 700; color: var(--gray-light); -webkit-flex-shrink: 0; -ms-flex-negative: 0; flex-shrink: 0; }
+  .award-row-icon { font-size: 1rem; flex-shrink: 0; }
+  .award-row-info { flex: 1; min-width: 0; }
+  .award-row-title { font-size: 0.83rem; font-weight: 700; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .award-row-sub { font-size: 0.7rem; color: var(--taupe); }
+  .award-row-year { font-size: 0.7rem; font-weight: 700; color: var(--gray-light); flex-shrink: 0; }
 
   /* TESTIMONIALS */
   #testimonials { background: var(--taupe-pale); border-top: 1px solid var(--border); }
@@ -869,6 +864,8 @@
     .hero-right { min-height: 50vw; }
     .hero-left { padding: 4rem 2rem; }
     .section-wrap { padding: 5rem 2rem; }
+    #awards { padding: 2rem 1.5rem !important; }
+    .awards-list { grid-template-columns: 1fr; }
     .stats-bar { grid-template-columns: 1fr; }
     .stat-item { border-right: none; border-bottom: 1px solid #2A2A2A; }
     .philosophy-grid { grid-template-columns: 1fr; }
@@ -1062,10 +1059,10 @@
 </section>
 
 <!-- AWARDS -->
-<section id="awards" class="section-wrap" style="display:none;padding-top:3rem;padding-bottom:3rem;">
+<section id="awards" style="display:none;background:var(--taupe-pale);border-top:1px solid #DDD6CE;border-bottom:1px solid #DDD6CE;padding:2.5rem 5rem;">
   <div class="container">
     <div class="eyebrow">Awards</div>
-    <h2 class="section-title">수상 경력</h2>
+    <h2 class="section-title" style="margin-bottom:0;">수상 경력</h2>
     <div class="awards-list" id="awardsGrid"></div>
   </div>
 </section>
