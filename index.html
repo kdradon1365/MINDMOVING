@@ -728,13 +728,44 @@
     letter-spacing: 3px;
     text-transform: uppercase;
     color: var(--teal);
-    padding-bottom: 0.75rem;
+    padding: 0.85rem 0;
     border-bottom: 2px solid var(--teal);
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    cursor: pointer;
+    user-select: none;
+    justify-content: space-between;
   }
+  .history-year-label:hover { color: var(--teal-dark); }
+  .history-year-label-left { display: flex; align-items: center; gap: 0.6rem; }
+  .history-year-arrow { font-size: 0.75rem; transition: transform 0.25s; }
+  .history-year-group.open .history-year-arrow { transform: rotate(180deg); }
+  .history-year-body {
+    display: none;
+    padding-top: 1rem;
+  }
+  .history-year-group.open .history-year-body { display: block; }
+  .history-pagination {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+  .history-page-btn {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .history-page-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .history-page-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
   .history-year-count {
     background: var(--teal);
     color: white;
@@ -1492,6 +1523,77 @@
     return date;
   }
 
+  const HISTORY_PER_PAGE = 4;
+  const historyPages = {};
+
+  function getPhotoHtml(photo_url) {
+    try {
+      const p = JSON.parse(photo_url || '');
+      const url = Array.isArray(p) && p[0] ? p[0] : null;
+      if (url) return `<img src="${escapeHtml(url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-top:1rem;">`;
+    } catch {}
+    if (photo_url) return `<img src="${escapeHtml(photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-top:1rem;">`;
+    return '';
+  }
+
+  function renderHistoryPage(year, page, lectures) {
+    const perPage = HISTORY_PER_PAGE;
+    const total = lectures.length;
+    const totalPages = Math.ceil(total / perPage);
+    const start = (page - 1) * perPage;
+    const items = lectures.slice(start, start + perPage);
+    const cards = items.map(l => `
+      <div class="history-card" onclick="openLectureModal('${escapeHtml(l.id)}')">
+        <div class="history-date">${fmtDate(l.date)}</div>
+        <div class="history-title">${escapeHtml(l.title)}</div>
+        <div class="history-org">${escapeHtml(l.organization)}</div>
+        ${l.category ? `<div style="margin-top:0.5rem;font-size:0.7rem;color:var(--teal);font-weight:700;">${getCatKeys(l.category).map(k=>escapeHtml(catKeyToLabel(k))).join(' · ')}</div>` : ''}
+        ${getPhotoHtml(l.photo_url)}
+      </div>`).join('');
+
+    const pagination = totalPages > 1 ? `
+      <div class="history-pagination">
+        ${Array.from({length: totalPages}, (_, i) => i + 1).map(p => `
+          <button class="history-page-btn${p === page ? ' active' : ''}" onclick="goHistoryPage('${escapeHtml(year)}', ${p})">${p}</button>
+        `).join('')}
+      </div>` : '';
+
+    const body = document.querySelector(`.history-year-group[data-year="${CSS.escape(year)}"] .history-year-body`);
+    if (body) body.innerHTML = `<div class="history-cards">${cards}</div>${pagination}`;
+  }
+
+  function goHistoryPage(year, page) {
+    historyPages[year] = page;
+    const lectures = getLectures();
+    const sorted = [...lectures].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+    const byYear = {};
+    sorted.forEach(l => {
+      const yr = (l.date || '').split('-')[0] || '날짜 미정';
+      if (!byYear[yr]) byYear[yr] = [];
+      byYear[yr].push(l);
+    });
+    renderHistoryPage(year, page, byYear[year] || []);
+  }
+
+  function toggleHistoryYear(year) {
+    const group = document.querySelector(`.history-year-group[data-year="${CSS.escape(year)}"]`);
+    if (!group) return;
+    const wasOpen = group.classList.contains('open');
+    group.classList.toggle('open');
+    if (!wasOpen) {
+      const lectures = getLectures();
+      const sorted = [...lectures].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      const byYear = {};
+      sorted.forEach(l => {
+        const yr = (l.date || '').split('-')[0] || '날짜 미정';
+        if (!byYear[yr]) byYear[yr] = [];
+        byYear[yr].push(l);
+      });
+      const page = historyPages[year] || 1;
+      renderHistoryPage(year, page, byYear[year] || []);
+    }
+  }
+
   function renderHistory() {
     const grid = document.getElementById('historyGrid');
     const lectures = getLectures();
@@ -1507,23 +1609,22 @@
       byYear[year].push(l);
     });
     const years = Object.keys(byYear).sort((a, b) => b.localeCompare(a));
-    grid.innerHTML = years.map(year => `
-      <div class="history-year-group">
-        <div class="history-year-label">
-          ${escapeHtml(year)}년
-          <span class="history-year-count">${byYear[year].length}건</span>
+    grid.innerHTML = years.map((year, idx) => `
+      <div class="history-year-group${idx === 0 ? ' open' : ''}" data-year="${escapeHtml(year)}">
+        <div class="history-year-label" onclick="toggleHistoryYear('${escapeHtml(year)}')">
+          <div class="history-year-label-left">
+            <span>${escapeHtml(year)}년</span>
+            <span class="history-year-count">${byYear[year].length}건</span>
+          </div>
+          <span class="history-year-arrow">▼</span>
         </div>
-        <div class="history-cards">
-          ${byYear[year].map(l => `
-            <div class="history-card" onclick="openLectureModal('${escapeHtml(l.id)}')">
-              <div class="history-date">${fmtDate(l.date)}</div>
-              <div class="history-title">${escapeHtml(l.title)}</div>
-              <div class="history-org">${escapeHtml(l.organization)}</div>
-              ${l.category ? `<div style="margin-top:0.5rem;font-size:0.7rem;color:var(--teal);font-weight:700;">${getCatKeys(l.category).map(k=>escapeHtml(catKeyToLabel(k))).join(' · ')}</div>` : ''}
-              ${(() => { try { const p = JSON.parse(l.photo_url||''); return Array.isArray(p)&&p[0]?`<img src="${escapeHtml(p[0])}" style="width:100%;height:140px;object-fit:cover;display:block;margin-top:1rem;">`:l.photo_url?`<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-top:1rem;">`:''; } catch{ return l.photo_url?`<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-top:1rem;">`:''; } })()}
-            </div>`).join('')}
-        </div>
+        <div class="history-year-body"></div>
       </div>`).join('');
+
+    years.forEach((year, idx) => {
+      historyPages[year] = 1;
+      if (idx === 0) renderHistoryPage(year, 1, byYear[year]);
+    });
   }
 
   // ── 강의 이력 팝업 ────────────────────────────────────────
