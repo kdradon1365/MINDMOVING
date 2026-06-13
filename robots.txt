@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
 Sitemap: https://mindmoving.co.kr/sitemap.xml
+Sitemap: https://www.mindmoving.co.kr/sitemap.xml
+
+User-agent: Yeti
+Allow: /
