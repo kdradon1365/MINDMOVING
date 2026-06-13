@@ -663,11 +663,14 @@
   }
   .lecture-card {
     background: white;
-    padding: 2rem 1.5rem;
+    padding: 1.5rem 1.25rem;
     border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     transition: all 0.25s;
     cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
   }
   .lecture-card:hover {
     background: var(--teal);
@@ -676,9 +679,9 @@
   .lecture-card:hover h4 { color: white; }
   .lecture-card:hover .lecture-icon { filter: grayscale(1) brightness(2); }
   .lecture-icon {
-    font-size: 1.8rem;
-    margin-bottom: 0.85rem;
+    font-size: 1.6rem;
     display: block;
+    flex-shrink: 0;
     transition: filter 0.25s;
   }
   .lecture-card h4 {
@@ -687,7 +690,25 @@
     color: var(--black);
     line-height: 1.45;
     transition: color 0.25s;
+    margin: 0;
   }
+  .lectures-toggle-btn {
+    display: none;
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.85rem;
+    background: #fff;
+    border: 1px solid var(--teal);
+    color: var(--teal);
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    box-sizing: border-box;
+  }
+  .lectures-toggle-btn:hover { background: var(--teal); color: #fff; }
 
   /* HISTORY */
   #history { background: var(--taupe-pale); border-top: 1px solid #DDD6CE; border-bottom: 1px solid #DDD6CE; }
@@ -1058,6 +1079,10 @@
     .about-photo-nameblock .about-role { font-size: 0.95rem; }
     .about-photo-panel::before { width: 100%; height: 4px; }
     .about-content { padding: 2rem 1.75rem; }
+    .lectures-grid { grid-template-columns: 1fr; }
+    .lecture-card.lecture-hidden { display: none; }
+    .lecture-card.lecture-hidden.lecture-visible { display: flex; }
+    .lectures-toggle-btn { display: block; }
     .contact-inner { grid-template-columns: 1fr; }
     .contact-left { padding: 3rem 2.5rem; border-right: none; border-bottom: 1px solid #2A2A2A; }
     .contact-right { padding: 3rem 2.5rem; }
@@ -1264,14 +1289,15 @@
       <div class="lecture-card" data-category="커뮤니케이션/협상" onclick="openCategoryModal('커뮤니케이션/협상','커뮤니케이션 및 갈등관리 / 협상')"><span class="lecture-icon">💬</span><h4>커뮤니케이션 및 갈등관리 / 협상</h4></div>
       <div class="lecture-card" data-category="심리/멘탈코칭" onclick="openCategoryModal('심리/멘탈코칭','심리 / 멘탈 코칭')"><span class="lecture-icon">🧠</span><h4>심리 / 멘탈 코칭</h4></div>
       <div class="lecture-card" data-category="세일즈/영업코칭" onclick="openCategoryModal('세일즈/영업코칭','세일즈 / 영업코칭 및 서비스')"><span class="lecture-icon">📈</span><h4>세일즈 / 영업코칭 및 서비스</h4></div>
-      <div class="lecture-card" data-category="기업교육/HRD" onclick="openCategoryModal('기업교육/HRD','기업교육 / HRD')"><span class="lecture-icon">📚</span><h4>기업교육 / HRD</h4></div>
-      <div class="lecture-card" data-category="드라마테라피" onclick="openCategoryModal('드라마테라피','Role-Play(롤플레이) 활용 강의')"><span class="lecture-icon">🎭</span><h4>Role-Play(롤플레이) 활용 강의</h4></div>
-      <div class="lecture-card" data-category="민원응대" onclick="openCategoryModal('민원응대','민원 응대')"><span class="lecture-icon">🤝</span><h4>민원 응대</h4></div>
-      <div class="lecture-card" data-category="연극활용기업교육" onclick="openCategoryModal('연극활용기업교육','연극 활용 기업교육')"><span class="lecture-icon">🎬</span><h4>연극 활용 기업교육</h4></div>
-      <div class="lecture-card" data-category="스트레스관리" onclick="openCategoryModal('스트레스관리','스트레스 감정관리 교육')"><span class="lecture-icon">🌿</span><h4>스트레스 감정관리 교육</h4></div>
-      <div class="lecture-card" data-category="회복탄력성" onclick="openCategoryModal('회복탄력성','회복탄력성')"><span class="lecture-icon">💪</span><h4>회복탄력성</h4></div>
-      <div class="lecture-card" data-category="핵심가치내재화" onclick="openCategoryModal('핵심가치내재화','핵심가치 내재화 교육')"><span class="lecture-icon">🎯</span><h4>핵심가치 내재화 교육</h4></div>
+      <div class="lecture-card lecture-hidden" data-category="기업교육/HRD" onclick="openCategoryModal('기업교육/HRD','기업교육 / HRD')"><span class="lecture-icon">📚</span><h4>기업교육 / HRD</h4></div>
+      <div class="lecture-card lecture-hidden" data-category="드라마테라피" onclick="openCategoryModal('드라마테라피','Role-Play(롤플레이) 활용 강의')"><span class="lecture-icon">🎭</span><h4>Role-Play(롤플레이) 활용 강의</h4></div>
+      <div class="lecture-card lecture-hidden" data-category="민원응대" onclick="openCategoryModal('민원응대','민원 응대')"><span class="lecture-icon">🤝</span><h4>민원 응대</h4></div>
+      <div class="lecture-card lecture-hidden" data-category="연극활용기업교육" onclick="openCategoryModal('연극활용기업교육','연극 활용 기업교육')"><span class="lecture-icon">🎬</span><h4>연극 활용 기업교육</h4></div>
+      <div class="lecture-card lecture-hidden" data-category="스트레스관리" onclick="openCategoryModal('스트레스관리','스트레스 감정관리 교육')"><span class="lecture-icon">🌿</span><h4>스트레스 감정관리 교육</h4></div>
+      <div class="lecture-card lecture-hidden" data-category="회복탄력성" onclick="openCategoryModal('회복탄력성','회복탄력성')"><span class="lecture-icon">💪</span><h4>회복탄력성</h4></div>
+      <div class="lecture-card lecture-hidden" data-category="핵심가치내재화" onclick="openCategoryModal('핵심가치내재화','핵심가치 내재화 교육')"><span class="lecture-icon">🎯</span><h4>핵심가치 내재화 교육</h4></div>
     </div>
+    <button class="lectures-toggle-btn" id="lecturesToggleBtn" onclick="toggleLectures()">강의 분야 더 보기 ▼</button>
   </div>
 </section>
 
@@ -1617,6 +1643,21 @@
     btn.classList.remove('open');
     document.getElementById('mobileMenu').classList.remove('open');
     btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleLectures() {
+    const hidden = document.querySelectorAll('.lecture-hidden');
+    const btn = document.getElementById('lecturesToggleBtn');
+    const isExpanded = btn.dataset.expanded === 'true';
+    hidden.forEach(card => {
+      if (isExpanded) {
+        card.classList.remove('lecture-visible');
+      } else {
+        card.classList.add('lecture-visible');
+      }
+    });
+    btn.dataset.expanded = !isExpanded;
+    btn.textContent = isExpanded ? '강의 분야 더 보기 ▼' : '강의 분야 접기 ▲';
   }
 
   // ── Supabase 설정 ──────────────────────────────────────────
