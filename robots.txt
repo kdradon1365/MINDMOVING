@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mindmoving.co.kr/sitemap.xml
