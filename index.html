@@ -756,6 +756,11 @@
     border-right: 1px solid #D5CEC7;
     border-bottom: 1px solid #D5CEC7;
     transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+  }
+  .history-card img {
+    margin-top: auto;
   }
   .history-card:hover { background: #FAF8F6; }
   .history-date {
@@ -1511,11 +1516,11 @@
         <div class="history-cards">
           ${byYear[year].map(l => `
             <div class="history-card" onclick="openLectureModal('${escapeHtml(l.id)}')">
-              ${(() => { try { const p = JSON.parse(l.photo_url||''); return Array.isArray(p)&&p[0]?`<img src="${escapeHtml(p[0])}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">`:l.photo_url?`<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">`:''; } catch{ return l.photo_url?`<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-bottom:0.75rem;">`:''; } })()}
               <div class="history-date">${fmtDate(l.date)}</div>
               <div class="history-title">${escapeHtml(l.title)}</div>
               <div class="history-org">${escapeHtml(l.organization)}</div>
               ${l.category ? `<div style="margin-top:0.5rem;font-size:0.7rem;color:var(--teal);font-weight:700;">${getCatKeys(l.category).map(k=>escapeHtml(catKeyToLabel(k))).join(' · ')}</div>` : ''}
+              ${(() => { try { const p = JSON.parse(l.photo_url||''); return Array.isArray(p)&&p[0]?`<img src="${escapeHtml(p[0])}" style="width:100%;height:140px;object-fit:cover;display:block;margin-top:1rem;">`:l.photo_url?`<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-top:1rem;">`:''; } catch{ return l.photo_url?`<img src="${escapeHtml(l.photo_url)}" style="width:100%;height:140px;object-fit:cover;display:block;margin-top:1rem;">`:''; } })()}
             </div>`).join('')}
         </div>
       </div>`).join('');
