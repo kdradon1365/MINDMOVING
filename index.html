@@ -491,8 +491,11 @@
   }
   .about-photo-nameblock {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding-top: 1.25rem;
+    padding: 1.5rem 0 2rem;
     border-top: 1px solid var(--border);
   }
   .about-photo-nameblock .about-name {
@@ -501,17 +504,18 @@
     letter-spacing: -1px;
     color: var(--black);
     line-height: 1.1;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.4rem;
+    text-align: center;
   }
   .about-photo-nameblock .about-role {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     color: var(--teal);
     font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    letter-spacing: 1.5px;
     margin-bottom: 0;
     padding-bottom: 0;
     border-bottom: none;
+    text-align: center;
   }
   /* HERO BG */
   #hero { position: relative; background-size: cover; background-position: center; }
@@ -1049,8 +1053,8 @@
     .about-inner { grid-template-columns: 1fr; }
     .about-photo-panel { padding: 0 1.5rem 1.75rem; }
     #instructorPhoto { max-width: 190px; max-height: 280px; margin-bottom: 1rem; }
-    .about-photo-nameblock { padding-top: 1rem; }
-    .about-photo-nameblock .about-name { font-size: 1.7rem; }
+    .about-photo-nameblock { padding: 1rem 0 1.5rem; align-items: center; text-align: center; }
+    .about-photo-nameblock .about-name { font-size: 1.7rem; text-align: center; }
     .about-photo-panel::before { width: 100%; height: 4px; }
     .about-content { padding: 2rem 1.75rem; }
     .contact-inner { grid-template-columns: 1fr; }
