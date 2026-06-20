@@ -428,10 +428,29 @@
   }
 
   /* LIST */
-  .lecture-list { display: flex; flex-direction: column; max-height: 620px; overflow-y: auto; }
-  .lecture-list::-webkit-scrollbar { width: 4px; }
-  .lecture-list::-webkit-scrollbar-track { background: transparent; }
-  .lecture-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .lecture-list { display: flex; flex-direction: column; }
+  .list-pagination {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .list-page-btn {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--gray);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .list-page-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .list-page-btn.active { background: var(--teal); color: white; border-color: var(--teal); }
 
   .list-item {
     display: flex;
@@ -521,7 +540,6 @@
   @media (max-width: 900px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }
     .admin-body { grid-template-columns: 1fr; }
-    .lecture-list { max-height: none; }
     .ce-grid { grid-template-columns: 1fr; }
     .ce-header { padding: 0.85rem 1.25rem; }
     .ce-body { padding: 1rem 1.25rem 1.25rem; }
@@ -980,16 +998,17 @@
 
     <div class="card">
       <div class="list-controls">
-        <input type="text" class="search-input" id="searchInput" placeholder="🔍  강의명 또는 기관명 검색" oninput="renderList()">
-        <select class="filter-select" id="yearFilter" onchange="renderList()">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍  강의명 또는 기관명 검색" oninput="renderList(true)">
+        <select class="filter-select" id="yearFilter" onchange="renderList(true)">
           <option value="">전체 연도</option>
         </select>
-        <select class="filter-select" id="categoryFilter" onchange="renderList()">
+        <select class="filter-select" id="categoryFilter" onchange="renderList(true)">
           <option value="">전체 분야</option>
         </select>
         <span class="count-badge" id="countBadge">0</span>
       </div>
       <div class="lecture-list" id="lectureList"></div>
+      <div class="list-pagination" id="listPagination"></div>
     </div>
   </div>
 </div>
@@ -1578,7 +1597,11 @@
     showToast('삭제되었습니다.');
   }
 
-  function renderList() {
+  const LIST_PAGE_SIZE = 8;
+  let listPage = 1;
+
+  function renderList(resetPage) {
+    if (resetPage) listPage = 1;
     const search = document.getElementById('searchInput').value.trim().toLowerCase();
     const yearF  = document.getElementById('yearFilter').value;
     const catF   = document.getElementById('categoryFilter').value;
@@ -1589,11 +1612,17 @@
     if (catF)  ls = ls.filter(l => (l.category || '') === catF);
     document.getElementById('countBadge').textContent = ls.length;
     const list = document.getElementById('lectureList');
+    const pagination = document.getElementById('listPagination');
     if (ls.length === 0) {
       list.innerHTML = `<div class="empty-state"><div class="e-icon">📋</div>등록된 강의 이력이 없습니다.</div>`;
+      pagination.innerHTML = '';
       return;
     }
-    list.innerHTML = ls.map(l => `
+    const totalPages = Math.max(1, Math.ceil(ls.length / LIST_PAGE_SIZE));
+    if (listPage > totalPages) listPage = totalPages;
+    const start = (listPage - 1) * LIST_PAGE_SIZE;
+    const pageItems = ls.slice(start, start + LIST_PAGE_SIZE);
+    list.innerHTML = pageItems.map(l => `
       <div class="list-item${editingId === l.id ? ' editing' : ''}">
         <div class="list-item-info">
           <div class="list-item-date">
@@ -1610,6 +1639,14 @@
         </div>
       </div>
     `).join('');
+    pagination.innerHTML = totalPages > 1 ? Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `
+      <button class="list-page-btn${p === listPage ? ' active' : ''}" onclick="goListPage(${p})">${p}</button>
+    `).join('') : '';
+  }
+
+  function goListPage(p) {
+    listPage = p;
+    renderList();
   }
 
   function esc(str) {
