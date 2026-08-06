@@ -945,6 +945,10 @@
           <textarea id="fOutcome" rows="2" placeholder="교육 후 기대되는 변화 및 효과를 입력하세요."></textarea>
         </div>
         <div class="form-group">
+          <label>이런 기관에 추천합니다 <span class="opt">(선택 · 항목마다 줄바꿈)</span></label>
+          <textarea id="fRecommend" rows="3" placeholder="임직원의 스트레스 관리와 재충전이 필요한 기관·기업&#10;대규모 인원을 강당에서 교육해야 하는 담당자&#10;강의를 넘어 체험형 프로그램을 찾는 곳"></textarea>
+        </div>
+        <div class="form-group">
           <label>강의 사진 <span class="opt">최대 3장</span></label>
           <div style="display:flex;flex-direction:column;gap:0.6rem;">
             <div style="border:1.5px solid var(--border);border-radius:8px;padding:0.75rem;">
@@ -1449,14 +1453,15 @@
   }
 
   function getNoteValue() {
-    const subtitle = document.getElementById('fSubtitle').value.trim();
-    const target   = document.getElementById('fTarget').value.trim();
-    const fmt      = document.getElementById('fFormat').value.trim();
-    const intro    = document.getElementById('fIntro').value.trim();
-    const points   = document.getElementById('fPoints').value.trim();
-    const outcome  = document.getElementById('fOutcome').value.trim();
-    if (!subtitle && !target && !fmt && !intro && !points && !outcome) return '';
-    return JSON.stringify({ subtitle, target, fmt, intro, points, outcome });
+    const subtitle   = document.getElementById('fSubtitle').value.trim();
+    const target     = document.getElementById('fTarget').value.trim();
+    const fmt        = document.getElementById('fFormat').value.trim();
+    const intro      = document.getElementById('fIntro').value.trim();
+    const points     = document.getElementById('fPoints').value.trim();
+    const outcome    = document.getElementById('fOutcome').value.trim();
+    const recommend  = document.getElementById('fRecommend').value.trim();
+    if (!subtitle && !target && !fmt && !intro && !points && !outcome && !recommend) return '';
+    return JSON.stringify({ subtitle, target, fmt, intro, points, outcome, recommend });
   }
 
   function setNoteValue(note) {
@@ -1464,19 +1469,20 @@
     if (!note) return;
     try {
       const d = JSON.parse(note);
-      document.getElementById('fSubtitle').value = d.subtitle || '';
-      document.getElementById('fTarget').value   = d.target   || '';
-      document.getElementById('fFormat').value   = d.fmt      || '';
-      document.getElementById('fIntro').value    = d.intro    || '';
-      document.getElementById('fPoints').value   = d.points   || '';
-      document.getElementById('fOutcome').value  = d.outcome  || '';
+      document.getElementById('fSubtitle').value  = d.subtitle  || '';
+      document.getElementById('fTarget').value    = d.target    || '';
+      document.getElementById('fFormat').value    = d.fmt       || '';
+      document.getElementById('fIntro').value     = d.intro     || '';
+      document.getElementById('fPoints').value    = d.points    || '';
+      document.getElementById('fOutcome').value   = d.outcome   || '';
+      document.getElementById('fRecommend').value = d.recommend || '';
     } catch(e) {
       document.getElementById('fIntro').value = note;
     }
   }
 
   function clearNoteFields() {
-    ['fSubtitle','fTarget','fFormat','fIntro','fPoints','fOutcome']
+    ['fSubtitle','fTarget','fFormat','fIntro','fPoints','fOutcome','fRecommend']
       .forEach(id => { document.getElementById(id).value = ''; });
   }
 

@@ -898,6 +898,11 @@
   .modal-points li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.87rem; color: var(--gray); line-height: 1.6; }
   .modal-points li::before { content: '✓'; color: var(--teal); font-weight: 700; flex-shrink: 0; font-size: 0.8rem; margin-top: 0.15rem; }
   .modal-outcome { font-size: 0.87rem; color: var(--gray); line-height: 1.7; }
+  .modal-section.recommend { background: var(--taupe-pale); }
+  .modal-section.recommend .modal-section-label { color: var(--taupe); }
+  .modal-recommend-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.45rem; }
+  .modal-recommend-list li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.87rem; color: var(--gray); line-height: 1.6; }
+  .modal-recommend-list li::before { content: '✔'; color: var(--taupe); font-weight: 700; flex-shrink: 0; font-size: 0.78rem; margin-top: 0.18rem; }
   /* 레거시 note 스타일 (JSON 아닌 경우) */
   .modal-note { font-size: 0.88rem; color: var(--gray); line-height: 1.7; }
   .modal-note-subtitle { font-size: 1rem; font-weight: 800; color: var(--black); margin-bottom: 0.75rem; }
@@ -1489,6 +1494,10 @@
         }
       }
       if (d.outcome) html += `<div class="modal-note-section"><strong>교육 효과</strong><p>${escapeHtml(d.outcome)}</p></div>`;
+      if (d.recommend) {
+        const items = d.recommend.split('\n').map(s=>s.trim()).filter(Boolean);
+        if (items.length) html += `<div class="modal-note-section"><strong>이런 기관에 추천합니다</strong><ul class="modal-note-points">${items.map(item=>`<li>${escapeHtml(item.replace(/^[-•]\s*/,''))}</li>`).join('')}</ul></div>`;
+      }
       html += '</div>';
       return html;
     } catch(e) {
@@ -1658,6 +1667,10 @@
           if (items.length) noteHtml += `<div class="modal-section"><div class="modal-section-label">주요 내용</div><ul class="modal-points">${items.map(item=>`<li>${escapeHtml(item.replace(/^[-•]\s*/,''))}</li>`).join('')}</ul></div>`;
         }
         if (d.outcome) noteHtml += `<div class="modal-section"><div class="modal-section-label">교육 효과</div><p class="modal-outcome">${escapeHtml(d.outcome)}</p></div>`;
+        if (d.recommend) {
+          const items = d.recommend.split('\n').map(s=>s.trim()).filter(Boolean);
+          if (items.length) noteHtml += `<div class="modal-section recommend"><div class="modal-section-label">이런 기관에 추천합니다</div><ul class="modal-recommend-list">${items.map(item=>`<li>${escapeHtml(item.replace(/^[-•]\s*/,''))}</li>`).join('')}</ul></div>`;
+        }
       } catch { noteHtml = `<p class="modal-intro">${escapeHtml(l.note)}</p>`; }
     }
 
