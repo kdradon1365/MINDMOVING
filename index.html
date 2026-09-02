@@ -1145,6 +1145,74 @@
     .modal-photo { height: 180px; }
     .modal-photos.photos-3 .modal-photo:not(:first-child) { height: 88px; }
   }
+
+  /* HERO MISSION */
+  .hero-mission {
+    margin-bottom: 2rem;
+    padding: 0.9rem 1.2rem;
+    background: var(--teal-pale);
+    border-left: 3px solid var(--teal);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--teal-dark);
+    line-height: 1.65;
+  }
+  .hero-mission-label {
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 2.5px;
+    color: var(--taupe);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  /* CORE VALUES */
+  #values { background: var(--teal-pale); }
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin: 2.5rem 0 2rem;
+  }
+  .value-card {
+    background: white;
+    padding: 2rem 1.5rem;
+    border-top: 3px solid var(--teal);
+    text-align: center;
+    transition: box-shadow 0.2s;
+  }
+  .value-card:hover { box-shadow: 0 8px 32px rgba(43,113,115,0.12); }
+  .value-num {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--taupe);
+    margin-bottom: 0.75rem;
+  }
+  .value-word {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--teal-dark);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+  }
+  .value-desc {
+    font-size: 0.8rem;
+    color: var(--gray);
+    line-height: 1.55;
+  }
+  .values-tagline {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--gray);
+    padding: 1.25rem 0 0;
+    border-top: 1px solid rgba(59,138,140,0.2);
+  }
+  .values-tagline strong { color: var(--teal); font-weight: 800; }
+  @media (max-width: 700px) {
+    .values-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 </style>
 </head>
 <body>
@@ -1199,6 +1267,10 @@
       </p>
       <span class="hero-desc-cta">지금 마인드무빙과 함께 시작하세요.</span>
     </div>
+    <div class="hero-mission">
+      <span class="hero-mission-label">Mission</span>
+      사람의 마음을 움직여, 행동의 변화를 만든다.
+    </div>
     <a href="#contact" class="btn-primary">
       강의 문의하기
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -1228,6 +1300,40 @@
     <div class="stat-label">Organizations</div>
   </div>
 </div>
+
+<!-- CORE VALUES -->
+<section id="values" class="section-wrap">
+  <div class="container">
+    <div class="eyebrow">Core Values</div>
+    <h2 class="section-title">핵심가치</h2>
+    <p class="section-desc">마인드무빙이 모든 교육에서 지키는 네 가지 약속입니다.</p>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-num">01</div>
+        <div class="value-word">진심</div>
+        <div class="value-desc">진정성을 담는다</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">02</div>
+        <div class="value-word">공감</div>
+        <div class="value-desc">사람을 먼저 이해한다</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">03</div>
+        <div class="value-word">성장</div>
+        <div class="value-desc">배우고 발전한다</div>
+      </div>
+      <div class="value-card">
+        <div class="value-num">04</div>
+        <div class="value-word">실행</div>
+        <div class="value-desc">행동으로 옮긴다</div>
+      </div>
+    </div>
+    <div class="values-tagline">
+      마음이 움직여야, 사람이 움직이고, <strong>조직이 변한다.</strong>
+    </div>
+  </div>
+</section>
 
 <!-- PHILOSOPHY -->
 <section id="philosophy" class="section-wrap">
